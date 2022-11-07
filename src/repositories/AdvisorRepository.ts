@@ -6,7 +6,7 @@ export class AdvisorRepository implements BaseRepository<AdvisorAccount> {
   constructor(
     private readonly repository = MySqlDataSouce.getRepository(AdvisorAccount)
   ) {}
-  async create(entity: AdvisorAccount): Promise<AdvisorAccount> {
+  async save(entity: AdvisorAccount): Promise<AdvisorAccount> {
     const createdAccount = await this.repository.save(entity);
     return createdAccount;
   }
@@ -21,7 +21,7 @@ export class AdvisorRepository implements BaseRepository<AdvisorAccount> {
   async find(target: string, value: string): Promise<AdvisorAccount[]>;
   async find(target?: string, value?: string): Promise<AdvisorAccount[]> {
     if (target && value) {
-      return await this.repository.find({ [target]: value });
+      return await this.repository.findBy({[value]:target});
     }
     return await this.repository.find();
   }

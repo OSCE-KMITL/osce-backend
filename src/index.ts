@@ -1,14 +1,15 @@
-import { ApolloServer } from "apollo-server";
-import "reflect-metadata";
-import { buildSchema } from "type-graphql";
-import { AdvisorAccountController } from "./controller/advisor/AdvisorAccountController";
-import { MySqlDataSouce } from "../ormconfig";
+import { ApolloServer } from 'apollo-server';
+import 'reflect-metadata';
+import { buildSchema } from 'type-graphql';
+import { AdvisorAccountController } from './controller/advisor/AdvisorAccountController';
+import { MySqlDataSouce } from '../ormconfig';
+
 
 const PORT = 4000;
 
 const bootstrap = async () => {
   await MySqlDataSouce.initialize()
-    .then(() => console.log("Data Source has been initialized!"))
+    .then(() => console.log('Data Source has been initialized!'))
     .catch((err) => console.log(err));
 
   const schema = await buildSchema({
