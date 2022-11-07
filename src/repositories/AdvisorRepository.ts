@@ -1,7 +1,9 @@
 import { BaseRepository } from "./BaseRepository";
 import { AdvisorAccount } from "../entities/AdvisorAccount";
 import { MySqlDataSouce } from "../../ormconfig";
+import {Service} from "typedi";
 
+@Service()
 export class AdvisorRepository implements BaseRepository<AdvisorAccount> {
   constructor(
     private readonly repository = MySqlDataSouce.getRepository(AdvisorAccount)

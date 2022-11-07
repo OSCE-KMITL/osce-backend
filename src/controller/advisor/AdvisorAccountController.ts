@@ -5,9 +5,12 @@ import {
   AdvisorAccountInput,
   UpdateAdvisorInput,
 } from "./input/AdvisorAccountInput";
+import {Service} from "typedi";
+
+@Service()
 @Resolver()
 export class AdvisorAccountController {
-  constructor(private readonly advisorService = new AdvisorAccountService()) {}
+  constructor(private readonly advisorService: AdvisorAccountService) {}
 
   @Query(() => [AdvisorAccount], { nullable: "items" })
   async getAllAdvisorAccounts(): Promise<AdvisorAccount[] | null> {

@@ -19,6 +19,7 @@
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
+    "typedi": "^0.10.0",
     "typeorm": "^0.3.10",
     "uid": "^2.0.1",
     "uuid": "^9.0.0"

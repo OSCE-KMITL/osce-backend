@@ -8,9 +8,9 @@ export const MySqlDataSouce = new DataSource({
   password: "123456",
   database: "osce",
   synchronize: true,
-  logging: true,
+  logging: false,
   entities: ["src/entities/*.{ts,js}"],
   migrations: ["src/migration/**/*.ts"],
   subscribers: ["src/subscriber/**/*.ts"],
-  charset: 'UTF8_GENERAL_CI'
+  charset: 'UTF8_GENERAL_CI',
 });

@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { AdvisorAccountController } from './controller/advisor/AdvisorAccountController';
 import { MySqlDataSouce } from '../ormconfig';
-
+import {Container} from "typedi";
 
 const PORT = 4000;
 
@@ -15,6 +15,7 @@ const bootstrap = async () => {
   const schema = await buildSchema({
     resolvers: [AdvisorAccountController],
     emitSchemaFile: true,
+    container:Container
   });
 
   const server = new ApolloServer({
