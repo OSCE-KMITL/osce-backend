@@ -4,12 +4,17 @@
 # -----------------------------------------------
 
 type AdvisorAccount {
-  _email: String!
-  _faculty: String!
-  _fullName: String!
-  _id: String!
-  _password: String!
   createdAt: DateTime!
+  email: String!
+  faculty: String!
+  fullName: String!
+  id: String!
+  isAdvisor: Boolean!
+  isComittee: Boolean!
+  isCompany: Boolean!
+  isStudent: Boolean!
+  password: String!
+  status: String!
   updatedAt: DateTime!
 }
 
@@ -34,10 +39,14 @@ type Mutation {
 type Query {
   getAdvisorAccount(advisorId: String!): AdvisorAccount
   getAllAdvisorAccounts: [AdvisorAccount]!
+  getAllAdvisorAccountsBy(target: String!, value: String!): [AdvisorAccount]!
 }
 
 input UpdateAdvisorInput {
-  faculty: String!
-  fullName: String!
-  id: String!
+  faculty: String
+  fullName: String
+  id: String
+  isAdvisor: Boolean
+  isComittee: Boolean
+  status: String
 }

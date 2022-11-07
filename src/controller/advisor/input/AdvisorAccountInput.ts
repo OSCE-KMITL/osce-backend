@@ -1,31 +1,39 @@
 import { Field, InputType } from "type-graphql";
-import { AdvisorAccount } from "../../../entities/AdvisorAccount";
-import {IsEmail} from "class-validator";
+import { IsEmail } from "class-validator";
 
 @InputType()
 export class AdvisorAccountInput {
   @IsEmail()
-  @Field({nullable:false})
+  @Field({ nullable: false })
   email!: string;
 
-  @Field({nullable:false})
+  @Field({ nullable: false })
   password!: string;
 
-  @Field({nullable:false})
+  @Field({ nullable: false })
   fullName!: string;
 
-  @Field({nullable:false})
+  @Field({ nullable: false })
   faculty!: string;
+}
+@InputType()
+export class UpdateAdvisorInput  {
+  @Field({ nullable: true })
+  id: string;
 
-}@InputType()
-export class UpdateAdvisorInput {
-  @Field({nullable:false})
-  id!: string;
-
-  @Field({nullable:false})
+  @Field({ nullable: true })
   fullName!: string;
 
-  @Field({nullable:false})
+  @Field({ nullable: true })
   faculty!: string;
 
+  @Field({ nullable: true })
+  isComittee!: Boolean;
+
+
+  @Field({ nullable: true })
+  isAdvisor!: Boolean;
+
+  @Field({ nullable: true })
+  status: string;
 }

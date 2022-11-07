@@ -1,13 +1,10 @@
-import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { AdvisorAccountService } from "../../services/account/AdvisorAccountService";
 import { AdvisorAccount } from "../../entities/AdvisorAccount";
 import {
   AdvisorAccountInput,
   UpdateAdvisorInput,
 } from "./input/AdvisorAccountInput";
-import { MySqlDataSouce } from "../../../ormconfig";
-import { Role } from "../../entities/Role";
-import { UserRole } from "../../constansts/UserRole";
 @Resolver()
 export class AdvisorAccountController {
   constructor(private readonly advisorService = new AdvisorAccountService()) {}
@@ -15,6 +12,16 @@ export class AdvisorAccountController {
   @Query(() => [AdvisorAccount], { nullable: "items" })
   async getAllAdvisorAccounts(): Promise<AdvisorAccount[] | null> {
     return this.advisorService.searchAllAdvisor();
+  }
+
+  @Query(() => [AdvisorAccount], { nullable: "items" })
+  async getAllAdvisorAccountsBy(
+    @Arg("target")
+    @Arg("value")
+    target: string,
+    value: string
+  ): Promise<AdvisorAccount[]> {
+    return this.advisorService.searchAllAdvisorBy(target, value);
   }
 
   @Query(() => AdvisorAccount, { nullable: true })
@@ -37,7 +44,7 @@ export class AdvisorAccountController {
   @Mutation(() => AdvisorAccount, { nullable: false })
   updateAdvisorAccount(
     @Arg("updateInfo") updateInfo: UpdateAdvisorInput
-  ): AdvisorAccount {
+  ): Promise<AdvisorAccount> {
     return this.advisorService.updateAdvisorAccount(updateInfo);
   }
 

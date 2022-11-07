@@ -1,6 +1,6 @@
-import {DataSource} from "typeorm";
-
-export const  MySqlDataSouce = new DataSource({
+import { DataSource } from "typeorm";
+import 'reflect-metadata';
+export const MySqlDataSouce = new DataSource({
   type: "mysql",
   host: "localhost",
   port: 3306,
@@ -8,8 +8,9 @@ export const  MySqlDataSouce = new DataSource({
   password: "123456",
   database: "osce",
   synchronize: true,
-  logging: false,
-  entities: ["src/entities/**/*.ts"],
+  logging: true,
+  entities: ["src/entities/*.{ts,js}"],
   migrations: ["src/migration/**/*.ts"],
   subscribers: ["src/subscriber/**/*.ts"],
-})
+  charset: 'UTF8_GENERAL_CI'
+});

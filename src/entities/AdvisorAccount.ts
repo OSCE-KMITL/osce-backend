@@ -5,13 +5,13 @@ import { Column, Entity } from "typeorm";
 @Entity()
 @ObjectType()
 export class AdvisorAccount extends BaseAccount {
-  @Column()
+  @Column({ charset: "utf8mb4", collation: "utf8mb4_unicode_ci" })
   @Field()
-  _fullName: string;
+  fullName: string;
 
-  @Column()
+  @Column({ charset: "utf8", collation: "utf8_general_ci" })
   @Field()
-  _faculty: string;
+  faculty: string;
 
   constructor(
     email: string,
@@ -20,42 +20,8 @@ export class AdvisorAccount extends BaseAccount {
     faculty: string
   ) {
     super(email, password);
-    this._faculty = faculty;
-    this._fullName = fullName;
-  }
-
-  get email(): string {
-    return super.email;
-  }
-
-  set email(value: string) {
-    super.email = value;
-  }
-
-  get id(): string {
-    return super.id;
-  }
-
-  get password(): string {
-    return super.password;
-  }
-
-  set password(value: string) {
-    super.password = value;
-  }
-  get fullName(): string {
-    return this._fullName;
-  }
-
-  set fullName(value: string) {
-    this._fullName = value;
-  }
-
-  get faculty(): string {
-    return this._faculty;
-  }
-
-  set faculty(value: string) {
-    this._faculty = value;
+    super.isAdvisor = true;
+    this.faculty = faculty;
+    this.fullName = fullName;
   }
 }
