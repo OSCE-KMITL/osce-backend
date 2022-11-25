@@ -4,7 +4,7 @@ import { Column, Entity } from "typeorm";
 
 @Entity()
 @ObjectType()
-export class AdvisorAccount extends BaseAccount {
+export class Advisor extends BaseAccount {
   @Column({ charset: "utf8mb4", collation: "utf8mb4_unicode_ci" })
   @Field()
   fullName: string;

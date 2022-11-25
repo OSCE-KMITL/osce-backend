@@ -4,21 +4,27 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -r ./src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "set NODE_ENV=development&&nodemon -r ./src/index.ts",
+    "test": "set NODE_ENV=test && npx jest --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/jest": "^29.2.2",
+    "@types/ramda": "^0.28.19",
     "@types/uuid": "^8.3.4",
     "apollo-server": "^3.10.3",
     "class-validator": "^0.13.2",
     "graphql": "^15.8.0",
+    "jest": "^29.3.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
+    "ramda": "^0.28.0",
     "reflect-metadata": "^0.1.13",
+    "ts-jest": "^29.0.3",
     "type-graphql": "^1.1.1",
+    "typedi": "^0.10.0",
     "typeorm": "^0.3.10",
     "uid": "^2.0.1",
     "uuid": "^9.0.0"
