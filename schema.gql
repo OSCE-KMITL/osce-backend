@@ -3,7 +3,7 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-type AdvisorAccount {
+type Advisor {
   createdAt: DateTime!
   email: String!
   faculty: String!
@@ -31,15 +31,15 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 scalar DateTime
 
 type Mutation {
-  createAdvisorAccount(advisorInfo: AdvisorAccountInput!): AdvisorAccount!
-  deleteAdvisorAccount(id: String!): AdvisorAccount
-  updateAdvisorAccount(updateInfo: UpdateAdvisorInput!): AdvisorAccount!
+  createAdvisorAccount(advisorInfo: AdvisorAccountInput!): Advisor!
+  deleteAdvisorAccount(id: String!): Advisor
+  updateAdvisorAccount(updateInfo: UpdateAdvisorInput!): Advisor!
 }
 
 type Query {
-  getAdvisorAccount(advisorId: String!): AdvisorAccount
-  getAllAdvisorAccounts: [AdvisorAccount]!
-  getAllAdvisorAccountsBy(target: String!, value: String!): [AdvisorAccount]!
+  getAdvisorAccount(advisorId: String!): Advisor
+  getAllAdvisorAccounts: [Advisor]!
+  getAllAdvisorAccountsBy(target: String!, value: String!): [Advisor]!
 }
 
 input UpdateAdvisorInput {
