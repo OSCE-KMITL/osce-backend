@@ -1,6 +1,6 @@
 import {Arg, Mutation, Query, Resolver} from "type-graphql";
-import {AdvisorAccountService} from "../../services/account/AdvisorAccountService";
-import {Advisor} from "../../entities/Advisor";
+import {AdvisorAccountService} from "./AdvisorAccountService";
+import {Advisor} from "./Advisor";
 import {AdvisorAccountInput, UpdateAdvisorInput,} from "./input/AdvisorAccountInput";
 import {Service} from "typedi";
 
@@ -12,7 +12,7 @@ export class AdvisorAccountController {
 
     @Query(() => [Advisor], {nullable: "items"})
     async getAllAdvisorAccounts(): Promise<Advisor[] | null> {
-        return this.advisorService.searchAllAdvisor();
+        return this.advisorService.announcementService();
     }
 
     @Query(() => [Advisor], {nullable: "items"})

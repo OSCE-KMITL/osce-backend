@@ -1,4 +1,4 @@
-import { BaseAccount } from "./BaseAccount";
+import { BaseAccount } from "../BaseAccount";
 import { Field, ObjectType } from "type-graphql";
 import { Column, Entity } from "typeorm";
 

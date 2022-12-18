@@ -1,11 +1,8 @@
 import { ApolloServer } from "apollo-server";
 import "reflect-metadata";
-import { buildSchema } from "type-graphql";
-import { AdvisorAccountController } from "./controller/advisor/AdvisorAccountController";
 import { MySqlDataSource } from "../ormconfig";
-import { Container } from "typedi";
-import * as dotenv from "dotenv"
-import {GraphqlUtil} from "./graphql/GraphqlUtil";
+import {GraphqlUtil} from "./utils/graphql/GraphqlUtil";
+import {Announcement} from "./modules/annoucerment/Announcement";
 
 const PORT = 4000;
 
@@ -25,6 +22,7 @@ const bootstrap = async () => {
 
 try {
   bootstrap().then();
+
 } catch (e) {
   console.log(e);
 }

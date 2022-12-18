@@ -1,20 +1,18 @@
-import { Advisor } from '../../entities/Advisor';
-import { UpdateAdvisorInput } from '../../controller/advisor/input/AdvisorAccountInput';
-import { AdvisorRepository } from '../../repositories/AdvisorRepository';
-import { Service } from 'typedi';
+import {Advisor} from './Advisor';
+import {UpdateAdvisorInput} from './input/AdvisorAccountInput';
+import {AdvisorRepository} from './AdvisorRepository';
+import {Service} from 'typedi';
 
 @Service()
 export class AdvisorAccountService {
   constructor(private readonly repository: AdvisorRepository) {}
 
-  async searchAllAdvisor(): Promise<Advisor[]> {
-    const allAccounts = await this.repository.find();
-    return allAccounts;
+  async announcementService(): Promise<Advisor[]> {
+    return await this.repository.find();
   }
 
   async createAdvisorAccount(account: Advisor): Promise<Advisor> {
-    const createdAccount = await this.repository.save(account);
-    return createdAccount;
+    return await this.repository.save(account);
   }
 
   async getAdvisorById(advisorId: string): Promise<Advisor> {
@@ -39,22 +37,19 @@ export class AdvisorAccountService {
     hasAlreadyAccount.isComittee = !!isComittee
       ? isComittee
       : hasAlreadyAccount.isComittee;
-    const updated = await this.repository.save(hasAlreadyAccount);
-    return updated;
+    return await this.repository.save(hasAlreadyAccount);
   }
 
   async deletedAdvisorAccount(advisorId: string): Promise<Advisor> {
     const hasAlreadyUser = await this.repository.findOne('_id', advisorId);
     if (!hasAlreadyUser) throw new Error('ไม่พบผู้ใช้ที่ต้องการจะลบ');
     //  _id will be undefined when you're calling. this mutation , Please don't return _id on client
-    const deleted = await this.repository.delete(hasAlreadyUser);
-    return deleted;
+    return await this.repository.delete(hasAlreadyUser);
   }
 
   async searchAllAdvisorBy(target?: string, value?: string) {
     if (target && value) {
-      const advisors = await this.repository.find(target, value);
-      return advisors;
+      return await this.repository.find(target, value);
     }
     return await this.repository.find();
   }

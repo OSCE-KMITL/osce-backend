@@ -1,6 +1,6 @@
-import { BaseRepository } from "./BaseRepository";
-import { Advisor } from "../entities/Advisor";
-import { MySqlDataSource } from "../../ormconfig";
+import { BaseRepository } from "../BaseRepository";
+import { Advisor } from "./Advisor";
+import { MySqlDataSource } from "../../../ormconfig";
 import { Service } from "typedi";
 import { DataSource } from "typeorm";
 

@@ -1,5 +1,5 @@
 import { buildSchema } from "type-graphql";
-import { AdvisorAccountController } from "../controller/advisor/AdvisorAccountController";
+import { AdvisorAccountController } from "../../modules/advisor/AdvisorAccountController";
 import { Container } from "typedi";
 
 export class GraphqlUtil {
