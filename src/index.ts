@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server";
 import "reflect-metadata";
 import { MySqlDataSource } from "../ormconfig";
 import {GraphqlUtil} from "./utils/graphql/GraphqlUtil";
-import {Announcement} from "./modules/annoucerment/Announcement";
+import {Announcement} from "./modules/annoucement/Announcement";
 
 const PORT = 4000;
 
