@@ -6,5 +6,4 @@ export class GetWithKeyInput{
 
     @Field({nullable:true})
     value:string
-
 }
