@@ -1,28 +1,26 @@
-import { ApolloServer } from "apollo-server";
-import "reflect-metadata";
-import { MySqlDataSource } from "../ormconfig";
-import {GraphqlUtil} from "./utils/graphql/GraphqlUtil";
-import {Announcement} from "./modules/annoucerment/Announcement";
+import { ApolloServer } from 'apollo-server';
+import 'reflect-metadata';
+import { MySqlDataSource } from '../ormconfig';
+import { GraphqlUtil } from './utils/graphql/GraphqlUtil';
 
 const PORT = 4000;
 
 const bootstrap = async () => {
-  await MySqlDataSource.initialize()
-    .then(() => console.log("Data Source has been initialized!"))
-    .catch((err) => console.log(err));
-  const schema = await GraphqlUtil.getSchema()
-  const server = new ApolloServer({
-    schema,
-  });
+    await MySqlDataSource.initialize()
+        .then(() => console.log('Data Source has been initialized!'))
+        .catch((err) => console.log(err));
+    const schema = await GraphqlUtil.getSchema();
+    const server = new ApolloServer({
+        schema,
+    });
 
-  await server.listen(PORT);
+    await server.listen(PORT);
 
-  console.log(`🚀  Server ready at: http://localhost:${PORT}/`);
+    console.log(`🚀  Server ready at: http://localhost:${PORT}/`);
 };
 
 try {
-  bootstrap().then();
-
+    bootstrap().then();
 } catch (e) {
-  console.log(e);
+    console.log(e);
 }
