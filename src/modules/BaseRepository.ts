@@ -14,7 +14,7 @@ export class BaseRepository<T> {
     }
 
     async delete(entity: T): Promise<T> {
-        //  _id will be undefined when you're calling. this mutation , Please on client side.
+        //  id จะไม่ return เพราะถูกลบไปแล้ว ระวังตอนที่เรียกผ่าน front-end , apollo playground
         return await this.repository.remove(entity);
     }
 
@@ -22,7 +22,7 @@ export class BaseRepository<T> {
     async find(target: string, value: string): Promise<T[]>;
     async find(target?: string, value?: string): Promise<T[]> {
         if (target && value) {
-            return await this.repository.findBy({ [value]: target });
+            return await this.repository.findBy({ [target]: value });
         }
         return await this.repository.find();
     }
