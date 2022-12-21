@@ -2,7 +2,7 @@ import { StudentRegisterRepository } from './StudentRegisterRepository';
 import { Student } from '../../../entity/Student';
 import { Service } from 'typedi';
 import { Account } from '../../../entity/Account';
-import { AccountRepository } from '../../AccountRepository';
+import { AccountRepository } from '../../account/AccountRepository';
 import { StudentRegisterInput } from '../args/StudentRegisterInput';
 
 @Service()
@@ -16,9 +16,5 @@ export class StudentRegisterService {
         const account = new Account(email, password, role);
         account.is_student = student;
         return await this.account_repository.save(account);
-    }
-
-    async getStudents(): Promise<Account[] | null> {
-        return await this.account_repository.find();
     }
 }
