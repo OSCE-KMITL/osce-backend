@@ -1,10 +1,10 @@
 import { Advisor } from '../../../entity/Advisor';
-import { AdvisorAccountInput } from '../input/AdvisorAccountInput';
-import { AdvisorRepository } from './AdvisorRepository';
+import { AdvisorAccountInput } from './input/AdvisorAccountInput';
+import { AdvisorRepository } from '../AdvisorRepository';
 import { Service } from 'typedi';
 import { Account } from '../../../entity/Account';
 import { ERole } from '../../../shared/types/Roles';
-import { AccountRepository } from '../../AccountRepository';
+import { AccountRepository } from '../../account/AccountRepository';
 
 @Service()
 export class AdvisorAccountService {

@@ -3,7 +3,7 @@ import { AnnouncementRepository } from './AnnouncementRepository';
 import { Service } from 'typedi';
 import { AnnouncementInput, UpdateAnnouncementInput } from './args/AnnouncementInput';
 import { GetWithKeyInput } from '../../shared/args/GetWithKeyInput';
-import { AdvisorRepository } from '../advisor/account/AdvisorRepository';
+import { AdvisorRepository } from '../advisor/AdvisorRepository';
 import { Advisor } from '../../entity/Advisor';
 
 @Service()
