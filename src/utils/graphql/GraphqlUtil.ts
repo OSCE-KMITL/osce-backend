@@ -9,7 +9,7 @@ export class GraphqlUtil {
     static async getSchema() {
         return await buildSchema({
             resolvers: [RegisterAdvisorAccount, AnnouncementController, StudentRegisterController, AccountController],
-            emitSchemaFile: { path: '/src/graphql/' },
+            emitSchemaFile: true,
             container: Container,
         });
     }
