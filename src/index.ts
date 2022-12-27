@@ -5,7 +5,7 @@ import { GraphqlUtil } from './utils/graphql/GraphqlUtil';
 
 const PORT = 4000;
 
-const bootstrap = async () => {
+export const bootstrap = async () => {
     await MySqlDataSource.initialize()
         .then(() => console.log('Data Source has been initialized!'))
         .catch((err) => console.log(err));

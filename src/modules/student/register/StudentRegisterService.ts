@@ -17,4 +17,8 @@ export class StudentRegisterService {
         account.is_student = student;
         return await this.account_repository.save(account);
     }
+
+    async getStudents(): Promise<Student[] | undefined> {
+        return await this.repository.find();
+    }
 }
