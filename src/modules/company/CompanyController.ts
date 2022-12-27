@@ -1,4 +1,4 @@
-import { CompanyInput } from './args/CompanyInput';
+import { CompanyInput, UpdateCompanyInput } from './args/CompanyInput';
 import { Company } from './../../entity/Company';
 import { CompanyService } from './CompanyService';
 import { Arg, Mutation, Query, Resolver } from 'type-graphql';
@@ -23,6 +23,15 @@ export class CompanyController {
     @Mutation(() => Company)
     async createCompany(@Arg('company_info') company_info: CompanyInput): Promise<Company | null> {
         return this.CompanyService.createCompany(company_info);
+    }
 
+    @Mutation(() => Company, { nullable: true })
+    async updateCompany(@Arg('update_input') update_input: UpdateCompanyInput): Promise<Company | null> {
+        return this.CompanyService.updateCompany(update_input);
+    }
+
+    @Mutation(() => Company, { nullable: true })
+    async deleteCompany(@Arg('delete_by_key') delete_by_key: GetWithKeyInput): Promise<Company | null> {
+        return this.CompanyService.deleteCompany(delete_by_key);
     }
 }
