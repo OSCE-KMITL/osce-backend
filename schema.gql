@@ -46,6 +46,7 @@ type Announcement {
 }
 
 input AnnouncementInput {
+  advisor_id: String!
   desc: String!
   title: String!
 }
@@ -63,7 +64,7 @@ input GetWithKeyInput {
 type Mutation {
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   deleteAdvisorAccount(id: String!): Account
-  deleteAnnouncement(delete_by_key: GetWithKeyInput!): Announcement
+  deleteAnnouncement(announcement_id: String!): Announcement
   registerAdvisor(advisorAccountInfo: AdvisorAccountInput!): Account!
   studentRegister(student_register_input: StudentRegisterInput!): Account!
   updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
