@@ -1,13 +1,14 @@
+import { CompanyPerson } from './CompanyPerson';
 import { Field, ObjectType } from 'type-graphql';
 import { v4 as uuid } from 'uuid';
-import { Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
 export class Company {
     @PrimaryColumn()
     @Field()
-    private id: string = uuid();
+    company_id: string = uuid();
 
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
@@ -36,6 +37,10 @@ export class Company {
     // @Field()
     // @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
     // updated_at: Date;
+
+    @Field(() => [CompanyPerson], { nullable: 'items' })
+    @OneToMany(() => CompanyPerson, (company_person) => company_person.company_person_id)
+    company_person_id: CompanyPerson[];
 
     constructor(name: string, address: string, phone_number: string, website_url: string, business_type: string) {
         this.name = name;

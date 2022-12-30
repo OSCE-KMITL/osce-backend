@@ -4,7 +4,7 @@ import { AccountRepository } from './AccountRepository';
 
 @Service()
 export class AccountService {
-    constructor(private readonly account_repository = new AccountRepository(Account)) {}
+    private readonly account_repository = new AccountRepository(Account);
 
     async getAccounts(): Promise<Account[] | null> {
         return await this.account_repository.find();

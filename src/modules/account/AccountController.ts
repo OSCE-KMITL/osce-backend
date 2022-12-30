@@ -5,15 +5,11 @@ import { Account } from '../../entity/Account';
 import { AdvisorAccountService } from '../advisor/register-advisor/AdvisorAccountService';
 import { Advisor } from '../../entity/Advisor';
 import { UpdateAdvisorInput } from '../advisor/register-advisor/input/AdvisorAccountInput';
-import { StudentRegisterRepository } from '../student/register/StudentRegisterRepository';
 
 @Resolver()
 @Service()
 export class AccountController {
-    private readonly account_service: AccountService;
-    private readonly advisor_account_service: AdvisorAccountService;
-    private readonly student_account_service: StudentRegisterRepository;
-    constructor() {}
+    constructor(private readonly account_service: AccountService, private readonly advisor_account_service: AdvisorAccountService) {}
 
     @Query(() => [Account], { nullable: 'items' })
     async getAccounts(): Promise<Account[] | null> {
@@ -40,7 +36,7 @@ export class AccountController {
     }
 
     @Mutation(() => Account, { nullable: true })
-    //  id will be undefined when you're calling. this mutation , Please don't return _id on client side.
+    //  id จะไม่ return ค่า ถ้าลบไปแล้ว , ระวังตอนไปใช้ใน client-side
     async deleteAdvisorAccount(@Arg('id') id: string): Promise<Account | null> {
         return await this.advisor_account_service.deleteAdvisorAccount(id);
     }

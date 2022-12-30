@@ -3,26 +3,52 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-type Advisor {
-  createdAt: DateTime!
+type Account {
+  created_at: DateTime!
   email: String!
-  faculty: String!
-  fullName: String!
   id: String!
-  isAdvisor: Boolean!
-  isComittee: Boolean!
-  isCompany: Boolean!
-  isStudent: Boolean!
+  is_advisor: Advisor
+  is_student: Student
   password: String!
+  role: Role!
   status: String!
-  updatedAt: DateTime!
+  updated_at: DateTime!
+}
+
+type Advisor {
+  account: Account!
+  advisor_id: String!
+  announcements: [Announcement]!
+  created_at: DateTime!
+  faculty: String!
+  is_committee: Boolean!
+  last_name: String!
+  name: String!
+  updated_at: DateTime!
 }
 
 input AdvisorAccountInput {
   email: String!
   faculty: String!
-  fullName: String!
+  is_committee: Boolean!
+  last_name: String!
+  name: String!
   password: String!
+}
+
+type Announcement {
+  advisor_id: Advisor!
+  createdAt: DateTime!
+  description: String!
+  id: String!
+  title: String!
+  updatedAt: DateTime!
+}
+
+input AnnouncementInput {
+  advisor_id: String!
+  desc: String!
+  title: String!
 }
 
 """
@@ -30,23 +56,62 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
+input GetWithKeyInput {
+  target: String
+  value: String
+}
+
 type Mutation {
-  createAdvisorAccount(advisorInfo: AdvisorAccountInput!): Advisor!
-  deleteAdvisorAccount(id: String!): Advisor
-  updateAdvisorAccount(updateInfo: UpdateAdvisorInput!): Advisor!
+  createAnnouncement(announcement_info: AnnouncementInput!): Announcement
+  deleteAdvisorAccount(id: String!): Account
+  deleteAnnouncement(announcement_id: String!): Announcement
+  registerAdvisor(advisorAccountInfo: AdvisorAccountInput!): Account!
+  studentRegister(student_register_input: StudentRegisterInput!): Account!
+  updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
+  updateAnnouncement(update_input: UpdateAnnouncementInput!): Announcement
 }
 
 type Query {
-  getAdvisorAccount(advisorId: String!): Advisor
-  getAllAdvisorAccounts: [Advisor]!
-  getAllAdvisorAccountsBy(target: String!, value: String!): [Advisor]!
+  getAccount(account_id: String!): Account
+  getAccounts: [Account]!
+  getAdvisorAccount(advisorId: String!): Account
+  getAdvisorAccounts: [Account]!
+  getAnnouncement(with_key: GetWithKeyInput!): Announcement
+  getAnnouncements: [Announcement]!
+  getStudents: [Student]!
+}
+
+"""type of user"""
+enum Role {
+  ADVISOR
+  STUDENT
+}
+
+type Student {
+  account: Account!
+  lastname: String!
+  name: String!
+  student_id: String!
+}
+
+input StudentRegisterInput {
+  email: String!
+  lastname: String!
+  name: String!
+  password: String!
+  student_id: String!
 }
 
 input UpdateAdvisorInput {
-  faculty: String
-  fullName: String
+  faculty: String!
   id: String
-  isAdvisor: Boolean
-  isComittee: Boolean
-  status: String
+  is_committee: Boolean!
+  last_name: String!
+  name: String!
+}
+
+input UpdateAnnouncementInput {
+  desc: String!
+  id: String!
+  title: String!
 }

@@ -11,12 +11,17 @@ export class CompanyController {
     constructor(private readonly CompanyService: CompanyService) {}
 
     @Query(() => [Company], { nullable: 'items' })
-    async getCompanys(): Promise<Company[] | null> {
+    async getAllCompanys(): Promise<Company[] | null> {
         return this.CompanyService.getAllCompany();
     }
 
     @Query(() => Company, { nullable: true })
-    async getCompany(@Arg('with_key') constraints_key: GetWithKeyInput): Promise<Company | null> {
+    async getCompanyById(@Arg('company_id') company_id: string): Promise<Company | null> {
+        return this.CompanyService.getById(company_id);
+    }
+
+    @Query(() => Company, { nullable: true })
+    async getCompanyByKey(@Arg('with_key') constraints_key: GetWithKeyInput): Promise<Company | null> {
         return this.CompanyService.getOneBy(constraints_key);
     }
 
@@ -31,7 +36,7 @@ export class CompanyController {
     }
 
     @Mutation(() => Company, { nullable: true })
-    async deleteCompany(@Arg('delete_by_key') delete_by_key: GetWithKeyInput): Promise<Company | null> {
-        return this.CompanyService.deleteCompany(delete_by_key);
+    async deleteCompany(@Arg('delete_by_id') delete_by_id: string): Promise<Company | null> {
+        return this.CompanyService.deleteCompany(delete_by_id);
     }
 }

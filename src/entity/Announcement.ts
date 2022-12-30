@@ -1,5 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
 import 'reflect-metadata';
 import { v4 as uuid } from 'uuid';
 import { Advisor } from './Advisor';
@@ -7,9 +7,9 @@ import { Advisor } from './Advisor';
 @Entity()
 @ObjectType()
 export class Announcement {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn('increment')
     @Field()
-    private id: string = uuid();
+    id: string;
 
     @Column({ type: 'varchar' })
     @Field()
@@ -26,7 +26,7 @@ export class Announcement {
     @Field(() => Advisor)
     @ManyToOne(() => Advisor, (advisor) => advisor.advisor_id)
     @JoinColumn({ name: 'advisor_id' })
-    advisor_id: Advisor;
+    advisor_id: Promise<Advisor>;
 
     @Field()
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)', name: 'updated_at' })

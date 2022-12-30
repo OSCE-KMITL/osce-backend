@@ -18,12 +18,13 @@ export class AnnouncementService {
         return await this.ann_repository.find();
     }
     async createAnnouncement(announcement_info: AnnouncementInput) {
-        const advisor_id = '44c81634-970d-4164-8d20-67547ea7dd85';
+        // advisor_id จะปรับไปใช้ context จาก ที่ได้รับจาก cookies
+        const { title, desc, advisor_id } = announcement_info;
+
         const advisor = await this.advisor_repository.findOne('advisor_id', advisor_id);
         if (!advisor) throw new Error('ไม่มีสิทธิ์เข้าถึง');
         if (!advisor.is_committee) throw new Error('กรรมการเท่านั้นที่สามารถสร้างประกาศได้ ');
 
-        const { title, desc } = announcement_info;
         if (title.length > 255) throw new Error('หัวข้อต้องมีตัวอักษรไม่เกิน 255 ตัวอักษร');
         if (desc.length > 1000) throw new Error('ข้อความต้องมีตัวอักษรไม่เกิน 1000 ตัวอักษร');
         const cleaned_title = title.trim();
@@ -39,20 +40,21 @@ export class AnnouncementService {
         return await this.ann_repository.findOne(target, value);
     }
 
-    async deleteAnnouncement(constraints_key: GetWithKeyInput) {
-        const advisor_id = '94745ecc-4218-4e9d-b330-ee8128bd9d45';
-        const owner = await this.advisor_repository.findOne('advisor_id', advisor_id);
-        if (!owner) throw new Error('ไม่มีสิทธิ์เข้าถึง');
-        if (!owner.is_committee) throw new Error('กรรมการเท่านั้นที่สามารถลบประกาศได้ ');
+    async deleteAnnouncement(announcement_id: string) {
+        const advisor_id = 'ba329a17-445e-44b8-8885-abc646812715';
 
-        const { target, value } = constraints_key;
-        const already_announcement = await this.ann_repository.findOne(target, value);
+        const fmt_announcement_id = announcement_id.trim().toLocaleLowerCase();
+        const user = await this.advisor_repository.findOne('advisor_id', advisor_id);
+        if (!user) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (!user.is_committee) throw new Error('กรรมการเท่านั้นที่สามารถลบประกาศได้ ');
+
+        const already_announcement = await this.ann_repository.findOne('id', fmt_announcement_id);
         if (!already_announcement) throw new Error('ไม่พบข้อมูลประกาศที่จะลบ');
         return await this.ann_repository.delete(already_announcement);
     }
 
     async updateAnnouncement(update_input: UpdateAnnouncementInput) {
-        const advisor_id = '94745ecc-4218-4e9d-b330-ee8128bd9d45'; // your advisor id
+        const advisor_id = 'ba329a17-445e-44b8-8885-abc646812715        '; // your advisor id
         const advisor = await this.advisor_repository.findOne('advisor_id', advisor_id);
         if (!advisor) throw new Error('ไม่มีสิทธิ์เข้าถึง');
         if (!advisor.is_committee) throw new Error('กรรมการเท่านั้นที่สามารถแก้ประกาศได้ ');
@@ -60,8 +62,8 @@ export class AnnouncementService {
         const { title, desc, id } = update_input;
         const update_announcement = await this.ann_repository.findOne('id', id);
         if (!update_announcement) throw new Error('ไม่พบประกาศที่จะแก้ไข');
-        update_announcement.title = !!title ? title : update_announcement.title;
-        update_announcement.description = !!desc ? desc : update_announcement.description;
+        update_announcement.title = !!title ? title.trim() : update_announcement.title;
+        update_announcement.description = !!desc ? desc.trim() : update_announcement.description;
 
         return await this.ann_repository.save(update_announcement);
     }

@@ -28,6 +28,12 @@ export class CompanyService {
         return await this.company_repository.find();
     }
 
+    async getById(id: string) {
+        const company_data = await this.company_repository.findOne('id', id);
+        if (!company_data) throw new Error('ไม่พบบริษัทที่ค้นหา');
+        return company_data;
+    }
+
     async getOneBy(constraints_key: GetWithKeyInput) {
         const { value, target } = constraints_key;
         return await this.company_repository.findOne(target, value);
@@ -53,9 +59,8 @@ export class CompanyService {
         return await this.company_repository.save(update_company);
     }
 
-    async deleteCompany(constraints_key: GetWithKeyInput) {
-        const { target, value } = constraints_key;
-        const company_data = await this.company_repository.findOne(target, value);
+    async deleteCompany(company_id: string) {
+        const company_data = await this.company_repository.findOne('id', company_id);
         if (!company_data) throw new Error('ไม่พบข้อมูลบริษัทที่จะลบ');
         return await this.company_repository.delete(company_data);
     }
