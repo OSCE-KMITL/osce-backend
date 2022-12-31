@@ -1,6 +1,6 @@
 import { Company } from './Company';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Account } from './Account';
 
@@ -11,11 +11,11 @@ export class CompanyPerson {
     @Field()
     company_person_id: string = uuid();
 
-    @Column()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     full_name: string;
 
-    @Column()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     job_title: string;
 
@@ -28,9 +28,9 @@ export class CompanyPerson {
     account: Account;
 
     @Field(() => Company)
-    @ManyToOne(() => Company, (company) => company.company_id, { onDelete: 'CASCADE' })
+    @ManyToOne(() => Company, (company) => company.company_persons,{onDelete: 'CASCADE'})
     @JoinColumn({ name: 'company_id' })
-    company_id: Company;
+    company_id: Promise<Company>;
 
     @Field()
     @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)' })
@@ -40,8 +40,9 @@ export class CompanyPerson {
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
     updated_at: Date;
 
-    constructor(full_name: string, job_title: string) {
+    constructor(full_name: string, job_title: string, is_coordinator: Boolean) {
         this.full_name = full_name;
         this.job_title = job_title;
+        this.is_coordinator = is_coordinator;
     }
 }

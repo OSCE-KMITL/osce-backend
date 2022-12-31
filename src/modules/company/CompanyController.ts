@@ -8,35 +8,35 @@ import { GetWithKeyInput } from '../../shared/args/GetWithKeyInput';
 @Resolver()
 @Service()
 export class CompanyController {
-    constructor(private readonly CompanyService: CompanyService) {}
+    constructor(private readonly company_service: CompanyService) {}
 
     @Query(() => [Company], { nullable: 'items' })
     async getAllCompanys(): Promise<Company[] | null> {
-        return this.CompanyService.getAllCompany();
+        return this.company_service.getAllCompany();
     }
 
     @Query(() => Company, { nullable: true })
     async getCompanyById(@Arg('company_id') company_id: string): Promise<Company | null> {
-        return this.CompanyService.getById(company_id);
+        return this.company_service.getById(company_id);
     }
 
     @Query(() => Company, { nullable: true })
     async getCompanyByKey(@Arg('with_key') constraints_key: GetWithKeyInput): Promise<Company | null> {
-        return this.CompanyService.getOneBy(constraints_key);
+        return this.company_service.getOneBy(constraints_key);
     }
 
     @Mutation(() => Company)
     async createCompany(@Arg('company_info') company_info: CompanyInput): Promise<Company | null> {
-        return this.CompanyService.createCompany(company_info);
+        return this.company_service.createCompany(company_info);
     }
 
     @Mutation(() => Company, { nullable: true })
     async updateCompany(@Arg('update_input') update_input: UpdateCompanyInput): Promise<Company | null> {
-        return this.CompanyService.updateCompany(update_input);
+        return this.company_service.updateCompany(update_input);
     }
 
     @Mutation(() => Company, { nullable: true })
     async deleteCompany(@Arg('delete_by_id') delete_by_id: string): Promise<Company | null> {
-        return this.CompanyService.deleteCompany(delete_by_id);
+        return this.company_service.deleteCompany(delete_by_id);
     }
 }
