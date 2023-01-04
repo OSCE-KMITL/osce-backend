@@ -39,7 +39,7 @@ export class Company {
     updated_at: Date;
 
     @Field(() => [CompanyPerson], { nullable: 'items' })
-    @OneToMany(() => CompanyPerson, (company_person) => company_person.company_id, { cascade: true, onDelete: 'CASCADE', eager: true  })
+    @OneToMany(() => CompanyPerson, (company_person) => company_person.company_id, { cascade: true, onDelete: 'CASCADE', eager: true })
     company_persons: CompanyPerson[];
 
     constructor(name: string, address: string, phone_number: string, website_url: string, business_type: string) {

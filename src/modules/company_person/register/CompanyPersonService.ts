@@ -1,12 +1,13 @@
-import { AccountRepository } from './../../account/AccountRepository';
-import { CompanyPersonInput, UpdateCompanyPersonInput } from './../args/CompanyPersonInput';
-import { CompanyPerson } from './../../../entity/CompanyPerson';
+import { AccountRepository } from '../../account/AccountRepository';
+import { CompanyPersonInput, UpdateCompanyPersonInput } from '../args/CompanyPersonInput';
+import { CompanyPerson } from '../../../entity/CompanyPerson';
 import { CompanyPersonRepository } from './CompanyPersonRepository';
 import { Service } from 'typedi';
 import { Account } from '../../../entity/Account';
 import { ERole } from '../../../shared/types/Roles';
 import { CompanyRepository } from '../../company/CompanyRepository';
 import { Company } from '../../../entity/Company';
+import { hashedPassword } from '../../../utils/hash-password';
 
 // input = full_name: string, job_title: string, is_coordinator: boolean
 @Service()
@@ -26,11 +27,16 @@ export class CompanyPersonService {
         const company = await this.company_repository.findOne('company_id', company_id.trim().toLowerCase());
         if (!company) throw new Error('ไม่พบบริษัทในระบบ');
 
-        const saved_company_person = new CompanyPerson(full_name.trim(), job_title.trim().toLowerCase(), is_coordinator);
-        const company_person_account = new Account(email.trim(), password.trim(), ERole.COMPANY);
+        const saved_company_person = new CompanyPerson(full_name.trim().toLowerCase(), job_title.trim().toLowerCase(), is_coordinator);
+
+        const hashed_password = await hashedPassword(password);
+        const company_person_account = new Account(email.trim().toLowerCase(), hashed_password, ERole.COMPANY);
         company_person_account.is_company = saved_company_person;
 
-        if(!company.company_persons){company.company_persons = []} 
+        if (!company.company_persons) {
+            company.company_persons = [];
+        }
+
         company.company_persons.push(await this.company_person_repository.save(saved_company_person));
         await this.company_repository.save(company);
 

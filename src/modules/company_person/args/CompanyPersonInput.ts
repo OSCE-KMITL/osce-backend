@@ -21,7 +21,6 @@ export class CompanyPersonInput {
 
     @Field({ nullable: false })
     company_id!: string;
-
 }
 
 @InputType()

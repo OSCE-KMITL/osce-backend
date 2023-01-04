@@ -1,7 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
 import 'reflect-metadata';
-import { v4 as uuid } from 'uuid';
 import { Advisor } from './Advisor';
 
 @Entity()
