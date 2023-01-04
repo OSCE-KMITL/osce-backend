@@ -8,6 +8,7 @@ type Account {
   email: String!
   id: String!
   is_advisor: Advisor
+  is_company: CompanyPerson
   is_student: Student
   password: String!
   role: Role!
@@ -51,6 +52,46 @@ input AnnouncementInput {
   title: String!
 }
 
+type Company {
+  address: String!
+  business_type: String!
+  company_id: String!
+  company_persons: [CompanyPerson]!
+  created_at: DateTime!
+  name: String!
+  phone_number: String!
+  updated_at: DateTime!
+  website_url: String!
+}
+
+input CompanyInput {
+  address: String!
+  business_type: String!
+  name: String!
+  phone_number: String!
+  website_url: String!
+}
+
+type CompanyPerson {
+  account: Account!
+  company_id: Company!
+  company_person_id: String!
+  created_at: DateTime!
+  full_name: String!
+  is_coordinator: Boolean!
+  job_title: String!
+  updated_at: DateTime!
+}
+
+input CompanyPersonInput {
+  company_id: String!
+  email: String!
+  full_name: String!
+  is_coordinator: Boolean!
+  job_title: String!
+  password: String!
+}
+
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
@@ -63,12 +104,18 @@ input GetWithKeyInput {
 
 type Mutation {
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
+  createCompany(company_info: CompanyInput!): Company!
   deleteAdvisorAccount(id: String!): Account
   deleteAnnouncement(announcement_id: String!): Announcement
+  deleteCompany(delete_by_id: String!): Company
+  deleteCompanyPersonAccount(id: String!): Account
   registerAdvisor(advisorAccountInfo: AdvisorAccountInput!): Account!
+  registerCompanyPerson(CompanyPersonAccountInfo: CompanyPersonInput!): Account!
   studentRegister(student_register_input: StudentRegisterInput!): Account!
   updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
   updateAnnouncement(update_input: UpdateAnnouncementInput!): Announcement
+  updateCompany(update_input: UpdateCompanyInput!): Company
+  updateCompanyPerson(update_input: UpdateCompanyPersonInput!): CompanyPerson
 }
 
 type Query {
@@ -76,14 +123,19 @@ type Query {
   getAccounts: [Account]!
   getAdvisorAccount(advisorId: String!): Account
   getAdvisorAccounts: [Account]!
+  getAllCompanys: [Company]!
   getAnnouncement(with_key: GetWithKeyInput!): Announcement
   getAnnouncements: [Announcement]!
-  getStudents: [Student]!
+  getCompanyById(company_id: String!): Company
+  getCompanyByKey(with_key: GetWithKeyInput!): Company
+  getCompanyPersonAccount(account_id: String!): Account
+  getCompanyPersonAccounts: [Account]!
 }
 
 """type of user"""
 enum Role {
   ADVISOR
+  COMPANY
   STUDENT
 }
 
@@ -114,4 +166,20 @@ input UpdateAnnouncementInput {
   desc: String!
   id: String!
   title: String!
+}
+
+input UpdateCompanyInput {
+  address: String!
+  business_type: String!
+  id: String!
+  name: String!
+  phone_number: String!
+  website_url: String!
+}
+
+input UpdateCompanyPersonInput {
+  full_name: String!
+  id: String
+  is_coordinator: Boolean!
+  job_title: String!
 }
