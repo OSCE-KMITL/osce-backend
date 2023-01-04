@@ -1,3 +1,4 @@
+import { CompanyPerson } from './CompanyPerson';
 import { Field, ObjectType } from 'type-graphql';
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import 'reflect-metadata';
@@ -34,6 +35,11 @@ export class Account {
     @OneToOne(() => Advisor, (advisor) => advisor.account, { cascade: true, onDelete: 'CASCADE', eager: true })
     @JoinColumn({ name: 'is_advisor' })
     is_advisor: Advisor;
+
+    @Field(() => CompanyPerson, { nullable: true })
+    @OneToOne(() => CompanyPerson, (company) => company.account, { cascade: true, onDelete: 'CASCADE', eager: true })
+    @JoinColumn({ name: 'is_company' })
+    is_company: CompanyPerson;
 
     @Column({ default: 'active' })
     @JoinColumn()
