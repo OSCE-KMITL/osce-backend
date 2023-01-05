@@ -1,19 +1,19 @@
-import { graphql, Source } from "graphql";
-import { Maybe } from "graphql/jsutils/Maybe";
-import { GraphqlUtil } from "../graphql/GraphqlUtil";
+import { graphql, Source } from 'graphql';
+import { Maybe } from 'graphql/jsutils/Maybe';
+import { GraphqlUtil } from '../../config/GraphqlUtil';
 
 export interface gqlOptions {
-  source: Source | string;
-  variableValues?: Maybe<{ [key: string]: any }>;
+    source: Source | string;
+    variableValues?: Maybe<{ [key: string]: any }>;
 }
 
 export class TestUtils {
-  static async executeGraphQL(options: gqlOptions) {
-    const { variableValues, source } = options;
-    return graphql({
-      schema: await GraphqlUtil.getSchema(),
-      source,
-      variableValues,
-    });
-  }
+    static async executeGraphQL(options: gqlOptions) {
+        const { variableValues, source } = options;
+        return graphql({
+            schema: await GraphqlUtil.getSchema(),
+            source,
+            variableValues,
+        });
+    }
 }
