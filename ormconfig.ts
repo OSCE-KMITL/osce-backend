@@ -1,20 +1,15 @@
 import { DataSource } from 'typeorm';
 import 'reflect-metadata';
-import * as dotenv from 'dotenv';
-
-if (process.env.NODE_ENV !== 'development') {
-    dotenv.config({
-        path: '.env.test',
-        override: true,
-    });
-}
+import { config } from 'dotenv';
+config();
+const { DATABASE_PORT, DATABASE_PASSWORD, DATABASE_USERNAME, DATABASE_NAME } = process.env;
 export const MySqlDataSource = new DataSource({
     type: 'mysql',
     host: 'localhost',
-    port: 3306,
-    username: 'devteam',
-    password: '123456',
-    database: process.env.NODE_ENV === 'development' ? 'osce' : 'osce',
+    port: parseInt(DATABASE_PORT!) || 3306,
+    username: DATABASE_USERNAME || 'devteam',
+    password: DATABASE_PASSWORD || '123456',
+    database: DATABASE_NAME || 'osce',
     dropSchema: false,
     synchronize: true,
     logging: false,
