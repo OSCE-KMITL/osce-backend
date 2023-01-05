@@ -4,16 +4,12 @@ import { CompanyService } from './CompanyService';
 import { Arg, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { Service } from 'typedi';
 import { GetWithKeyInput } from '../../shared/args/GetWithKeyInput';
-import { useAuthorization } from '../../middleware/useAuthorization';
-import { RoleOption } from '../../shared/types/Roles';
-import { isAuthenticated } from '../../middleware/isAuthenticated';
 
 @Resolver()
 @Service()
 export class CompanyController {
     constructor(private readonly company_service: CompanyService) {}
 
-    @UseMiddleware(isAuthenticated, useAuthorization([RoleOption.COMMITTEE, RoleOption.ADVISOR]))
     @Query(() => [Company], { nullable: 'items' })
     async getAllCompanies(): Promise<Company[] | null> {
         return this.company_service.getAllCompany();
