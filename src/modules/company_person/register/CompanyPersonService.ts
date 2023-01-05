@@ -4,7 +4,7 @@ import { CompanyPerson } from '../../../entity/CompanyPerson';
 import { CompanyPersonRepository } from './CompanyPersonRepository';
 import { Service } from 'typedi';
 import { Account } from '../../../entity/Account';
-import { ERole } from '../../../shared/types/Roles';
+import { RoleOption } from '../../../shared/types/Roles';
 import { CompanyRepository } from '../../company/CompanyRepository';
 import { Company } from '../../../entity/Company';
 import { hashedPassword } from '../../../utils/hash-password';
@@ -30,7 +30,7 @@ export class CompanyPersonService {
         const saved_company_person = new CompanyPerson(full_name.trim().toLowerCase(), job_title.trim().toLowerCase(), is_coordinator);
 
         const hashed_password = await hashedPassword(password);
-        const company_person_account = new Account(email.trim().toLowerCase(), hashed_password, ERole.COMPANY);
+        const company_person_account = new Account(email.trim().toLowerCase(), hashed_password, RoleOption.COMPANY);
         company_person_account.is_company = saved_company_person;
 
         if (!company.company_persons) {
@@ -44,7 +44,7 @@ export class CompanyPersonService {
     }
 
     async getCompanyPersonAccounts(): Promise<Account[]> {
-        return await this.account_repository.find('role', ERole.COMPANY);
+        return await this.account_repository.find('role', RoleOption.COMPANY);
     }
 
     async getCompanyPersonAccount(id: string): Promise<Account | null> {

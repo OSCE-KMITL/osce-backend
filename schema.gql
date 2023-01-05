@@ -52,6 +52,20 @@ input AnnouncementInput {
   title: String!
 }
 
+type AuthData {
+  created_at: DateTime!
+  email: String!
+  id: String!
+  is_advisor: Advisor
+  is_company: CompanyPerson
+  is_student: Student
+  password: String!
+  role: Role!
+  status: String!
+  token: String!
+  updated_at: DateTime!
+}
+
 type Company {
   address: String!
   business_type: String!
@@ -111,6 +125,7 @@ type Mutation {
   deleteCompanyPersonAccount(id: String!): Account
   registerAdvisor(advisorAccountInfo: AdvisorAccountInput!): Account!
   registerCompanyPerson(CompanyPersonAccountInfo: CompanyPersonInput!): Account!
+  signIn(email: String!, password: String!): AuthData
   studentRegister(student_register_input: StudentRegisterInput!): Account!
   updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
   updateAnnouncement(update_input: UpdateAnnouncementInput!): Announcement
@@ -123,18 +138,20 @@ type Query {
   getAccounts: [Account]!
   getAdvisorAccount(advisorId: String!): Account
   getAdvisorAccounts: [Account]!
-  getAllCompanys: [Company]!
+  getAllCompanies: [Company]!
   getAnnouncement(with_key: GetWithKeyInput!): Announcement
   getAnnouncements: [Announcement]!
   getCompanyById(company_id: String!): Company
   getCompanyByKey(with_key: GetWithKeyInput!): Company
   getCompanyPersonAccount(account_id: String!): Account
   getCompanyPersonAccounts: [Account]!
+  getMe: Account
 }
 
 """type of user"""
 enum Role {
   ADVISOR
+  COMMITTEE
   COMPANY
   STUDENT
 }

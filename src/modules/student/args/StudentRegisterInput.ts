@@ -1,5 +1,5 @@
 import { Field, InputType } from 'type-graphql';
-import { ERole } from '../../../shared/types/Roles';
+import { RoleOption } from '../../../shared/types/Roles';
 
 @InputType()
 export class StudentRegisterInput {
@@ -18,5 +18,5 @@ export class StudentRegisterInput {
     @Field({ nullable: false })
     lastname!: string;
 
-    role: ERole = ERole.STUDENT;
+    role: RoleOption = RoleOption.STUDENT;
 }

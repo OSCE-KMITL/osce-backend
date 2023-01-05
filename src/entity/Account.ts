@@ -3,7 +3,7 @@ import { Field, ObjectType } from 'type-graphql';
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import 'reflect-metadata';
 import { v4 as uuid } from 'uuid';
-import { ERole } from '../shared/types/Roles';
+import { RoleOption } from '../shared/types/Roles';
 import { Advisor } from './Advisor';
 import { Student } from './Student';
 
@@ -23,8 +23,8 @@ export class Account {
     password: string;
 
     @Column()
-    @Field(() => ERole)
-    role: ERole;
+    @Field(() => RoleOption)
+    role: RoleOption;
 
     @Field(() => Student, { nullable: true })
     @OneToOne(() => Student, (account) => account.account, { cascade: true, eager: true })
@@ -41,6 +41,9 @@ export class Account {
     @JoinColumn({ name: 'is_company' })
     is_company: CompanyPerson;
 
+    @Column({ default: 0 })
+    token_version: number;
+
     @Column({ default: 'active' })
     @JoinColumn()
     @Field()
@@ -54,9 +57,13 @@ export class Account {
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
     updated_at: Date;
 
-    constructor(email: string, password: string, role: ERole) {
+    constructor(email: string, password: string, role: RoleOption) {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    incrementTokenVersion() {
+        this.token_version += 1;
     }
 }

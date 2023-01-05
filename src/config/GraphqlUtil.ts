@@ -6,6 +6,7 @@ import { Container } from 'typedi';
 import { AnnouncementController } from '../modules/annoucement/AnnouncementController';
 import { StudentRegisterController } from '../modules/student/register/StudentRegisterController';
 import { AccountController } from '../modules/account/AccountController';
+import { AuthController } from '../modules/auth/AuthController';
 
 export class GraphqlUtil {
     static async getSchema() {
@@ -17,6 +18,7 @@ export class GraphqlUtil {
                 AccountController,
                 CompanyController,
                 CompanyPersonController,
+                AuthController,
             ],
             emitSchemaFile: true,
             container: Container,

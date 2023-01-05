@@ -1,8 +1,14 @@
 ### Auth feature tasks
 
+- auth
+  - [x] setup middleware for auth token
+  - [x] setup middleware for authorized user
+  - [ ] refactoring , code cleaning
+
+
 - Sign-in
   - [ ] update Account entity attribute with google_id , token_version
-  - [ ] login with email ,password when logged in successful return response with attach cookies name jwt-token to client.
+  - [x] login with email ,password when logged in successful send jwt to fronted
   - [x] Maybe attach role [Optional]
   
 - Sign-out

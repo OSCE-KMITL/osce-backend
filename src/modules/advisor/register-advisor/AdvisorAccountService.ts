@@ -3,7 +3,7 @@ import { AdvisorAccountInput } from './input/AdvisorAccountInput';
 import { AdvisorRepository } from '../AdvisorRepository';
 import { Service } from 'typedi';
 import { Account } from '../../../entity/Account';
-import { ERole } from '../../../shared/types/Roles';
+import { RoleOption } from '../../../shared/types/Roles';
 import { AccountRepository } from '../../account/AccountRepository';
 import { hashedPassword } from '../../../utils/hash-password';
 
@@ -17,13 +17,13 @@ export class AdvisorAccountService {
         const { email, password, faculty, is_committee, name, last_name } = input;
         const hashed_password = await hashedPassword(password);
         const advisor_profile = new Advisor(name, last_name, faculty, is_committee);
-        const advisor_account = new Account(email, hashed_password, ERole.ADVISOR);
+        const advisor_account = new Account(email, hashed_password, is_committee ? RoleOption.COMMITTEE : RoleOption.ADVISOR);
         advisor_account.is_advisor = advisor_profile;
         return await this.account_repository.save(advisor_account);
     }
 
     async getAdvisorAccounts(): Promise<Account[]> {
-        return await this.account_repository.find('role', ERole.ADVISOR);
+        return await this.account_repository.find('role', RoleOption.ADVISOR);
     }
 
     async getAdvisorAccount(id: string): Promise<Account | null> {
