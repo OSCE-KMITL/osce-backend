@@ -1,4 +1,4 @@
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { AccountService } from './AccountService';
 import { Service } from 'typedi';
 import { Account } from '../../entity/Account';
@@ -6,12 +6,20 @@ import { AdvisorAccountService } from '../advisor/register-advisor/AdvisorAccoun
 import { Advisor } from '../../entity/Advisor';
 import { UpdateAdvisorInput } from '../advisor/register-advisor/input/AdvisorAccountInput';
 import { CompanyPersonService } from '../company_person/register/CompanyPersonService';
+import { isAuthenticated } from '../../middleware/isAuthenticated';
+import { useAuthorization } from '../../middleware/useAuthorization';
+import { RoleOption } from '../../shared/types/Roles';
 
 @Resolver()
 @Service()
 export class AccountController {
-    constructor(private readonly account_service: AccountService, private readonly advisor_account_service: AdvisorAccountService, private readonly company_person_account_service: CompanyPersonService) {}
+    constructor(
+        private readonly account_service: AccountService,
+        private readonly advisor_account_service: AdvisorAccountService,
+        private readonly company_person_account_service: CompanyPersonService
+    ) {}
 
+    @UseMiddleware(isAuthenticated, useAuthorization([RoleOption.COMMITTEE]))
     @Query(() => [Account], { nullable: 'items' })
     async getAccounts(): Promise<Account[] | null> {
         return await this.account_service.getAccounts();
@@ -56,6 +64,4 @@ export class AccountController {
     async getCompanyPersonAccount(@Arg('account_id') id: string): Promise<Account | null> {
         return await this.company_person_account_service.getCompanyPersonAccount(id);
     }
-
-
 }

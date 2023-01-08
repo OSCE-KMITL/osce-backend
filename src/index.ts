@@ -18,7 +18,7 @@ export const bootstrap = async () => {
 
     await server.start();
 
-    await server.applyMiddleware({ app, cors: { origin: ['https://studio.apollographql.com'], credentials: true } });
+    await server.applyMiddleware({ app, cors: { origin: ['https://studio.apollographql.com', 'http://localhost:3000'], credentials: true } });
 
     app.listen(PORT || 4000, () => {
         console.log(`🚀  Server ready at: http://localhost:${PORT || 4000}${server.graphqlPath || '/graphql'}`);

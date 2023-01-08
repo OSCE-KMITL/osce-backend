@@ -25,6 +25,7 @@ export class ServerConfig {
                             req.token_version = auth_info.token_version;
                         }
                     } catch (e) {
+                        console.log(e);
                         req.user_id = undefined;
                         req.token_version = undefined;
                     }
