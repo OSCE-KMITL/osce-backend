@@ -28,7 +28,7 @@ export class CompanyPerson {
     account: Account;
 
     @Field(() => Company)
-    @ManyToOne(() => Company, (company) => company.company_persons,{onDelete: 'CASCADE'})
+    @ManyToOne(() => Company, (company) => company.company_persons, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'company_id' })
     company_id: Promise<Company>;
 
