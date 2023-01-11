@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { Response } from 'express';
+import { TOKEN_SECRET, TOKEN_EXPIRES_IN } from '../shared/constants';
 
 export class TokenHandler {
     static createToken(user_id: string, token_version: number): string {
-        return jwt.sign({ user_id, token_version }, process.env['TOKEN_SECRET']!, { expiresIn: process.env['TOKEN_EXPIRES_IN']! });
+        return jwt.sign({ user_id, token_version }, TOKEN_SECRET!, { expiresIn: TOKEN_EXPIRES_IN! });
     }
     static sendTokenToCookie(res: Response, token: string) {
         try {

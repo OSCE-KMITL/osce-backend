@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import 'reflect-metadata';
 import { config } from 'dotenv';
 config();
-const { DATABASE_PORT, DATABASE_PASSWORD, DATABASE_USERNAME, DATABASE_NAME } = process.env;
+import { DATABASE_PORT, DATABASE_PASSWORD, DATABASE_USERNAME, DATABASE_NAME } from './src/shared/constants';
 export const MySqlDataSource = new DataSource({
     type: 'mysql',
     host: 'localhost',

@@ -4,8 +4,8 @@ import Express from 'express';
 import { config } from 'dotenv';
 import { ServerConfig } from './config/ServerConfig';
 import cookieParser from 'cookie-parser';
+import { PORT, FRONTEND_URI } from './shared/constants';
 config();
-const { PORT } = process.env;
 
 export const bootstrap = async () => {
     const app = Express();
@@ -18,7 +18,7 @@ export const bootstrap = async () => {
 
     await server.start();
 
-    await server.applyMiddleware({ app, cors: { origin: ['https://studio.apollographql.com', 'http://localhost:3000'], credentials: true } });
+    await server.applyMiddleware({ app, cors: { origin: ['https://studio.apollographql.com', FRONTEND_URI!], credentials: true } });
 
     app.listen(PORT || 4000, () => {
         console.log(`🚀  Server ready at: http://localhost:${PORT || 4000}${server.graphqlPath || '/graphql'}`);

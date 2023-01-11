@@ -19,7 +19,6 @@ export class AccountController {
         private readonly company_person_account_service: CompanyPersonService
     ) {}
 
-    @UseMiddleware(isAuthenticated, useAuthorization([RoleOption.COMMITTEE]))
     @Query(() => [Account], { nullable: 'items' })
     async getAccounts(): Promise<Account[] | null> {
         return await this.account_service.getAccounts();
