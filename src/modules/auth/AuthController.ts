@@ -36,6 +36,7 @@ export class AuthController {
             if (!valid_password) throw new Error('อีเมล หรือรหัสผ่านไม่ถูกต้อง');
 
             const token = TokenHandler.createToken(user.id, user.token_version);
+            TokenHandler.sendTokenToCookie(res ,token)
 
             return { ...user, token } as AuthData;
         } catch (e) {

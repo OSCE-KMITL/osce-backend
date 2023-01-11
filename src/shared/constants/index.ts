@@ -1,0 +1,9 @@
+export const PASSWORD_SALT = process.env.PASSWORD_SALT;
+export const PORT = process.env.PORT;
+export const DATABASE_PORT = process.env.DATABASE_PORT;
+export const DATABASE_USERNAME = process.env.DATABASE_USERNAME;
+export const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
+export const DATABASE_NAME = process.env.DATABASE_NAME;
+export const TOKEN_SECRET = process.env.TOKEN_SECRET;
+export const TOKEN_EXPIRES_IN = process.env.TOKEN_EXPIRES_IN;
+export const FRONTEND_URI = process.env.FRONTEND_URI;

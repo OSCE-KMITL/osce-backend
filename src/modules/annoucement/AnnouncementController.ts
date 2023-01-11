@@ -1,9 +1,12 @@
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { Service } from 'typedi';
 import { Announcement } from '../../entity/Announcement';
 import { AnnouncementService } from './AnnouncementService';
 import { AnnouncementInput, UpdateAnnouncementInput } from './args/AnnouncementInput';
 import { GetWithKeyInput } from '../../shared/args/GetWithKeyInput';
+import { isAuthenticated } from '../../middleware/isAuthenticated';
+import { useAuthorization } from '../../middleware/useAuthorization';
+import { RoleOption } from '../../shared/types/Roles';
 
 @Resolver()
 //Service dependency inject
@@ -11,6 +14,7 @@ import { GetWithKeyInput } from '../../shared/args/GetWithKeyInput';
 export class AnnouncementController {
     constructor(private readonly announcement_service: AnnouncementService) {}
 
+    @UseMiddleware(isAuthenticated, useAuthorization([RoleOption.STUDENT, RoleOption.COMMITTEE]))
     @Query(() => [Announcement], { nullable: 'items' })
     async getAnnouncements(): Promise<Announcement[] | null> {
         return this.announcement_service.getAllAnnouncement();
