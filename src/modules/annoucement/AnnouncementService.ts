@@ -17,9 +17,9 @@ export class AnnouncementService {
     async getAllAnnouncement() {
         return await this.ann_repository.find();
     }
-    async createAnnouncement(announcement_info: AnnouncementInput) {
+    async createAnnouncement(announcement_info: AnnouncementInput, advisor_id: string) {
         // advisor_id จะปรับไปใช้ context จาก ที่ได้รับจาก cookies
-        const { title, desc, advisor_id } = announcement_info;
+        const { title, desc } = announcement_info;
 
         const advisor = await this.advisor_repository.findOne('advisor_id', advisor_id);
         if (!advisor) throw new Error('ไม่มีสิทธิ์เข้าถึง');

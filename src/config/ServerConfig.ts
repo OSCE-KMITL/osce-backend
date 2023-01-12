@@ -9,11 +9,12 @@ export class ServerConfig {
         return new ApolloServer({
             schema,
             context: ({ res, req }: AppContext) => {
-                const token = req.headers.authorization || '';
+                const token = req.headers.authorization;
+
                 if (token) {
                     try {
                         // ดึง info ที่ได้รัยมาจาก headers
-                        const auth_info = TokenHandler.getUserFromToken(token) as {
+                        const auth_info = TokenHandler.getUserFromToken(token!) as {
                             user_id: string;
                             token_version: number;
                             iat: number;
@@ -25,7 +26,6 @@ export class ServerConfig {
                             req.token_version = auth_info.token_version;
                         }
                     } catch (e) {
-                        console.log(e);
                         req.user_id = undefined;
                         req.token_version = undefined;
                     }

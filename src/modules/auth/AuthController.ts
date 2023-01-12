@@ -36,7 +36,6 @@ export class AuthController {
             if (!valid_password) throw new Error('อีเมล หรือรหัสผ่านไม่ถูกต้อง');
 
             const token = TokenHandler.createToken(user.id, user.token_version);
-            TokenHandler.sendTokenToCookie(res ,token)
 
             return { ...user, token } as AuthData;
         } catch (e) {
@@ -44,7 +43,6 @@ export class AuthController {
         }
     }
 
-    @UseMiddleware(isAuthenticated, useAuthorization([RoleOption.STUDENT, RoleOption.COMMITTEE, RoleOption.ADVISOR]))
     @Query(() => Account, { nullable: true })
     async getMe(@Ctx() { req }: AppContext): Promise<Account | null> {
         try {

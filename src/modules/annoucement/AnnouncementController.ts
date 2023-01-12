@@ -1,4 +1,4 @@
-import { Arg, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
+import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { Service } from 'typedi';
 import { Announcement } from '../../entity/Announcement';
 import { AnnouncementService } from './AnnouncementService';
@@ -7,6 +7,7 @@ import { GetWithKeyInput } from '../../shared/args/GetWithKeyInput';
 import { isAuthenticated } from '../../middleware/isAuthenticated';
 import { useAuthorization } from '../../middleware/useAuthorization';
 import { RoleOption } from '../../shared/types/Roles';
+import { AppContext } from '../../shared/types/context-types';
 
 @Resolver()
 //Service dependency inject
@@ -14,7 +15,6 @@ import { RoleOption } from '../../shared/types/Roles';
 export class AnnouncementController {
     constructor(private readonly announcement_service: AnnouncementService) {}
 
-    @UseMiddleware(isAuthenticated, useAuthorization([RoleOption.STUDENT, RoleOption.COMMITTEE]))
     @Query(() => [Announcement], { nullable: 'items' })
     async getAnnouncements(): Promise<Announcement[] | null> {
         return this.announcement_service.getAllAnnouncement();
@@ -25,9 +25,11 @@ export class AnnouncementController {
         return this.announcement_service.getOneBy(constraints_key);
     }
 
+    @UseMiddleware(isAuthenticated, useAuthorization([RoleOption.COMMITTEE]))
     @Mutation(() => Announcement, { nullable: true })
-    async createAnnouncement(@Arg('announcement_info') announcement_info: AnnouncementInput): Promise<Announcement | null> {
-        return this.announcement_service.createAnnouncement(announcement_info);
+    async createAnnouncement(@Arg('announcement_info') announcement_info: AnnouncementInput, @Ctx() { req }: AppContext): Promise<Announcement | null> {
+        const { user_id } = req;
+        return this.announcement_service.createAnnouncement(announcement_info, user_id!);
     }
 
     @Mutation(() => Announcement, { nullable: true })

@@ -28,6 +28,10 @@ export class BaseRepository<T> {
     }
 
     async findOne(target: string, value: string): Promise<T | null> {
+        if (!target || !value) {
+            return null;
+        }
+
         return await this.repository.findOneBy({ [target]: value });
     }
 

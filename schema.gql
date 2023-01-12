@@ -47,7 +47,6 @@ type Announcement {
 }
 
 input AnnouncementInput {
-  advisor_id: String!
   desc: String!
   title: String!
 }

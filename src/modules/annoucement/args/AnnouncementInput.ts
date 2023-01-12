@@ -3,9 +3,6 @@ import { MaxLength } from 'class-validator';
 @InputType()
 export class AnnouncementInput {
     @Field()
-    advisor_id!: string;
-
-    @Field()
     title!: string;
 
     @Field()

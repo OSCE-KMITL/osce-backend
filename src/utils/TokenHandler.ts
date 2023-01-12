@@ -8,7 +8,7 @@ export class TokenHandler {
     }
     static sendTokenToCookie(res: Response, token: string) {
         try {
-            res.cookie('Authentication', token, { httpOnly: true, sameSite: true, secure: true, maxAge: 1000 * 60 * 60 * 24 * 365 });
+            res.cookie('5555555555', token, { httpOnly: false, sameSite: true, secure: true, maxAge: 1000 * 60 * 60 * 24 * 365 });
         } catch (e) {
             console.log(e);
             throw e;
@@ -16,6 +16,10 @@ export class TokenHandler {
     }
     static getUserFromToken(token: string) {
         const fmt_token = token.split(' ');
-        return jwt.verify(fmt_token[1], process.env['TOKEN_SECRET']!);
+        const decoded_token = jwt.verify(fmt_token[1], TOKEN_SECRET!);
+        if (!decoded_token) {
+            return null;
+        }
+        return decoded_token;
     }
 }
