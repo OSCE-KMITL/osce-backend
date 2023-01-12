@@ -11,11 +11,11 @@ export class Announcement {
     @Field()
     id: string;
 
-    @Column({ type: 'varchar' })
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     title: string;
 
-    @Column({ type: 'text' })
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     description: string;
 

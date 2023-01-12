@@ -17,7 +17,12 @@ export class AnnouncementController {
 
     @Query(() => [Announcement], { nullable: 'items' })
     async getAnnouncements(): Promise<Announcement[] | null> {
-        return this.announcement_service.getAllAnnouncement();
+        try {
+            return this.announcement_service.getAllAnnouncement();
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
 
     @Query(() => Announcement, { nullable: true })
@@ -25,7 +30,7 @@ export class AnnouncementController {
         return this.announcement_service.getOneBy(constraints_key);
     }
 
-    @UseMiddleware(isAuthenticated, useAuthorization([RoleOption.COMMITTEE]))
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE]))
     @Mutation(() => Announcement, { nullable: true })
     async createAnnouncement(@Arg('announcement_info') announcement_info: AnnouncementInput, @Ctx() { req }: AppContext): Promise<Announcement | null> {
         const { user_id } = req;

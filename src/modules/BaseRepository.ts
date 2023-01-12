@@ -24,15 +24,16 @@ export class BaseRepository<T> {
         if (target && value) {
             return await this.repository.findBy({ [target]: value });
         }
-        return await this.repository.find();
+        return await this.repository.find({
+            order: {
+                id: 'DESC',
+            },
+        });
     }
 
     async findOne(target: string, value: string): Promise<T | null> {
-        if (!target || !value) {
-            return null;
-        }
-
-        return await this.repository.findOneBy({ [target]: value });
+        const user = await this.repository.findOneBy({ [target]: value });
+        return user;
     }
 
     async update(entity: T): Promise<T> {

@@ -46,7 +46,11 @@ export class AuthController {
     @Query(() => Account, { nullable: true })
     async getMe(@Ctx() { req }: AppContext): Promise<Account | null> {
         try {
-            return this.account_repository.findOne('id', req.user_id!);
+            const me = await this.account_repository.findOne('id', req.user_id!);
+            if (req.token_version !== me?.token_version) {
+                throw new Error('Not Authenticated');
+            }
+            return me;
         } catch (e) {
             throw e;
         }

@@ -15,10 +15,9 @@ export function useAuthorization(roles: RoleOption[]): MiddlewareFn<AppContext> 
         if (!user) throw new Error('กรุณาเข้าสู่ระบบ');
 
         // ตรวจสอบว่า role ของ user ตรงกับที่มีอยู่ใร roles[] หรือไม่ ?
-        const isAuthorized = roles.find((role) => {
-            return role === user.role;
-        });
-        if (!isAuthorized) throw new Error('not authorized');
+        const isAuthorized = roles.includes(user.role);
+
+        if (!isAuthorized) throw new Error('Not Authorized');
 
         return await next();
     };
