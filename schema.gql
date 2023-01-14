@@ -71,6 +71,7 @@ type Company {
   company_id: String!
   company_persons: [CompanyPerson]!
   created_at: DateTime!
+  job: [Job]!
   name: String!
   phone_number: String!
   updated_at: DateTime!
@@ -115,13 +116,43 @@ input GetWithKeyInput {
   value: String
 }
 
+type Job {
+  company_id: Company!
+  compensation: String!
+  coop301_fileurl: String!
+  createdAt: DateTime!
+  id: String!
+  job_title: String!
+  limit: String!
+  nature_of_work: String!
+  project_topic: String!
+  required_major: String!
+  required_skills: String!
+  updatedAt: DateTime!
+  welfare: String!
+}
+
+input JobInput {
+  compensation: String!
+  coop301_fileurl: String!
+  job_title: String!
+  limit: String!
+  nature_of_work: String!
+  project_topic: String!
+  required_major: String!
+  required_skills: String!
+  welfare: String!
+}
+
 type Mutation {
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company!
+  createJob(job_info: JobInput!): Job
   deleteAdvisorAccount(id: String!): Account
   deleteAnnouncement(announcement_id: String!): Announcement
   deleteCompany(delete_by_id: String!): Company
   deleteCompanyPersonAccount(id: String!): Account
+  deleteJob(job_id: String!): Job
   registerAdvisor(advisorAccountInfo: AdvisorAccountInput!): Account!
   registerCompanyPerson(CompanyPersonAccountInfo: CompanyPersonInput!): Account!
   signIn(email: String!, password: String!): AuthData
@@ -130,6 +161,7 @@ type Mutation {
   updateAnnouncement(update_input: UpdateAnnouncementInput!): Announcement
   updateCompany(update_input: UpdateCompanyInput!): Company
   updateCompanyPerson(update_input: UpdateCompanyPersonInput!): CompanyPerson
+  updateJob(update_input: UpdateJobInput!): Job
 }
 
 type Query {
@@ -138,12 +170,14 @@ type Query {
   getAdvisorAccount(advisorId: String!): Account
   getAdvisorAccounts: [Account]!
   getAllCompanies: [Company]!
+  getAllJob: [Job]!
   getAnnouncement(with_key: GetWithKeyInput!): Announcement
   getAnnouncements: [Announcement]!
   getCompanyById(company_id: String!): Company
   getCompanyByKey(with_key: GetWithKeyInput!): Company
   getCompanyPersonAccount(account_id: String!): Account
   getCompanyPersonAccounts: [Account]!
+  getJobById(job_id: String!): Job
   getMe: Account
 }
 
@@ -198,4 +232,17 @@ input UpdateCompanyPersonInput {
   id: String
   is_coordinator: Boolean!
   job_title: String!
+}
+
+input UpdateJobInput {
+  compensation: String!
+  coop301_fileurl: String!
+  id: String!
+  job_title: String!
+  limit: String!
+  nature_of_work: String!
+  project_topic: String!
+  required_major: String!
+  required_skills: String!
+  welfare: String!
 }
