@@ -28,10 +28,24 @@ export class AnnouncementService {
         if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
         if (account.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถสร้างประกาศได้ ');
 
-        if (title.length > 255) throw new Error('หัวข้อต้องมีตัวอักษรไม่เกิน 255 ตัวอักษร');
-        if (desc.length > 1000) throw new Error('ข้อความต้องมีตัวอักษรไม่เกิน 1000 ตัวอักษร');
         const cleaned_title = title.trim();
         const cleaned_desc = desc.trim();
+
+        if (title.length >= 255) {
+            throw new Error('หัวข้อต้องมีตัวอักษรไม่เกิน 255 ตัวอักษร');
+        }
+
+        if (title.length <= 5) {
+            throw new Error('หัวข้อน้อยเกินไป');
+        }
+
+        if (desc.length >= 5000) {
+            throw new Error('รายละเอียดมากเกินไป');
+        }
+
+        if (desc.length <= 5) {
+            throw new Error('รายละเอียดต้องมากกว่า 5 ตัวอักษรขึ้นไป');
+        }
 
         const saved_ann = await this.ann_repository.save(new Announcement(cleaned_title, cleaned_desc));
 

@@ -15,7 +15,7 @@ export class Announcement {
     @Field()
     title: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', type: 'longtext' })
     @Field()
     description: string;
 

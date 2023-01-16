@@ -48,7 +48,7 @@ export class AuthController {
         try {
             const me = await this.account_repository.findOne('id', req.user_id!);
             if (req.token_version !== me?.token_version) {
-                throw new Error('Not Authenticated');
+                return null;
             }
             return me;
         } catch (e) {
