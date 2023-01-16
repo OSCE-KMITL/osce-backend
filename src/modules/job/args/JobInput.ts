@@ -28,6 +28,9 @@ export class JobInput {
 
     @Field()
     coop301_fileurl: string;
+
+    @Field()
+    company_id : string;
 }
 
 @InputType()

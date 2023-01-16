@@ -30,23 +30,23 @@ export class JobController {
         return this.job_service.getById(job_id);
     }
 
-    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE,RoleOption.COMPANY]))
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE, RoleOption.COMPANY]))
     @Mutation(() => Job, { nullable: true })
     async createJob(@Arg('job_info') job_info: JobInput, @Ctx() { req }: AppContext): Promise<Job | null> {
         const { user_id } = req;
         return this.job_service.createJob(job_info, user_id!);
     }
 
-    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE,RoleOption.COMPANY]))
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE, RoleOption.COMPANY]))
     @Mutation(() => Job, { nullable: true })
-    async deleteJob(@Arg('job_id') job_id: string, @Ctx() {req}: AppContext): Promise<Job | null> {
+    async deleteJob(@Arg('job_id') job_id: string, @Ctx() { req }: AppContext): Promise<Job | null> {
         const { user_id } = req;
-        return this.job_service.deleteJob(job_id,user_id!);
+        return this.job_service.deleteJob(job_id, user_id!);
     }
 
     @Mutation(() => Job, { nullable: true })
-    async updateJob(@Arg('update_input') update_input: UpdateJobInput, @Ctx() {req}: AppContext): Promise<Job | null> {
+    async updateJob(@Arg('update_input') update_input: UpdateJobInput, @Ctx() { req }: AppContext): Promise<Job | null> {
         const { user_id } = req;
-        return this.job_service.updateJob(update_input,user_id!);
+        return this.job_service.updateJob(update_input, user_id!);
     }
 }

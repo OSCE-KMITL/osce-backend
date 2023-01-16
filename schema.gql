@@ -133,6 +133,7 @@ type Job {
 }
 
 input JobInput {
+  company_id: String!
   compensation: String!
   coop301_fileurl: String!
   job_title: String!

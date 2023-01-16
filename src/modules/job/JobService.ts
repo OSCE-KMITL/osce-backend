@@ -1,3 +1,5 @@
+import { CompanyRepository } from './../company/CompanyRepository';
+import { Company } from './../../entity/Company';
 import { JobInput, UpdateJobInput } from './args/JobInput';
 import { Job } from './../../entity/Job';
 import { JobRepository } from './JobRepository';
@@ -14,7 +16,8 @@ export class JobService {
     constructor(
         private readonly job_repository = new JobRepository(Job),
         private readonly account_repository = new AccountRepository(Account),
-        private readonly advisor_repository = new AdvisorRepository(Advisor)
+        private readonly advisor_repository = new AdvisorRepository(Advisor),
+        private readonly company_repository = new CompanyRepository(Company)
     ) {}
 
     async getAllJob() {
@@ -29,12 +32,16 @@ export class JobService {
     }
 
     async createJob(job_info: JobInput, account_id: string) {
-        const { job_title, compensation, coop301_fileurl, limit, nature_of_work, project_topic, required_major, required_skills, welfare } = job_info;
+        const { job_title, compensation, coop301_fileurl, limit, nature_of_work, project_topic, required_major, required_skills, welfare, company_id } =
+            job_info;
         const account = await this.account_repository.findOne('id', account_id);
 
         if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
         if (account.role !== RoleOption.COMMITTEE && account.role !== RoleOption.COMPANY)
             throw new Error('กรรมการและบริษัทเท่านั้นที่สามารถเพิ่มงานที่เปิดรับได้ ');
+
+        const company = await this.company_repository.findOne('company_id', company_id.trim().toLowerCase());
+        if (!company) throw new Error('ไม่พบบริษัท');
 
         if (job_title.length > 255) throw new Error('ตำแหน่งงานต้องมีตัวอักษรไม่เกิน 255 ตัวอักษร');
         const saved_job = await this.job_repository.save(
@@ -50,6 +57,8 @@ export class JobService {
                 coop301_fileurl.trim()
             )
         );
+        company.job.push(await this.job_repository.save(saved_job));
+        await this.company_repository.save(company);
 
         return saved_job;
     }
