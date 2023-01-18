@@ -9,7 +9,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateC
 export class Company {
     @PrimaryColumn()
     @Field()
-    company_id: string = uuid();
+    id: string = uuid();
 
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()

@@ -68,9 +68,9 @@ type AuthData {
 type Company {
   address: String!
   business_type: String!
-  company_id: String!
   company_persons: [CompanyPerson]!
   created_at: DateTime!
+  id: String!
   job: [Job]!
   name: String!
   phone_number: String!
@@ -147,7 +147,7 @@ input JobInput {
 
 type Mutation {
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
-  createCompany(company_info: CompanyInput!): Company!
+  createCompany(company_info: CompanyInput!): Company
   createJob(job_info: JobInput!): Job
   deleteAdvisorAccount(id: String!): Account
   deleteAnnouncement(announcement_id: String!): Announcement

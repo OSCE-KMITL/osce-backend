@@ -54,7 +54,7 @@ export class Job {
     updatedAt!: Date;
 
     @Field(() => Company)
-    @ManyToOne(() => Company, (company) => company.company_id)
+    @ManyToOne(() => Company, (company) => company.id)
     @JoinColumn({ name: 'company_id' })
     company_id: Promise<Company>;
 
