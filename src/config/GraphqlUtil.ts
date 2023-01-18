@@ -1,3 +1,4 @@
+import { JobController } from './../modules/job/JobController';
 import { CompanyPersonController } from '../modules/company_person/register/CompanyPersonController';
 import { CompanyController } from '../modules/company/CompanyController';
 import { buildSchema } from 'type-graphql';
@@ -19,6 +20,7 @@ export class GraphqlUtil {
                 CompanyController,
                 CompanyPersonController,
                 AuthController,
+                JobController,
             ],
             emitSchemaFile: true,
             container: Container,

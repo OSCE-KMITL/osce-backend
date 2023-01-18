@@ -10,7 +10,7 @@ export class CompanyInput {
 
     @Field()
     phone_number: string;
-    
+
     @Field()
     website_url: string;
 
@@ -37,4 +37,3 @@ export class UpdateCompanyInput {
     @Field()
     business_type: string;
 }
-

@@ -24,7 +24,7 @@ export class CompanyPersonService {
 
     async registerCompanyPersonAccount(input: CompanyPersonInput): Promise<Account> {
         const { email, password, full_name, job_title, is_coordinator, company_id } = input;
-        const company = await this.company_repository.findOne('company_id', company_id.trim().toLowerCase());
+        const company = await this.company_repository.findOne('id', company_id.trim().toLowerCase());
         if (!company) throw new Error('ไม่พบบริษัทในระบบ');
 
         const saved_company_person = new CompanyPerson(full_name.trim().toLowerCase(), job_title.trim().toLowerCase(), is_coordinator);
