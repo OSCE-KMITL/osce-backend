@@ -4,7 +4,6 @@ import { Announcement } from '../../entity/Announcement';
 import { AnnouncementService } from './AnnouncementService';
 import { AnnouncementInput, UpdateAnnouncementInput } from './args/AnnouncementInput';
 import { GetWithKeyInput } from '../../shared/args/GetWithKeyInput';
-import { isAuthenticated } from '../../middleware/isAuthenticated';
 import { useAuthorization } from '../../middleware/useAuthorization';
 import { RoleOption } from '../../shared/types/Roles';
 import { AppContext } from '../../shared/types/context-types';
@@ -37,9 +36,16 @@ export class AnnouncementController {
         return this.announcement_service.createAnnouncement(announcement_info, user_id!);
     }
 
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE]))
     @Mutation(() => Announcement, { nullable: true })
-    async deleteAnnouncement(@Arg('announcement_id') announcement_id: string): Promise<Announcement | null> {
-        return this.announcement_service.deleteAnnouncement(announcement_id);
+    async deleteAnnouncement(@Arg('announcement_id') announcement_id: string ,@Ctx() { req }: AppContext): Promise<Announcement | null> {
+        try {
+            const {user_id} = req
+            return this.announcement_service.deleteAnnouncement(announcement_id ,user_id);
+        }catch (error) {
+            throw error
+        }
+
     }
     @Mutation(() => Announcement, { nullable: true })
     async updateAnnouncement(@Arg('update_input') update_input: UpdateAnnouncementInput): Promise<Announcement | null> {
