@@ -53,7 +53,7 @@ export class Job {
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)', name: 'updated_at' })
     updatedAt!: Date;
 
-    @Field(() => Company)
+    @Field(() => Company,{nullable: true})
     @ManyToOne(() => Company, (company) => company.id)
     @JoinColumn({ name: 'company_id' })
     company_id: Promise<Company>;

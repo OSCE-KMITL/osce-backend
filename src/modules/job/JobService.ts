@@ -40,7 +40,7 @@ export class JobService {
         if (account.role !== RoleOption.COMMITTEE && account.role !== RoleOption.COMPANY)
             throw new Error('กรรมการและบริษัทเท่านั้นที่สามารถเพิ่มงานที่เปิดรับได้ ');
 
-        const company = await this.company_repository.findOne('company_id', company_id.trim().toLowerCase());
+        const company = await this.company_repository.findOne('id', company_id.trim().toLowerCase());
         if (!company) throw new Error('ไม่พบบริษัท');
 
         if (job_title.length > 255) throw new Error('ตำแหน่งงานต้องมีตัวอักษรไม่เกิน 255 ตัวอักษร');
