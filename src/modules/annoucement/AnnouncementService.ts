@@ -28,10 +28,24 @@ export class AnnouncementService {
         if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
         if (account.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถสร้างประกาศได้ ');
 
-        if (title.length > 255) throw new Error('หัวข้อต้องมีตัวอักษรไม่เกิน 255 ตัวอักษร');
-        if (desc.length > 1000) throw new Error('ข้อความต้องมีตัวอักษรไม่เกิน 1000 ตัวอักษร');
         const cleaned_title = title.trim();
         const cleaned_desc = desc.trim();
+
+        if (title.length >= 255) {
+            throw new Error('หัวข้อต้องมีตัวอักษรไม่เกิน 255 ตัวอักษร');
+        }
+
+        if (title.length <= 5) {
+            throw new Error('หัวข้อน้อยเกินไป');
+        }
+
+        if (desc.length >= 5000) {
+            throw new Error('รายละเอียดมากเกินไป');
+        }
+
+        if (desc.length <= 5) {
+            throw new Error('รายละเอียดต้องมากกว่า 5 ตัวอักษรขึ้นไป');
+        }
 
         const saved_ann = await this.ann_repository.save(new Announcement(cleaned_title, cleaned_desc));
 
@@ -46,11 +60,12 @@ export class AnnouncementService {
         return await this.ann_repository.findOne(target, value);
     }
 
-    async deleteAnnouncement(announcement_id: string) {
-        const advisor_id = 'ba329a17-445e-44b8-8885-abc646812715';
-
+    async deleteAnnouncement(announcement_id: string, user_id: string | undefined) {
+        if (!user_id) {
+            throw new Error("You're not authorized");
+        }
         const fmt_announcement_id = announcement_id.trim().toLocaleLowerCase();
-        const user = await this.account_repository.findOne('advisor_id', advisor_id);
+        const user = await this.account_repository.findOne('id', user_id);
         if (!user) throw new Error('ไม่มีสิทธิ์เข้าถึง');
         if (user.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถลบประกาศได้ ');
 
