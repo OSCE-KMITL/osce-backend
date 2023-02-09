@@ -27,8 +27,8 @@ export class CompanyPerson {
     @OneToOne(() => Account, (account) => account.is_company, { onDelete: 'CASCADE' })
     account: Account;
 
-    @Field(() => Company)
-    @ManyToOne(() => Company, (company) => company.company_persons, { onDelete: 'CASCADE' })
+    @Field(() => Company, { nullable: true })
+    @ManyToOne(() => Company, (company) => company.company_persons, { onDelete: 'CASCADE'})
     @JoinColumn({ name: 'company_id' })
     company_id: Promise<Company>;
 

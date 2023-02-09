@@ -5,11 +5,14 @@ import { config } from 'dotenv';
 import { ServerConfig } from './config/ServerConfig';
 import cookieParser from 'cookie-parser';
 import { PORT, FRONTEND_URI } from './shared/constants';
+const { graphqlUploadExpress } = require('graphql-upload');
 config();
 
 export const bootstrap = async () => {
     const app = Express();
     app.use(cookieParser());
+    app.use(graphqlUploadExpress({ maxFileSize: 20000000, maxFiles: 5 }));
+    app.use(Express.static('public'))
     await MySqlDataSource.initialize()
         .then(() => console.log('Data Source has been initialized!'))
         .catch((err) => console.log(err));

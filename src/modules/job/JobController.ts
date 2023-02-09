@@ -1,4 +1,4 @@
-import { JobInput, UpdateJobInput } from './args/JobInput';
+import { JobInputByCompany, UpdateJobInput, JobInputByCommittee } from './args/JobInput';
 import { Job } from './../../entity/Job';
 import { JobService } from './JobService';
 import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
@@ -30,11 +30,18 @@ export class JobController {
         return this.job_service.getById(job_id);
     }
 
-    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE, RoleOption.COMPANY]))
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE]))
     @Mutation(() => Job, { nullable: true })
-    async createJob(@Arg('job_info') job_info: JobInput, @Ctx() { req }: AppContext): Promise<Job | null> {
+    async createJobByCommittee(@Arg('job_info') job_info: JobInputByCommittee, @Ctx() { req }: AppContext): Promise<Job | null> {
         const { user_id } = req;
-        return this.job_service.createJob(job_info, user_id!);
+        return this.job_service.createJobByCommittee(job_info, user_id!);
+    }
+
+    @UseMiddleware(useAuthorization([RoleOption.COMPANY]))
+    @Mutation(() => Job, { nullable: true })
+    async createJobByCompany(@Arg('job_info') job_info: JobInputByCompany, @Ctx() { req }: AppContext): Promise<Job | null> {
+        const { user_id } = req;
+        return this.job_service.createJobByCompany(job_info, user_id!);
     }
 
     @UseMiddleware(useAuthorization([RoleOption.COMMITTEE, RoleOption.COMPANY]))

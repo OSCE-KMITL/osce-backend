@@ -9,40 +9,40 @@ export class Job {
     @Field()
     id: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
+    @Field({ nullable: true })
     job_title: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
+    @Field({ nullable: true })
     required_major: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
+    @Field({ nullable: true })
     project_topic: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
+    @Field({ nullable: true })
     nature_of_work: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
+    @Field({ nullable: true })
     required_skills: string;
 
-    @Column()
-    @Field()
+    @Column({ default: null })
+    @Field({ nullable: true })
     limit: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
+    @Field({ nullable: true })
     welfare: string;
 
-    @Column()
-    @Field()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
+    @Field({ nullable: true })
     compensation: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
+    @Field({ nullable: true })
     coop301_fileurl: string;
 
     @Field()
@@ -53,7 +53,7 @@ export class Job {
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)', name: 'updated_at' })
     updatedAt!: Date;
 
-    @Field(() => Company,{nullable: true})
+    @Field(() => Company, { nullable: true })
     @ManyToOne(() => Company, (company) => company.id)
     @JoinColumn({ name: 'company_id' })
     company_id: Promise<Company>;
