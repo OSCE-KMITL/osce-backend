@@ -31,6 +31,36 @@ export class JobInputByCommittee {
 
     @Field({ nullable: true })
     company_id: string;
+
+    @Field({ nullable: true })
+    internship_period: string;
+
+    @Field({ nullable: true })
+    work_period: string;
+
+    @Field({ nullable: true })
+    coordinator_name: string;
+
+    @Field({ nullable: true })
+    coordinator_job_title: string;
+
+    @Field({ nullable: true })
+    coordinator_phone_number: string;
+
+    @Field({ nullable: true })
+    coordinator_email: string;
+
+    @Field({ nullable: true })
+    supervisor_name: string;
+
+    @Field({ nullable: true })
+    supervisor_job_title: string;
+
+    @Field({ nullable: true })
+    supervisor_phone_number: string;
+
+    @Field({ nullable: true })
+    supervisor_email: string;
 }
 
 @InputType()
@@ -61,6 +91,36 @@ export class JobInputByCompany {
 
     @Field({ nullable: true })
     coop301_fileurl: string;
+
+    @Field({ nullable: true })
+    internship_period: string;
+
+    @Field({ nullable: true })
+    work_period: string;
+
+    @Field({ nullable: true })
+    coordinator_name: string;
+
+    @Field({ nullable: true })
+    coordinator_job_title: string;
+
+    @Field({ nullable: true })
+    coordinator_phone_number: string;
+
+    @Field({ nullable: true })
+    coordinator_email: string;
+
+    @Field({ nullable: true })
+    supervisor_name: string;
+
+    @Field({ nullable: true })
+    supervisor_job_title: string;
+
+    @Field({ nullable: true })
+    supervisor_phone_number: string;
+
+    @Field({ nullable: true })
+    supervisor_email: string;
 }
 
 @InputType()
@@ -94,4 +154,34 @@ export class UpdateJobInput {
 
     @Field({ nullable: true })
     coop301_fileurl: string;
+
+    @Field({ nullable: true })
+    internship_period: string;
+
+    @Field({ nullable: true })
+    work_period: string;
+
+    @Field({ nullable: true })
+    coordinator_name: string;
+
+    @Field({ nullable: true })
+    coordinator_job_title: string;
+
+    @Field({ nullable: true })
+    coordinator_phone_number: string;
+
+    @Field({ nullable: true })
+    coordinator_email: string;
+
+    @Field({ nullable: true })
+    supervisor_name: string;
+
+    @Field({ nullable: true })
+    supervisor_job_title: string;
+
+    @Field({ nullable: true })
+    supervisor_phone_number: string;
+
+    @Field({ nullable: true })
+    supervisor_email: string;
 }

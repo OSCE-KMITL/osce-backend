@@ -33,8 +33,28 @@ export class JobService {
     }
 
     async createJobByCommittee(job_info: JobInputByCommittee, account_id: string) {
-        const { job_title, compensation, coop301_fileurl, limit, nature_of_work, project_topic, required_major, required_skills, welfare, company_id } =
-            job_info;
+        const {
+            job_title,
+            compensation,
+            coop301_fileurl,
+            limit,
+            nature_of_work,
+            project_topic,
+            required_major,
+            required_skills,
+            welfare,
+            company_id,
+            internship_period,
+            work_period,
+            coordinator_name,
+            coordinator_job_title,
+            coordinator_email,
+            coordinator_phone_number,
+            supervisor_name,
+            supervisor_job_title,
+            supervisor_email,
+            supervisor_phone_number,
+        } = job_info;
         console.log(company_id);
         if (company_id) {
             const account = await this.account_repository.findOne('id', account_id);
@@ -54,6 +74,16 @@ export class JobService {
             if (required_major?.length > 1000) throw new Error('สาขาที่ต้องการต้องมีตัวอักษรไม่เกิน 1000 ตัวอักษร');
             if (required_skills?.length > 2000) throw new Error('ความสามารถที่นักศึกษาต้องมี ต้องมีตัวอักษรไม่เกิน 2000 ตัวอักษร');
             if (welfare?.length > 1000) throw new Error('สวัสดิการต้องมีตัวอักษรไม่เกิน 1000 ตัวอักษร');
+            if (internship_period?.length > 100) throw new Error('ระยะเวลาฝึกงานต้องมีตัวอักษรไม่เกิน 100 ตัวอักษร');
+            if (work_period?.length > 100) throw new Error('ช่วงเวลาปฏิบัติงานต้องมีตัวอักษรไม่เกิน 100 ตัวอักษร');
+            if (coordinator_name?.length > 200) throw new Error('ชื่อผู้ประสานงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+            if (coordinator_job_title?.length > 200) throw new Error('ตำแหน่งงานผู้ประสานงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+            if (coordinator_email?.length > 200) throw new Error('Email ผู้ประสานงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+            if (coordinator_phone_number?.length > 20) throw new Error('เบอร์ติดต่อผู้ประสานงานต้องมีตัวอักษรไม่เกิน 20 ตัวอักษร');
+            if (supervisor_name?.length > 200) throw new Error('ชื่อผู้นิเทศงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+            if (supervisor_job_title?.length > 200) throw new Error('ตำแหน่งงานผู้นิเทศงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+            if (supervisor_email?.length > 200) throw new Error('Email ผู้นิเทศงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+            if (supervisor_phone_number?.length > 20) throw new Error('เบอร์ติดต่อผู้นิเทศงานต้องมีตัวอักษรไม่เกิน 20 ตัวอักษร');
 
             const saved_job = await this.job_repository.save(
                 new Job(
@@ -65,7 +95,17 @@ export class JobService {
                     limit?.trim(),
                     welfare?.trim(),
                     compensation?.trim(),
-                    coop301_fileurl?.trim()
+                    coop301_fileurl?.trim(),
+                    internship_period.trim(),
+                    work_period.trim(),
+                    coordinator_name.trim(),
+                    coordinator_job_title.trim(),
+                    coordinator_email.trim(),
+                    coordinator_phone_number.trim(),
+                    supervisor_name.trim(),
+                    supervisor_job_title.trim(),
+                    supervisor_email.trim(),
+                    supervisor_phone_number.trim()
                 )
             );
             company.job.push(await this.job_repository.save(saved_job));
@@ -78,7 +118,27 @@ export class JobService {
     }
 
     async createJobByCompany(job_info: JobInputByCompany, account_id: string) {
-        const { job_title, compensation, coop301_fileurl, limit, nature_of_work, project_topic, required_major, required_skills, welfare } = job_info;
+        const {
+            job_title,
+            compensation,
+            coop301_fileurl,
+            limit,
+            nature_of_work,
+            project_topic,
+            required_major,
+            required_skills,
+            welfare,
+            internship_period,
+            work_period,
+            coordinator_name,
+            coordinator_job_title,
+            coordinator_email,
+            coordinator_phone_number,
+            supervisor_name,
+            supervisor_job_title,
+            supervisor_email,
+            supervisor_phone_number,
+        } = job_info;
         const account = await this.account_repository.findOne('id', account_id);
 
         if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
@@ -97,6 +157,17 @@ export class JobService {
         if (required_major?.length > 1000) throw new Error('สาขาที่ต้องการต้องมีตัวอักษรไม่เกิน 1000 ตัวอักษร');
         if (required_skills?.length > 2000) throw new Error('ความสามารถที่นักศึกษาต้องมี ต้องมีตัวอักษรไม่เกิน 2000 ตัวอักษร');
         if (welfare?.length > 1000) throw new Error('สวัสดิการต้องมีตัวอักษรไม่เกิน 1000 ตัวอักษร');
+        if (internship_period?.length > 100) throw new Error('ระยะเวลาฝึกงานต้องมีตัวอักษรไม่เกิน 100 ตัวอักษร');
+        if (work_period?.length > 100) throw new Error('ช่วงเวลาปฏิบัติงานต้องมีตัวอักษรไม่เกิน 100 ตัวอักษร');
+        if (coordinator_name?.length > 200) throw new Error('ชื่อผู้ประสานงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+        if (coordinator_job_title?.length > 200) throw new Error('ตำแหน่งงานผู้ประสานงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+        if (coordinator_email?.length > 200) throw new Error('Email ผู้ประสานงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+        if (coordinator_phone_number?.length > 20) throw new Error('เบอร์ติดต่อผู้ประสานงานต้องมีตัวอักษรไม่เกิน 20 ตัวอักษร');
+        if (supervisor_name?.length > 200) throw new Error('ชื่อผู้นิเทศงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+        if (supervisor_job_title?.length > 200) throw new Error('ตำแหน่งงานผู้นิเทศงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+        if (supervisor_email?.length > 200) throw new Error('Email ผู้นิเทศงานต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+        if (supervisor_phone_number?.length > 20) throw new Error('เบอร์ติดต่อผู้นิเทศงานต้องมีตัวอักษรไม่เกิน 20 ตัวอักษร');
+
         const saved_job = await this.job_repository.save(
             new Job(
                 job_title?.trim(),
@@ -107,7 +178,17 @@ export class JobService {
                 limit?.trim(),
                 welfare?.trim(),
                 compensation?.trim(),
-                coop301_fileurl?.trim()
+                coop301_fileurl?.trim(),
+                internship_period.trim(),
+                work_period.trim(),
+                coordinator_name.trim(),
+                coordinator_job_title.trim(),
+                coordinator_email.trim(),
+                coordinator_phone_number.trim(),
+                supervisor_name.trim(),
+                supervisor_job_title.trim(),
+                supervisor_email.trim(),
+                supervisor_phone_number.trim()
             )
         );
 
@@ -134,7 +215,28 @@ export class JobService {
 
         if (account.role !== RoleOption.COMMITTEE && account.role !== RoleOption.COMPANY) throw new Error('กรรมการและบริษัทเท่านั้นที่สามารถแก้ไขงานได้');
 
-        const { id, job_title, compensation, coop301_fileurl, limit, nature_of_work, project_topic, required_major, required_skills, welfare } = update_input;
+        const {
+            id,
+            job_title,
+            compensation,
+            coop301_fileurl,
+            limit,
+            nature_of_work,
+            project_topic,
+            required_major,
+            required_skills,
+            welfare,
+            internship_period,
+            work_period,
+            coordinator_name,
+            coordinator_job_title,
+            coordinator_email,
+            coordinator_phone_number,
+            supervisor_name,
+            supervisor_job_title,
+            supervisor_email,
+            supervisor_phone_number,
+        } = update_input;
         const update_job = await this.job_repository.findOne('id', id);
         if (!update_job) throw new Error('ไม่พบงานที่จะแก้ไข');
 
@@ -147,6 +249,16 @@ export class JobService {
         update_job.required_major = !!required_major ? required_major.trim() : update_job.required_major;
         update_job.required_skills = !!required_skills ? required_skills.trim() : update_job.required_skills;
         update_job.welfare = !!welfare ? welfare.trim() : update_job.welfare;
+        update_job.internship_period = !!internship_period ? internship_period.trim() : update_job.internship_period;
+        update_job.work_period = !!work_period ? work_period.trim() : update_job.work_period;
+        update_job.coordinator_name = !!coordinator_name ? coordinator_name.trim() : update_job.coordinator_name;
+        update_job.coordinator_job_title = !!coordinator_job_title ? coordinator_job_title.trim() : update_job.coordinator_job_title;
+        update_job.coordinator_email = !!coordinator_email ? coordinator_email.trim() : update_job.coordinator_email;
+        update_job.coordinator_phone_number = !!coordinator_phone_number ? coordinator_phone_number.trim() : update_job.coordinator_phone_number;
+        update_job.supervisor_name = !!supervisor_name ? supervisor_name.trim() : update_job.supervisor_name;
+        update_job.supervisor_job_title = !!supervisor_job_title ? supervisor_job_title.trim() : update_job.supervisor_job_title;
+        update_job.supervisor_email = !!supervisor_email ? supervisor_email.trim() : update_job.supervisor_email;
+        update_job.supervisor_phone_number = !!supervisor_phone_number ? supervisor_phone_number.trim() : update_job.supervisor_phone_number;
 
         return await this.job_repository.save(update_job);
     }
