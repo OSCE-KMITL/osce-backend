@@ -23,11 +23,17 @@ export class CompanyPersonService {
     }
 
     async registerCompanyPersonAccount(input: CompanyPersonInput): Promise<Account> {
-        const { email, password, full_name, job_title, is_coordinator, company_id } = input;
+        const { email, password, full_name, job_title, is_coordinator, company_id, phone_number } = input;
         const company = await this.company_repository.findOne('id', company_id.trim().toLowerCase());
         if (!company) throw new Error('ไม่พบบริษัทในระบบ');
 
-        const saved_company_person = new CompanyPerson(full_name.trim().toLowerCase(), job_title.trim().toLowerCase(), is_coordinator);
+        const saved_company_person = new CompanyPerson(
+            full_name.trim().toLowerCase(),
+            job_title.trim().toLowerCase(),
+            is_coordinator,
+            email.trim().toLowerCase(),
+            phone_number.trim()
+        );
 
         const hashed_password = await hashedPassword(password);
         const company_person_account = new Account(email.trim().toLowerCase(), hashed_password, RoleOption.COMPANY);
@@ -66,13 +72,15 @@ export class CompanyPersonService {
     }
 
     async updateCompanyPerson(update_input: UpdateCompanyPersonInput) {
-        const { id, full_name, job_title, is_coordinator } = update_input;
+        const { id, full_name, job_title, is_coordinator, email, phone_number } = update_input;
         const update_company_person = await this.company_person_repository.findOne('company_person_id', id);
         if (!update_company_person) throw new Error('ไม่พบบุคลากรบริษัทที่จะแก้ไข');
 
         update_company_person.full_name = !!full_name ? full_name.trim().toLowerCase() : update_company_person.full_name;
         update_company_person.job_title = !!job_title ? job_title.trim().toLowerCase() : update_company_person.job_title;
         update_company_person.is_coordinator = !!is_coordinator ? is_coordinator : update_company_person.is_coordinator;
+        update_company_person.email = !!email ? email : update_company_person.email;
+        update_company_person.phone_number = !!phone_number ? phone_number : update_company_person.phone_number;
 
         return await this.company_person_repository.save(update_company_person);
     }

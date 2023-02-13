@@ -28,7 +28,6 @@ export class FileUploadController {
     ): Promise<FileUpload | null> {
         // const { user_id } = req;
         // return this.file_upload_service.uploadFile(file_info, user_id!);
-        console.log("runing")
         return this.file_upload_service.uploadFile(file);
     }
 }

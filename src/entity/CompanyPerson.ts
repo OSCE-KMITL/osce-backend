@@ -19,6 +19,14 @@ export class CompanyPerson {
     @Field()
     job_title: string;
 
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    email: string;
+
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    phone_number: string;
+
     @Column({ default: false })
     @Field()
     is_coordinator: Boolean = false;
@@ -28,7 +36,7 @@ export class CompanyPerson {
     account: Account;
 
     @Field(() => Company, { nullable: true })
-    @ManyToOne(() => Company, (company) => company.company_persons, { onDelete: 'CASCADE'})
+    @ManyToOne(() => Company, (company) => company.company_persons, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'company_id' })
     company_id: Promise<Company>;
 
@@ -40,9 +48,11 @@ export class CompanyPerson {
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
     updated_at: Date;
 
-    constructor(full_name: string, job_title: string, is_coordinator: Boolean) {
+    constructor(full_name: string, job_title: string, is_coordinator: Boolean, email: string, phone_number: string) {
         this.full_name = full_name;
         this.job_title = job_title;
         this.is_coordinator = is_coordinator;
+        this.email = email;
+        this.phone_number = phone_number;
     }
 }

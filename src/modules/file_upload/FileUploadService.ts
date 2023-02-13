@@ -54,19 +54,3 @@ export class FileUploadService {
     }
 }
 
-// @Mutation(() => Boolean)
-// async uploadFiles(
-//     @Arg('picture', () => GraphQLUpload)
-//     { createReadStream, filename, mimetype, encoding }: Upload
-// ): Promise<boolean> {
-//     return new Promise(async (resolve, reject) =>
-//         createReadStream()
-//             .pipe(createWriteStream(__dirname + `/../../../files/${filename}`))
-//             .on('finish', () => {
-//                 console.log('finish'), resolve(true);
-//             })
-//             .on('error', () => {
-//                 console.log('error'), reject(false);
-//             })
-//     );
-// }
