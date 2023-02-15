@@ -1,14 +1,13 @@
+import { Upload } from './../../shared/types/Upload';
 import { JobInputByCompany, UpdateJobInput, JobInputByCommittee } from './args/JobInput';
 import { Job } from './../../entity/Job';
 import { JobService } from './JobService';
 import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { Service } from 'typedi';
-import { Announcement } from '../../entity/Announcement';
-import { GetWithKeyInput } from '../../shared/args/GetWithKeyInput';
-import { isAuthenticated } from '../../middleware/isAuthenticated';
 import { useAuthorization } from '../../middleware/useAuthorization';
 import { RoleOption } from '../../shared/types/Roles';
 import { AppContext } from '../../shared/types/context-types';
+const GraphQLUpload = require('graphql-upload/public/GraphQLUpload.js');
 
 @Resolver()
 @Service()
@@ -32,16 +31,38 @@ export class JobController {
 
     @UseMiddleware(useAuthorization([RoleOption.COMMITTEE]))
     @Mutation(() => Job, { nullable: true })
-    async createJobByCommittee(@Arg('job_info') job_info: JobInputByCommittee, @Ctx() { req }: AppContext): Promise<Job | null> {
+    async createJobByCommittee(
+        @Arg('job_info') job_info: JobInputByCommittee,
+        @Arg('file', () => GraphQLUpload) file: Upload,
+        @Ctx() { req }: AppContext
+    ): Promise<Job | null> {
         const { user_id } = req;
-        return this.job_service.createJobByCommittee(job_info, user_id!);
+        return this.job_service.createJobByCommittee(job_info, user_id!, file);
+    }
+
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE]))
+    @Mutation(() => Job, { nullable: true })
+    async createJobByCommitteeNoFile(@Arg('job_info') job_info: JobInputByCommittee, @Ctx() { req }: AppContext): Promise<Job | null> {
+        const { user_id } = req;
+        return this.job_service.createJobByCommitteeNofile(job_info, user_id!);
     }
 
     @UseMiddleware(useAuthorization([RoleOption.COMPANY]))
     @Mutation(() => Job, { nullable: true })
-    async createJobByCompany(@Arg('job_info') job_info: JobInputByCompany, @Ctx() { req }: AppContext): Promise<Job | null> {
+    async createJobByCompany(
+        @Arg('job_info') job_info: JobInputByCompany,
+        @Arg('file', () => GraphQLUpload) file: Upload,
+        @Ctx() { req }: AppContext
+    ): Promise<Job | null> {
         const { user_id } = req;
-        return this.job_service.createJobByCompany(job_info, user_id!);
+        return this.job_service.createJobByCompany(job_info, user_id!, file);
+    }
+
+    @UseMiddleware(useAuthorization([RoleOption.COMPANY]))
+    @Mutation(() => Job, { nullable: true })
+    async createJobByCompanyNoFile(@Arg('job_info') job_info: JobInputByCompany, @Ctx() { req }: AppContext): Promise<Job | null> {
+        const { user_id } = req;
+        return this.job_service.createJobByCompanyNoFile(job_info, user_id!);
     }
 
     @UseMiddleware(useAuthorization([RoleOption.COMMITTEE, RoleOption.COMPANY]))

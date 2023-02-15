@@ -1,6 +1,7 @@
+import { FileUpload } from './FileUpload';
 import { Company } from './Company';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, UpdateDateColumn, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -40,10 +41,6 @@ export class Job {
     @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
     @Field({ nullable: true })
     compensation: string;
-
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
-    @Field({ nullable: true })
-    coop301_fileurl: string;
 
     @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
     @Field({ nullable: true })
@@ -98,6 +95,10 @@ export class Job {
     @JoinColumn({ name: 'company_id' })
     company_id: Promise<Company>;
 
+    @Field(() => [FileUpload], { nullable: 'items' })
+    @OneToMany(() => FileUpload, (file_upload) => file_upload.job_id, { cascade: true, eager: true })
+    file_upload: FileUpload[];
+
     constructor(
         job_title: string,
         required_major: string,
@@ -107,7 +108,6 @@ export class Job {
         limit: string,
         welfare: string,
         compensation: string,
-        coop301_fileurl: string,
         internship_period: string,
         work_period: string,
         coordinator_name: string,
@@ -127,7 +127,6 @@ export class Job {
         this.limit = limit;
         this.welfare = welfare;
         this.compensation = compensation;
-        this.coop301_fileurl = coop301_fileurl;
         this.internship_period = internship_period;
         this.work_period = work_period;
         this.coordinator_name = coordinator_name;

@@ -27,9 +27,6 @@ export class JobInputByCommittee {
     compensation: string;
 
     @Field({ nullable: true })
-    coop301_fileurl: string;
-
-    @Field({ nullable: true })
     company_id: string;
 
     @Field({ nullable: true })
@@ -90,9 +87,6 @@ export class JobInputByCompany {
     compensation: string;
 
     @Field({ nullable: true })
-    coop301_fileurl: string;
-
-    @Field({ nullable: true })
     internship_period: string;
 
     @Field({ nullable: true })
@@ -151,9 +145,6 @@ export class UpdateJobInput {
 
     @Field({ nullable: true })
     compensation: string;
-
-    @Field({ nullable: true })
-    coop301_fileurl: string;
 
     @Field({ nullable: true })
     internship_period: string;
