@@ -44,6 +44,10 @@ export class StudentRegisterService {
         const student = await this.repository.findOne('student_id', student_id);
         if (!student) throw new Error('ไม่พบนักศึกษา');
 
+        const arrayJob = await student.job;
+        const count: number = arrayJob.length;
+        if(count === 5) throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน')
+
         if (job.students === undefined) {
             job.students = [student];
         } else {
