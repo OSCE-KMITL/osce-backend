@@ -1,7 +1,8 @@
+import { Student } from './Student';
 import { FileUpload } from './FileUpload';
 import { Company } from './Company';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, UpdateDateColumn, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, UpdateDateColumn, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -98,6 +99,21 @@ export class Job {
     @Field(() => [FileUpload], { nullable: 'items' })
     @OneToMany(() => FileUpload, (file_upload) => file_upload.job_id, { cascade: true, eager: true })
     file_upload: FileUpload[];
+
+    @Field(() => [Student], { nullable: 'items' })
+    @ManyToMany(() => Student, (student) => student.job, { cascade: true, eager: true, nullable: true })
+    @JoinTable({
+        name: 'apply_job',
+        joinColumn: {
+            name: 'job',
+            referencedColumnName: 'id',
+        },
+        inverseJoinColumn: {
+            name: 'student',
+            referencedColumnName: 'student_id',
+        },
+    })
+    students: Student[];
 
     constructor(
         job_title: string,

@@ -1,5 +1,6 @@
+import { Job } from './Job';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToOne, PrimaryColumn, JoinColumn, JoinTable } from 'typeorm';
 import { Account } from './Account';
 
 @Entity()
@@ -20,6 +21,21 @@ export class Student {
     @Field(() => Account)
     @OneToOne(() => Account, (account) => account.is_student)
     account: Account;
+
+    @Field(() => [Job], { nullable: 'items' })
+    @ManyToMany(() => Job,(job) => job.students, { nullable: true, lazy: true })
+    @JoinTable({
+        name: 'apply_job',
+        joinColumn: {
+            name: 'student',
+            referencedColumnName: 'student_id',
+        },
+        inverseJoinColumn: {
+            name: 'job',
+            referencedColumnName: 'id',
+        },
+    })
+    job: Job[];
 
     constructor(student_id: string, name: string, lastname: string) {
         this.student_id = student_id;

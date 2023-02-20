@@ -1,3 +1,7 @@
+import { Job } from './../../../entity/Job';
+import { JobRepository } from './../../job/JobRepository';
+import { RoleOption } from './../../../shared/types/Roles';
+import { StudentApplyJobInput } from './../args/StudentRegisterInput';
 import { StudentRegisterRepository } from './StudentRegisterRepository';
 import { Student } from '../../../entity/Student';
 import { Service } from 'typedi';
@@ -8,8 +12,11 @@ import { hashedPassword } from '../../../utils/hash-password';
 
 @Service()
 export class StudentRegisterService {
-    private readonly repository = new StudentRegisterRepository(Student);
-    private readonly account_repository = new AccountRepository(Account);
+    constructor(
+        private readonly job_repository = new JobRepository(Job),
+        private readonly account_repository = new AccountRepository(Account),
+        private readonly repository = new StudentRegisterRepository(Student)
+    ) {}
 
     async registerStudent(input: StudentRegisterInput): Promise<Account> {
         const { student_id, name, password, role, lastname, email } = input;
@@ -22,5 +29,28 @@ export class StudentRegisterService {
 
     async getStudents(): Promise<Student[] | undefined> {
         return await this.repository.find();
+    }
+
+    async applyJob(apply_info: StudentApplyJobInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { job_id } = apply_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.STUDENT) throw new Error('นักศึกษาเท่านั้นที่สามารถสมัครงานได้');
+
+        const job = await this.job_repository.findOne('id', job_id);
+        if (!job) throw new Error('ไม่พบงานที่เปิดรับ');
+
+        const student_id = account.is_student.student_id;
+        const student = await this.repository.findOne('student_id', student_id);
+        if (!student) throw new Error('ไม่พบนักศึกษา');
+
+        if (job.students === undefined) {
+            job.students = [student];
+        } else {
+            job.students.push(student);
+        }
+        await this.job_repository.save(job);
+
+        return await this.repository.save(student);
     }
 }
