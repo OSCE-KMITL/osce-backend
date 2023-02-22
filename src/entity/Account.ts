@@ -49,6 +49,13 @@ export class Account {
     @Field()
     status: string = 'active' || 'inactive' || 'banned';
 
+    @Column({ nullable: true })
+    @Field({ nullable: true })
+    profile_image?: string;
+
+    @Column({ nullable: true })
+    google_id?: string;
+
     @Field()
     @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)' })
     created_at!: Date;

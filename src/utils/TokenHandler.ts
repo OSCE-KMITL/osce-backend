@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Response } from 'express';
-import { TOKEN_SECRET, TOKEN_EXPIRES_IN } from '../shared/constants';
+import { TOKEN_SECRET, TOKEN_EXPIRES_IN, TOKEN_NAME } from '../shared/constants';
 
 export class TokenHandler {
     static createToken(user_id: string, token_version: number): string {
@@ -8,7 +8,7 @@ export class TokenHandler {
     }
     static sendTokenToCookie(res: Response, token: string) {
         try {
-            res.cookie('5555555555', token, { httpOnly: false, sameSite: true, secure: true, maxAge: 1000 * 60 * 60 * 24 * 365 });
+            res.cookie('Authentication', token, { httpOnly: false, sameSite: true, secure: true, maxAge: 1000 * 60 * 60 * 24 * 365 });
         } catch (e) {
             console.log(e);
             throw e;

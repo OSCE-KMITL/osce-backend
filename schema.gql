@@ -11,6 +11,7 @@ type Account {
   is_company: CompanyPerson
   is_student: Student
   password: String!
+  profile_image: String
   role: Role!
   status: String!
   updated_at: DateTime!
@@ -59,6 +60,7 @@ type AuthData {
   is_company: CompanyPerson
   is_student: Student
   password: String!
+  profile_image: String
   role: Role!
   status: String!
   token: String!
@@ -106,10 +108,75 @@ input CompanyPersonInput {
   password: String!
 }
 
+input CoopRegisterArgs {
+  address: String
+  birth_date: String
+  citizen_id: String
+  curriculum_id: String
+  curriculum_name_en: String
+  curriculum_name_th: String
+  department_id: String
+  department_name_en: String
+  department_name_th: String
+  driver_license: Boolean
+  emer_lastname: String
+  emer_name: String
+  emer_relation: String
+  emer_tel: String
+  faculty_id: String
+  faculty_name_en: String
+  faculty_name_th: String
+  gender: String
+  gpa: String
+  height: String
+  lastname_th: String
+  level_id: String
+  military_status: Boolean
+  name_th: String
+  phone_number: String
+  religion: String
+  weight: String
+}
+
+"""status of coop applying"""
+enum CoopStatus {
+  APPLYING
+  DEFAULT
+  PASSED
+  REJECTED
+}
+
+type Curriculum {
+  curriculum_id: String!
+  curriculum_name_en: String!
+  curriculum_name_th: String!
+  dept_id: String!
+  faculty_id: String!
+  id: ID!
+  level_id: String!
+  students: [Student]!
+}
+
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
 scalar DateTime
+
+type Department {
+  department_id: String!
+  department_name_en: String!
+  department_name_th: String!
+  faculty_id: String!
+  id: ID!
+  students: [Student]!
+}
+
+type Faculty {
+  faculty_id: ID!
+  faculty_name_en: String!
+  faculty_name_th: String!
+  students: [Student]!
+}
 
 input GetWithKeyInput {
   target: String
@@ -117,7 +184,7 @@ input GetWithKeyInput {
 }
 
 type Job {
-  company_id: Company!
+  company_id: Company
   compensation: String!
   coop301_fileurl: String!
   createdAt: DateTime!
@@ -145,6 +212,11 @@ input JobInput {
   welfare: String!
 }
 
+input LanguageAbility {
+  level: String!
+  name: String!
+}
+
 type Mutation {
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company
@@ -158,6 +230,7 @@ type Mutation {
   registerCompanyPerson(CompanyPersonAccountInfo: CompanyPersonInput!): Account!
   signIn(email: String!, password: String!): AuthData
   studentRegister(student_register_input: StudentRegisterInput!): Account!
+  studentRegisterCoop(language_abilities: [LanguageAbility!], register_coop_input: CoopRegisterArgs!, skills: [Skill!]): Student
   updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
   updateAnnouncement(update_input: UpdateAnnouncementInput!): Announcement
   updateCompany(update_input: UpdateCompanyInput!): Company
@@ -180,6 +253,9 @@ type Query {
   getCompanyPersonAccounts: [Account]!
   getJobById(job_id: String!): Job
   getMe: Account
+  getStudent(student_id: String!): Student
+  getStudents: [Student]!
+  getStudentsByDepartment(department_id: String!): [Student!]
 }
 
 """type of user"""
@@ -190,19 +266,61 @@ enum Role {
   STUDENT
 }
 
+input Skill {
+  level: String!
+  skill_name: String!
+}
+
 type Student {
   account: Account!
-  lastname: String!
+  address: String
+  birth_date: String
+  citizen_id: String
+  coop_status: CoopStatus!
+  created_at: DateTime!
+  curriculum: Curriculum
+  department: Department
+  driver_license: Boolean
+  emer_lastname: String
+  emer_name: String
+  emer_relation: String
+  emer_tel: String
+  faculty: Faculty
+  gender: String
+  gpa: String
+  height: String
+  language_abilities: [StudentLanguageAbility]!
+  lastname_eng: String!
+  lastname_th: String
+  military_status: Boolean
+  name_eng: String!
+  name_th: String
+  phone_number: String
+  religion: String
+  skills: [StudentSkills]!
+  student_id: ID!
+  updated_at: DateTime!
+  weight: String
+}
+
+type StudentLanguageAbility {
+  id: ID!
+  level: String!
   name: String!
-  student_id: String!
 }
 
 input StudentRegisterInput {
   email: String!
-  lastname: String!
-  name: String!
+  lastname_eng: String!
+  name_eng: String!
   password: String!
   student_id: String!
+}
+
+type StudentSkills {
+  id: ID!
+  level: String!
+  skill_name: String!
 }
 
 input UpdateAdvisorInput {
