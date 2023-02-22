@@ -33,7 +33,7 @@ export class Curriculum {
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     curriculum_name_th: string;
 
-    @Field(() => Faculty)
+    @Field()
     @Column()
     level_id: string;
 
