@@ -25,4 +25,10 @@ export class StudentRegisterController {
         const { user_id } = req;
         return this.service.applyJob(apply_info, user_id!);
     }
+
+    @Mutation(() => Student, { nullable: true })
+    async cancelApply(@Arg('cancel_apply_info') cancel_apply_info: StudentApplyJobInput, @Ctx() { req }: AppContext): Promise<Student | null> {
+        const { user_id } = req;
+        return this.service.cancelApply(cancel_apply_info, user_id!);
+    }
 }
