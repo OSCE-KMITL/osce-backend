@@ -1,66 +1,57 @@
-import {Field, ID, ObjectType} from 'type-graphql';
-import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToOne, OneToMany,
-    OneToOne,
-    PrimaryColumn,
-    UpdateDateColumn
-} from 'typeorm';
-import {Account} from './Account';
-import {CoopStatus} from '../shared/types/CoopStatus';
-import {CoopRegisterArgs} from '../modules/student/interfaces';
-import {Faculty} from "./Faculty";
-import {Department} from "./Department";
-import {Curriculum} from "./Curriculum";
-import {StudentLanguageAbility} from "./StudentLanguageAbility";
-import {StudentSkills} from "./StudentSkills";
+import { Field, ID, ObjectType } from 'type-graphql';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Account } from './Account';
+import { CoopStatus } from '../shared/types/CoopStatus';
+import { CoopRegisterArgs } from '../modules/student/interfaces';
+import { Faculty } from './Faculty';
+import { Department } from './Department';
+import { Curriculum } from './Curriculum';
+import { StudentLanguageAbility } from './StudentLanguageAbility';
+import { StudentSkills } from './StudentSkills';
 
 @Entity()
 @ObjectType()
 export class Student {
     @PrimaryColumn()
-    @Field(type => ID)
+    @Field((type) => ID)
     student_id: string;
 
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     name_eng: string;
 
-    @Field(()=>Faculty,{nullable:true})
-    @ManyToOne(()=>Faculty ,faculty => faculty.students,{nullable:true,eager:true})
-    @JoinColumn({name:"faculty"})
-    faculty:Faculty
+    @Field(() => Faculty, { nullable: true })
+    @ManyToOne(() => Faculty, (faculty) => faculty.students, { nullable: true, eager: true })
+    @JoinColumn({ name: 'faculty' })
+    faculty: Faculty;
 
-    @Field(()=>Department,{nullable:true})
-    @ManyToOne(()=>Department ,department => department.students ,{nullable:true,eager:true})
-    @JoinColumn({name:"department"})
-    department:Department
+    @Field(() => Department, { nullable: true })
+    @ManyToOne(() => Department, (department) => department.students, { nullable: true, eager: true })
+    @JoinColumn({ name: 'department' })
+    department: Department;
 
-    @Field(()=>Curriculum,{nullable:true})
-    @ManyToOne(()=>Curriculum,curr => curr.students ,{ nullable: true,eager:true })
-    @JoinColumn({name:"curriculum"})
-    curriculum:Curriculum
+    @Field(() => Curriculum, { nullable: true })
+    @ManyToOne(() => Curriculum, (curr) => curr.students, { nullable: true, eager: true })
+    @JoinColumn({ name: 'curriculum' })
+    curriculum: Curriculum;
 
-    @Field(()=>[StudentLanguageAbility],{nullable:"items"})
-    @OneToMany(()=>StudentLanguageAbility,skill => skill.students ,{ nullable: true,eager:true ,cascade:true })
-    language_abilities:StudentLanguageAbility[]
+    @Field(() => [StudentLanguageAbility], { nullable: 'items' })
+    @OneToMany(() => StudentLanguageAbility, (skill) => skill.students, { nullable: true, eager: true, cascade: true })
+    language_abilities: StudentLanguageAbility[];
 
-    @Field(()=>[StudentSkills],{nullable:"items"})
-    @OneToMany(()=>StudentSkills,skill => skill.students ,{ nullable: true, eager:true ,cascade:true})
-    skills:StudentSkills[]
+    @Field(() => [StudentSkills], { nullable: 'items' })
+    @OneToMany(() => StudentSkills, (skill) => skill.students, { nullable: true, eager: true, cascade: true })
+    skills: StudentSkills[];
 
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     lastname_eng: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci',nullable:true  })
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', nullable: true })
     @Field({ nullable: true })
     name_th: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci' ,nullable:true})
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', nullable: true })
     @Field({ nullable: true })
     lastname_th: string;
 
@@ -164,8 +155,7 @@ export class Student {
         this.emer_lastname = payload.emer_lastname;
         this.emer_tel = payload.emer_tel;
         this.birth_date = payload.birth_date;
-        this.coop_status = CoopStatus.APPLYING
-        return this
+        this.coop_status = CoopStatus.APPLYING;
+        return this;
     }
-
 }
