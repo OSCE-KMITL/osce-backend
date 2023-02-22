@@ -10,7 +10,6 @@ import { Job } from './../../../entity/Job';
 import { JobRepository } from './../../job/JobRepository';
 import { RoleOption } from './../../../shared/types/Roles';
 import { StudentApplyJobInput } from './../args/StudentRegisterInput';
-import { StudentRegisterRepository } from './StudentRegisterRepository';
 import { Student } from '../../../entity/Student';
 import { Service } from 'typedi';
 import { Account } from '../../../entity/Account';
@@ -18,14 +17,12 @@ import { AccountRepository } from '../../account/AccountRepository';
 import { StudentRegisterInput } from '../args/StudentRegisterInput';
 import { hashedPassword } from '../../../utils/hash-password';
 import { CoopRegisterArgs, LanguageAbility, Skill } from '../interfaces';
-import { RoleOption } from '../../../shared/types/Roles';
 import { roleValidation } from '../../../utils/common-utils';
 import { Faculty } from '../../../entity/Faculty';
 import { Department } from '../../../entity/Department';
 import { Curriculum } from '../../../entity/Curriculum';
 import { StudentLanguageAbility } from '../../../entity/StudentLanguageAbility';
 import { StudentSkills } from '../../../entity/StudentSkills';
-import { Arg } from 'type-graphql';
 
 @Service()
 export class StudentRegisterService {
@@ -36,12 +33,9 @@ export class StudentRegisterService {
     private readonly curriculum_repository = new StudentCurriculumRepository(Curriculum);
     private readonly lang_repository = new StudentLanguageRepository(StudentLanguageAbility);
     private readonly skill_repository = new StudentSkillsRepository(StudentSkills);
-    private readonly job_repository = new JobRepository(Job)
+    private readonly job_repository = new JobRepository(Job);
 
-    constructor(
-
-
-            ) {}
+    constructor() {}
 
     async registerStudent(input: StudentRegisterInput): Promise<Account> {
         const { student_id, name_eng, password, role, lastname_eng, email } = input;
@@ -141,7 +135,6 @@ export class StudentRegisterService {
             student_applied.faculty = student_faculty;
             student_applied.curriculum = student_curriculum;
 
-
             if (skills) {
                 if (skills.length !== 0 || true) {
                     skills.forEach((skill) => {
@@ -182,7 +175,7 @@ export class StudentRegisterService {
 
         const arrayJob = await student.job;
         const count: number = arrayJob.length;
-        if(count === 5) throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน')
+        if (count === 5) throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน');
 
         if (job.students === undefined) {
             job.students = [student];

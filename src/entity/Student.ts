@@ -1,8 +1,6 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { Job } from './Job';
-import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, ManyToMany, OneToOne, PrimaryColumn, JoinColumn, JoinTable } from 'typeorm';
 import { Account } from './Account';
 import { CoopStatus } from '../shared/types/CoopStatus';
 import { CoopRegisterArgs } from '../modules/student/interfaces';
@@ -134,9 +132,8 @@ export class Student {
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
     updated_at: Date;
 
-    constructor(student_id: string, name_eng: string, lastname_eng: string) {
     @Field(() => [Job], { nullable: 'items' })
-    @ManyToMany(() => Job,(job) => job.students, { nullable: true, lazy: true })
+    @ManyToMany(() => Job, (job) => job.students, { nullable: true, lazy: true })
     @JoinTable({
         name: 'apply_job',
         joinColumn: {
@@ -150,10 +147,10 @@ export class Student {
     })
     job: Job[];
 
-    constructor(student_id: string, name: string, lastname: string) {
+    constructor(student_id: string, name_eng: string, lastname: string) {
         this.student_id = student_id;
         this.name_eng = name_eng;
-        this.lastname_eng = lastname_eng;
+        this.lastname_eng = lastname;
     }
 
     applyCoop(payload: CoopRegisterArgs) {

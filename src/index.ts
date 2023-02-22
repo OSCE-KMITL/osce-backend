@@ -1,22 +1,21 @@
 import 'reflect-metadata';
-import {MySqlDataSource} from '../ormconfig';
+import { MySqlDataSource } from '../ormconfig';
 import Express from 'express';
-import {config} from 'dotenv';
-import {ServerConfig} from './config/ServerConfig';
+import { config } from 'dotenv';
+import { ServerConfig } from './config/ServerConfig';
 import cookieParser from 'cookie-parser';
-import { PORT, FRONTEND_URI } from './shared/constants';
 const { graphqlUploadExpress } = require('graphql-upload');
-import {FRONTEND_URI, GOOGLE_CALLBACK_ROUTE, PORT} from './shared/constants';
+import { FRONTEND_URI, GOOGLE_CALLBACK_ROUTE, PORT } from './shared/constants';
 import passport from 'passport';
-import {AppRequest} from './shared/types/context-types';
-import {PassportGoogle} from './modules/auth/passport';
-import {TokenHandler} from './utils/TokenHandler';
+import { AppRequest } from './shared/types/context-types';
+import { PassportGoogle } from './modules/auth/passport';
+import { TokenHandler } from './utils/TokenHandler';
 import bcrypt from 'bcrypt';
-import {AccountRepository} from './modules/account/AccountRepository';
-import {Account} from './entity/Account';
-import {RoleOption} from './shared/types/Roles';
+import { AccountRepository } from './modules/account/AccountRepository';
+import { Account } from './entity/Account';
+import { RoleOption } from './shared/types/Roles';
 import EmailExtractor from './utils/EmailExctractor';
-import {Student} from './entity/Student';
+import { Student } from './entity/Student';
 
 config();
 PassportGoogle();
@@ -24,7 +23,7 @@ export const bootstrap = async () => {
     const app = Express();
     app.use(cookieParser());
     app.use(graphqlUploadExpress({ maxFileSize: 20000000, maxFiles: 5 }));
-    app.use(Express.static('public'))
+    app.use(Express.static('public'));
 
     // login route
     app.get('/auth/google', passport.authenticate('verify-student', { scope: ['profile', 'email'], session: false }));
