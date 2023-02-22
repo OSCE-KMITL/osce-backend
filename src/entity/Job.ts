@@ -85,11 +85,11 @@ export class Job {
 
     @Field()
     @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', name: 'created_at' })
-    createdAt!: Date;
+    created_at!: Date;
 
     @Field()
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)', name: 'updated_at' })
-    updatedAt!: Date;
+    updated_at!: Date;
 
     @Field(() => Company, { nullable: true })
     @ManyToOne(() => Company, (company) => company.id)

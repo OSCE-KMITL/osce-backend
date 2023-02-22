@@ -30,7 +30,7 @@ export class FileUpload {
     updatedAt!: Date;
 
     @Field(() => Job)
-    @ManyToOne(() => Job, (job) => job.id)
+    @ManyToOne(() => Job, (job) => job.id, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'job_id' })
     job_id: Promise<Job>;
 
