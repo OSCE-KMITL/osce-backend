@@ -4,6 +4,8 @@ import Express from 'express';
 import {config} from 'dotenv';
 import {ServerConfig} from './config/ServerConfig';
 import cookieParser from 'cookie-parser';
+import { PORT, FRONTEND_URI } from './shared/constants';
+const { graphqlUploadExpress } = require('graphql-upload');
 import {FRONTEND_URI, GOOGLE_CALLBACK_ROUTE, PORT} from './shared/constants';
 import passport from 'passport';
 import {AppRequest} from './shared/types/context-types';
@@ -21,6 +23,8 @@ PassportGoogle();
 export const bootstrap = async () => {
     const app = Express();
     app.use(cookieParser());
+    app.use(graphqlUploadExpress({ maxFileSize: 20000000, maxFiles: 5 }));
+    app.use(Express.static('public'))
 
     // login route
     app.get('/auth/google', passport.authenticate('verify-student', { scope: ['profile', 'email'], session: false }));
@@ -53,7 +57,7 @@ export const bootstrap = async () => {
                 const account_repository = new AccountRepository(Account);
                 const existed_account = await account_repository.findOne('google_id', id);
 
-                // fomat input data
+                // format input data
                 const fmt_email = emails![0].value.trim().toLocaleLowerCase();
                 const fmt_name = name?.givenName.trim().toLocaleLowerCase();
                 const fmt_last_name = name?.familyName.trim().toLocaleLowerCase();
@@ -88,7 +92,6 @@ export const bootstrap = async () => {
     await MySqlDataSource.initialize()
         .then(() => console.log('Data Source has been initialized!'))
         .catch((err) => console.log(err));
-    await MySqlDataSource.runMigrations();
 
     const server = await ServerConfig.createServer();
 

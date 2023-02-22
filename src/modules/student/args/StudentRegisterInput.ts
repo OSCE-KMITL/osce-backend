@@ -20,3 +20,14 @@ export class StudentRegisterInput {
 
     role: RoleOption = RoleOption.STUDENT;
 }
+
+@InputType()
+export class StudentApplyJobInput {
+    @Field({ nullable: false })
+    job_id: string;
+
+
+
+}
+
+

@@ -3,10 +3,25 @@ import { MaxLength } from 'class-validator';
 @InputType()
 export class CompanyInput {
     @Field()
-    name: string;
+    name_th: string;
+
+    @Field()
+    name_eng: string;
 
     @Field()
     address: string;
+
+    @Field()
+    sub_district: string;
+
+    @Field()
+    district: string;
+
+    @Field()
+    province: string;
+
+    @Field()
+    postal_code: string;
 
     @Field()
     phone_number: string;
@@ -23,10 +38,25 @@ export class UpdateCompanyInput {
     id: string;
 
     @Field()
-    name: string;
+    name_th: string;
+
+    @Field()
+    name_eng: string;
 
     @Field()
     address: string;
+
+    @Field()
+    sub_district: string;
+
+    @Field()
+    district: string;
+
+    @Field()
+    province: string;
+    
+    @Field()
+    postal_code: string;
 
     @Field()
     phone_number: string;

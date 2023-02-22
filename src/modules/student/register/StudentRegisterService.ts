@@ -6,6 +6,11 @@ import {
     StudentRegisterRepository,
     StudentSkillsRepository,
 } from './StudentRegisterRepository';
+import { Job } from './../../../entity/Job';
+import { JobRepository } from './../../job/JobRepository';
+import { RoleOption } from './../../../shared/types/Roles';
+import { StudentApplyJobInput } from './../args/StudentRegisterInput';
+import { StudentRegisterRepository } from './StudentRegisterRepository';
 import { Student } from '../../../entity/Student';
 import { Service } from 'typedi';
 import { Account } from '../../../entity/Account';
@@ -31,6 +36,12 @@ export class StudentRegisterService {
     private readonly curriculum_repository = new StudentCurriculumRepository(Curriculum);
     private readonly lang_repository = new StudentLanguageRepository(StudentLanguageAbility);
     private readonly skill_repository = new StudentSkillsRepository(StudentSkills);
+    private readonly job_repository = new JobRepository(Job)
+
+    constructor(
+
+
+            ) {}
 
     async registerStudent(input: StudentRegisterInput): Promise<Account> {
         const { student_id, name_eng, password, role, lastname_eng, email } = input;
@@ -154,5 +165,32 @@ export class StudentRegisterService {
             console.log(e);
             throw e;
         }
+    }
+
+    async applyJob(apply_info: StudentApplyJobInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { job_id } = apply_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.STUDENT) throw new Error('นักศึกษาเท่านั้นที่สามารถสมัครงานได้');
+
+        const job = await this.job_repository.findOne('id', job_id);
+        if (!job) throw new Error('ไม่พบงานที่เปิดรับ');
+
+        const student_id = account.is_student.student_id;
+        const student = await this.student_repository.findOne('student_id', student_id);
+        if (!student) throw new Error('ไม่พบนักศึกษา');
+
+        const arrayJob = await student.job;
+        const count: number = arrayJob.length;
+        if(count === 5) throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน')
+
+        if (job.students === undefined) {
+            job.students = [student];
+        } else {
+            job.students.push(student);
+        }
+        await this.job_repository.save(job);
+
+        return await this.student_repository.save(student);
     }
 }

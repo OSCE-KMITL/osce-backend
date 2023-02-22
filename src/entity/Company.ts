@@ -13,11 +13,31 @@ export class Company {
 
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
-    name: string;
+    name_th: string;
+
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    name_eng: string;
 
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     address: string;
+
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    sub_district: string;
+
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    district: string;
+
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    province: string;
+
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    postal_code: string;
 
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
@@ -47,11 +67,28 @@ export class Company {
     @OneToMany(() => Job, (job) => job.company_id, { cascade: true, eager: true })
     job: Job[];
 
-    constructor(name: string, address: string, phone_number: string, website_url: string, business_type: string) {
-        this.name = name;
+    constructor(
+        name_th: string,
+        name_eng: string,
+        address: string,
+        sub_district: string,
+        district: string,
+        province: string,
+        postal_code: string,
+        phone_number: string,
+        website_url: string,
+        business_type: string
+    ) {
+        this.name_th = name_th;
+        this.name_eng = name_eng;
         this.address = address;
+        this.sub_district = sub_district;
+        this.district = district;
+        this.province = province;
+        this.postal_code = postal_code;
         this.phone_number = phone_number;
         this.website_url = website_url;
         this.business_type = business_type;
+        
     }
 }

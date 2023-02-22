@@ -17,6 +17,9 @@ export class CompanyPersonInput {
     job_title!: string;
 
     @Field({ nullable: false })
+    phone_number!: string;
+
+    @Field({ nullable: false })
     is_coordinator!: Boolean;
 
     @Field({ nullable: false })
@@ -33,6 +36,12 @@ export class UpdateCompanyPersonInput {
 
     @Field({ nullable: false })
     job_title!: string;
+
+    @Field({ nullable: false })
+    email!: string;
+
+    @Field({ nullable: false })
+    phone_number!: string;
 
     @Field({ nullable: false })
     is_coordinator!: Boolean;
