@@ -23,6 +23,13 @@ import { Department } from '../../../entity/Department';
 import { Curriculum } from '../../../entity/Curriculum';
 import { StudentLanguageAbility } from '../../../entity/StudentLanguageAbility';
 import { StudentSkills } from '../../../entity/StudentSkills';
+import { TranscriptUploadRepository } from './StudentRegisterRepository';
+import { TranscriptFileUpload } from '../../../entity/TranscriptFileUpload';
+import { Upload } from '../../../shared/types/Upload';
+import path from 'path';
+import { generateRandomString } from '../../../utils/random-string';
+import { PORT } from '../../../shared/constants';
+import { createWriteStream } from 'fs';
 
 @Service()
 export class StudentRegisterService {
@@ -34,6 +41,7 @@ export class StudentRegisterService {
     private readonly lang_repository = new StudentLanguageRepository(StudentLanguageAbility);
     private readonly skill_repository = new StudentSkillsRepository(StudentSkills);
     private readonly job_repository = new JobRepository(Job);
+    private readonly transcript_repository = new TranscriptUploadRepository(TranscriptFileUpload);
 
     constructor() {}
 
@@ -79,7 +87,13 @@ export class StudentRegisterService {
         }
     }
 
-    async registerCoop(payload: CoopRegisterArgs, user_id: string, skills: Skill[], language_abilities: LanguageAbility[]): Promise<any> {
+    async registerCoop(
+        payload: CoopRegisterArgs,
+        user_id: string,
+        skills: Skill[],
+        language_abilities: LanguageAbility[],
+        transcript_file: Upload
+    ): Promise<any> {
         try {
             const account = await this.account_repository.findOne('id', user_id);
             if (!account) throw new Error('คุณไม่มีสิทธิเข้าถึง');
@@ -151,6 +165,28 @@ export class StudentRegisterService {
                         this.lang_repository.save(new_lang);
                     });
                 }
+            }
+
+            if (transcript_file) {
+                const { createReadStream, filename, mimetype, encoding } = await transcript_file;
+                const { ext } = path.parse(filename);
+                const year_now = new Date().getFullYear().toString();
+                const random_name = generateRandomString(12) + ext;
+                const original_name = filename;
+                const current_name = year_now + '_' + 'transcript' + '_' + student_applied.student_id + '_' + random_name;
+                const url = `http://localhost:${PORT}/files/student_transcript/${current_name}`;
+
+                try {
+                    createReadStream().pipe(createWriteStream(__dirname + `/../../../../public/files/student_transcript/${current_name}`));
+                    const transcirpt_obj = new TranscriptFileUpload(original_name, current_name, url);
+                    const transcirpt_file = await this.transcript_repository.save(transcirpt_obj);
+
+                    student_applied.transcript = transcirpt_file;
+                } catch (error) {
+                    throw new Error('Error , Can not saved transcritp files');
+                }
+            } else {
+                throw new Error('กรุณาแนบใบแสดงผลการเรียน (Transcript)');
             }
 
             return await this.student_repository.save(student_applied);

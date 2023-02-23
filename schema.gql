@@ -145,6 +145,7 @@ input CoopRegisterArgs {
   lastname_th: String
   level_id: String
   military_status: Boolean
+  name_prefix: String
   name_th: String
   phone_number: String
   religion: String
@@ -298,7 +299,7 @@ type Mutation {
   registerCompanyPerson(CompanyPersonAccountInfo: CompanyPersonInput!): Account!
   signIn(email: String!, password: String!): AuthData
   studentRegister(student_register_input: StudentRegisterInput!): Account!
-  studentRegisterCoop(language_abilities: [LanguageAbility!], register_coop_input: CoopRegisterArgs!, skills: [Skill!]): Student
+  studentRegisterCoop(language_abilities: [LanguageAbility!], register_coop_input: CoopRegisterArgs!, skills: [Skill!], transcript_file: Upload!): Student
   updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
   updateAnnouncement(update_input: UpdateAnnouncementInput!): Announcement
   updateCompany(update_input: UpdateCompanyInput!): Company
@@ -364,11 +365,13 @@ type Student {
   lastname_th: String
   military_status: Boolean
   name_eng: String!
+  name_prefix: String!
   name_th: String
   phone_number: String
   religion: String
   skills: [StudentSkills]!
   student_id: ID!
+  transcript: [TranscriptFileUpload]!
   updated_at: DateTime!
   weight: String
 }
@@ -395,6 +398,16 @@ type StudentSkills {
   id: ID!
   level: String!
   skill_name: String!
+}
+
+type TranscriptFileUpload {
+  created_at: DateTime!
+  current_name: String
+  id: String!
+  original_name: String
+  student_id: Student!
+  updated_at: DateTime!
+  url: String
 }
 
 input UpdateAdvisorInput {

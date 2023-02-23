@@ -9,6 +9,7 @@ import { Department } from './Department';
 import { Curriculum } from './Curriculum';
 import { StudentLanguageAbility } from './StudentLanguageAbility';
 import { StudentSkills } from './StudentSkills';
+import { TranscriptFileUpload } from './TranscriptFileUpload';
 
 @Entity()
 @ObjectType()
@@ -20,6 +21,10 @@ export class Student {
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     name_eng: string;
+
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    name_prefix: string;
 
     @Field(() => Faculty, { nullable: true })
     @ManyToOne(() => Faculty, (faculty) => faculty.students, { nullable: true, eager: true })
@@ -35,6 +40,10 @@ export class Student {
     @ManyToOne(() => Curriculum, (curr) => curr.students, { nullable: true, eager: true })
     @JoinColumn({ name: 'curriculum' })
     curriculum: Curriculum;
+
+    @Field(() => [TranscriptFileUpload], { nullable: 'items' })
+    @OneToOne(() => TranscriptFileUpload, (transcript) => transcript.student_id, { nullable: true, eager: true, cascade: true })
+    transcript: TranscriptFileUpload;
 
     @Field(() => [StudentLanguageAbility], { nullable: 'items' })
     @OneToMany(() => StudentLanguageAbility, (skill) => skill.students, { nullable: true, eager: true, cascade: true })

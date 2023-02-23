@@ -1,39 +1,37 @@
-import { ArgsType, Field, InputType} from 'type-graphql';
-
+import { ArgsType, Field, InputType } from 'type-graphql';
 
 @InputType()
 export class Skill {
-    @Field(()=>String )
-    skill_name: string
+    @Field(() => String)
+    skill_name: string;
 
-    @Field(()=>String )
-    level: string
+    @Field(() => String)
+    level: string;
 }
 
 @InputType()
 export class LanguageAbility {
-    @Field(()=>String )
-    name: string
+    @Field(() => String)
+    name: string;
 
-    @Field(()=>String )
-    level: string
+    @Field(() => String)
+    level: string;
 }
 
 @ArgsType()
 export class LanguageAbilities {
-    @Field(() => [LanguageAbility] ,{nullable:true})
+    @Field(() => [LanguageAbility], { nullable: true })
     language_abilities: LanguageAbility[];
 }
 
 @ArgsType()
 export class SkillsArgs {
-    @Field(() => [Skill] ,{nullable:true})
-    skills: Skill[] ;
+    @Field(() => [Skill], { nullable: true })
+    skills: Skill[];
 }
 
 @InputType()
 export class CoopRegisterArgs {
-
     @Field({ nullable: true })
     level_id: string;
 
@@ -48,6 +46,9 @@ export class CoopRegisterArgs {
 
     @Field({ nullable: true })
     name_th: string;
+
+    @Field({ nullable: true })
+    name_prefix: string;
 
     @Field({ nullable: true })
     lastname_th: string;
@@ -98,7 +99,7 @@ export class CoopRegisterArgs {
     birth_date: string;
 
     @Field({ nullable: true })
-    faculty_id:string
+    faculty_id: string;
 
     @Field({ nullable: true })
     faculty_name_th: string;
@@ -114,10 +115,7 @@ export class CoopRegisterArgs {
 
     @Field({ nullable: true })
     department_name_th: string;
-
 }
-
-
 
 /*const mock = {
     student_id: '63015208',
