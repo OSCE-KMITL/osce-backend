@@ -283,6 +283,7 @@ input LanguageAbility {
 
 type Mutation {
   applyJob(apply_info: StudentApplyJobInput!): Student
+  cancelApply(cancel_apply_info: StudentApplyJobInput!): Student
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company
   createJobByCommittee(file: Upload!, job_info: JobInputByCommittee!): Job

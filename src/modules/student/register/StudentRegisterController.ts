@@ -29,6 +29,8 @@ export class StudentRegisterController {
     async cancelApply(@Arg('cancel_apply_info') cancel_apply_info: StudentApplyJobInput, @Ctx() { req }: AppContext): Promise<Student | null> {
         const { user_id } = req;
         return this.service.cancelApply(cancel_apply_info, user_id!);
+    }
+    
     @Query(() => [Student], { nullable: 'items' })
     async getStudents(): Promise<Student[] | undefined> {
         return await this.service.getStudents();
