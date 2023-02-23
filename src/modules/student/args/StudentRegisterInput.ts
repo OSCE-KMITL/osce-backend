@@ -13,10 +13,10 @@ export class StudentRegisterInput {
     student_id!: string;
 
     @Field({ nullable: false })
-    name!: string;
+    name_eng!: string;
 
     @Field({ nullable: false })
-    lastname!: string;
+    lastname_eng!: string;
 
     role: RoleOption = RoleOption.STUDENT;
 }

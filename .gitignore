@@ -3,6 +3,8 @@
 logs
 *.gql
 *.log
+*.pdf
+*.ggl
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

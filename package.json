@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon -r ./src/index.ts",
-    "test": "set NODE_ENV=test && npx jest --watch"
+    "test": "set NODE_ENV=test && npx jest --watch",
+    "typeorm": "typeorm-ts-node-commonjs -d ormconfig.ts"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,9 @@
     "jsonwebtoken": "^9.0.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-google-oidc": "^0.1.0",
     "ramda": "^0.28.0",
     "reflect-metadata": "^0.1.13",
     "ts-jest": "^29.0.3",
@@ -42,6 +46,8 @@
     "@types/cookie-parser": "^1.4.3",
     "@types/graphql-upload": "^15.0.2",
     "@types/jsonwebtoken": "^9.0.0",
+    "@types/passport": "^1.0.11",
+    "@types/passport-google-oauth20": "^2.0.11",
     "dotenv": "^16.0.3",
     "nodemon": "^2.0.20",
     "prettier": "2.7.1",

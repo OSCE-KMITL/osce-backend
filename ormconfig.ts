@@ -14,7 +14,7 @@ export const MySqlDataSource = new DataSource({
     synchronize: true,
     logging: false,
     entities: ['src/entity/**/*.{ts,js}'],
-    migrations: ['src/migration/**/*.ts'],
+    migrations: ['migration/**/*.ts'],
     subscribers: ['src/subscriber/**/*.ts'],
     charset: 'UTF8_GENERAL_CI',
 });

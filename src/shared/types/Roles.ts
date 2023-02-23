@@ -11,3 +11,4 @@ registerEnumType(RoleOption, {
     name: 'Role', // this one is mandatory
     description: 'type of user', // this one is optional
 });
+
