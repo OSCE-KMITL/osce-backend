@@ -72,10 +72,15 @@ type Company {
   business_type: String!
   company_persons: [CompanyPerson]!
   created_at: DateTime!
+  district: String!
   id: String!
   job: [Job]!
-  name: String!
+  name_eng: String!
+  name_th: String!
   phone_number: String!
+  postal_code: String!
+  province: String!
+  sub_district: String!
   updated_at: DateTime!
   website_url: String!
 }
@@ -83,19 +88,26 @@ type Company {
 input CompanyInput {
   address: String!
   business_type: String!
-  name: String!
+  district: String!
+  name_eng: String!
+  name_th: String!
   phone_number: String!
+  postal_code: String!
+  province: String!
+  sub_district: String!
   website_url: String!
 }
 
 type CompanyPerson {
   account: Account!
-  company_id: Company!
+  company_id: Company
   company_person_id: String!
   created_at: DateTime!
+  email: String!
   full_name: String!
   is_coordinator: Boolean!
   job_title: String!
+  phone_number: String!
   updated_at: DateTime!
 }
 
@@ -106,6 +118,7 @@ input CompanyPersonInput {
   is_coordinator: Boolean!
   job_title: String!
   password: String!
+  phone_number: String!
 }
 
 input CoopRegisterArgs {
@@ -178,6 +191,16 @@ type Faculty {
   students: [Student]!
 }
 
+type FileUpload {
+  createdAt: DateTime!
+  current_name: String
+  id: String!
+  job_id: Job!
+  original_name: String
+  updatedAt: DateTime!
+  url: String
+}
+
 input GetWithKeyInput {
   target: String
   value: String
@@ -185,31 +208,72 @@ input GetWithKeyInput {
 
 type Job {
   company_id: Company
-  compensation: String!
-  coop301_fileurl: String!
-  createdAt: DateTime!
+  compensation: String
+  coordinator_email: String
+  coordinator_job_title: String
+  coordinator_name: String
+  coordinator_phone_number: String
+  created_at: DateTime!
+  file_upload: [FileUpload]!
   id: String!
-  job_title: String!
-  limit: String!
-  nature_of_work: String!
-  project_topic: String!
-  required_major: String!
-  required_skills: String!
-  updatedAt: DateTime!
-  welfare: String!
+  internship_period: String
+  job_title: String
+  limit: String
+  nature_of_work: String
+  project_topic: String
+  required_major: String
+  required_skills: String
+  students: [Student]!
+  supervisor_email: String
+  supervisor_job_title: String
+  supervisor_name: String
+  supervisor_phone_number: String
+  updated_at: DateTime!
+  welfare: String
+  work_period: String
 }
 
-input JobInput {
-  company_id: String!
-  compensation: String!
-  coop301_fileurl: String!
-  job_title: String!
-  limit: String!
-  nature_of_work: String!
-  project_topic: String!
-  required_major: String!
-  required_skills: String!
-  welfare: String!
+input JobInputByCommittee {
+  company_id: String
+  compensation: String
+  coordinator_email: String
+  coordinator_job_title: String
+  coordinator_name: String
+  coordinator_phone_number: String
+  internship_period: String
+  job_title: String
+  limit: String
+  nature_of_work: String
+  project_topic: String
+  required_major: String
+  required_skills: String
+  supervisor_email: String
+  supervisor_job_title: String
+  supervisor_name: String
+  supervisor_phone_number: String
+  welfare: String
+  work_period: String
+}
+
+input JobInputByCompany {
+  compensation: String
+  coordinator_email: String
+  coordinator_job_title: String
+  coordinator_name: String
+  coordinator_phone_number: String
+  internship_period: String
+  job_title: String
+  limit: String
+  nature_of_work: String
+  project_topic: String
+  required_major: String
+  required_skills: String
+  supervisor_email: String
+  supervisor_job_title: String
+  supervisor_name: String
+  supervisor_phone_number: String
+  welfare: String
+  work_period: String
 }
 
 input LanguageAbility {
@@ -218,9 +282,13 @@ input LanguageAbility {
 }
 
 type Mutation {
+  applyJob(apply_info: StudentApplyJobInput!): Student
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company
-  createJob(job_info: JobInput!): Job
+  createJobByCommittee(file: Upload!, job_info: JobInputByCommittee!): Job
+  createJobByCommitteeNoFile(job_info: JobInputByCommittee!): Job
+  createJobByCompany(file: Upload!, job_info: JobInputByCompany!): Job
+  createJobByCompanyNoFile(job_info: JobInputByCompany!): Job
   deleteAdvisorAccount(id: String!): Account
   deleteAnnouncement(announcement_id: String!): Announcement
   deleteCompany(delete_by_id: String!): Company
@@ -236,6 +304,7 @@ type Mutation {
   updateCompany(update_input: UpdateCompanyInput!): Company
   updateCompanyPerson(update_input: UpdateCompanyPersonInput!): CompanyPerson
   updateJob(update_input: UpdateJobInput!): Job
+  uploadFile(file: Upload!): FileUpload
 }
 
 type Query {
@@ -289,6 +358,7 @@ type Student {
   gender: String
   gpa: String
   height: String
+  job: [Job]!
   language_abilities: [StudentLanguageAbility]!
   lastname_eng: String!
   lastname_th: String
@@ -301,6 +371,10 @@ type Student {
   student_id: ID!
   updated_at: DateTime!
   weight: String
+}
+
+input StudentApplyJobInput {
+  job_id: String!
 }
 
 type StudentLanguageAbility {
@@ -340,28 +414,47 @@ input UpdateAnnouncementInput {
 input UpdateCompanyInput {
   address: String!
   business_type: String!
+  district: String!
   id: String!
-  name: String!
+  name_eng: String!
+  name_th: String!
   phone_number: String!
+  postal_code: String!
+  province: String!
+  sub_district: String!
   website_url: String!
 }
 
 input UpdateCompanyPersonInput {
+  email: String!
   full_name: String!
   id: String
   is_coordinator: Boolean!
   job_title: String!
+  phone_number: String!
 }
 
 input UpdateJobInput {
-  compensation: String!
-  coop301_fileurl: String!
+  compensation: String
+  coordinator_email: String
+  coordinator_job_title: String
+  coordinator_name: String
+  coordinator_phone_number: String
   id: String!
-  job_title: String!
-  limit: String!
-  nature_of_work: String!
-  project_topic: String!
-  required_major: String!
-  required_skills: String!
-  welfare: String!
+  internship_period: String
+  job_title: String
+  limit: String
+  nature_of_work: String
+  project_topic: String
+  required_major: String
+  required_skills: String
+  supervisor_email: String
+  supervisor_job_title: String
+  supervisor_name: String
+  supervisor_phone_number: String
+  welfare: String
+  work_period: String
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
