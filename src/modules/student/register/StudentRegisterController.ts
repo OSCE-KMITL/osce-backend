@@ -7,6 +7,8 @@ import { StudentRegisterService } from './StudentRegisterService';
 import { Account } from '../../../entity/Account';
 import { StudentRegisterInput } from '../args/StudentRegisterInput';
 import { CoopRegisterArgs, LanguageAbilities, SkillsArgs } from '../interfaces';
+import { Upload } from '../../../shared/types/Upload';
+const GraphQLUpload = require('graphql-upload/public/GraphQLUpload.js');
 
 @Resolver()
 @Service()
@@ -51,6 +53,7 @@ export class StudentRegisterController {
         @Arg('register_coop_input') payload: CoopRegisterArgs,
         @Args() { skills }: SkillsArgs,
         @Args() { language_abilities }: LanguageAbilities,
+        @Arg('transcript_file', () => GraphQLUpload) transcript_file: Upload,
         @Ctx() { req }: AppContext
     ): Promise<any> {
         try {
@@ -58,7 +61,7 @@ export class StudentRegisterController {
             if (!user_id) {
                 throw new Error('เข้าสู่ระบบก่อนทำรายการ');
             }
-            return await this.service.registerCoop(payload, user_id, skills, language_abilities);
+            return await this.service.registerCoop(payload, user_id, skills, language_abilities, transcript_file);
         } catch (e) {
             console.log(e);
             throw e;
