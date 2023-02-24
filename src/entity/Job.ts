@@ -23,11 +23,11 @@ export class Job {
     @Field({ nullable: true })
     project_topic: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null ,length: 1500 })
     @Field({ nullable: true })
     nature_of_work: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null })
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null ,length: 1500 })
     @Field({ nullable: true })
     required_skills: string;
 
