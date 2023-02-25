@@ -22,8 +22,8 @@ export class Student {
     @Field()
     name_eng: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', nullable: true })
+    @Field({ nullable: true })
     name_prefix: string;
 
     @Field(() => Faculty, { nullable: true })
@@ -41,8 +41,9 @@ export class Student {
     @JoinColumn({ name: 'curriculum' })
     curriculum: Curriculum;
 
-    @Field(() => [TranscriptFileUpload], { nullable: 'items' })
-    @OneToOne(() => TranscriptFileUpload, (transcript) => transcript.student_id, { nullable: true, eager: true, cascade: true })
+    @Field(() => TranscriptFileUpload, { nullable: true })
+    @OneToOne(() => TranscriptFileUpload, (transcript) => transcript.student_id, { nullable: true, cascade: true, eager: true })
+    @JoinColumn({ name: 'transcript' })
     transcript: TranscriptFileUpload;
 
     @Field(() => [StudentLanguageAbility], { nullable: 'items' })

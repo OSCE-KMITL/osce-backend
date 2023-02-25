@@ -3,8 +3,8 @@ import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { Repository } from 'typeorm/repository/Repository';
 
 interface KeyObject {
-    value:string;
-    key:string
+    value: string;
+    key: string;
 }
 
 export class BaseRepository<T> {
@@ -17,9 +17,9 @@ export class BaseRepository<T> {
     async save(entity: T): Promise<T> {
         try {
             return await this.repository.save(entity);
-        }catch (e) {
+        } catch (e) {
             console.log(e);
-            throw e
+            throw e;
         }
     }
 
@@ -27,11 +27,19 @@ export class BaseRepository<T> {
         //  id จะไม่ return เพราะถูกลบไปแล้ว ระวังตอนที่เรียกผ่าน front-end , apollo playground
         try {
             return await this.repository.remove(entity);
-        }catch (e) {
+        } catch (e) {
             console.log(e);
-            throw e
+            throw e;
         }
-
+    }
+    async deleteMany(target: string, value: string) {
+        //  id จะไม่ return เพราะถูกลบไปแล้ว ระวังตอนที่เรียกผ่าน front-end , apollo playground
+        try {
+            return await this.repository.createQueryBuilder().delete().where(`${target} is ${value}`).execute();
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
     }
 
     async find(): Promise<T[]>;
@@ -42,25 +50,21 @@ export class BaseRepository<T> {
                 return await this.repository.findBy({ [target]: value });
             }
             return await this.repository.find();
-        }catch (e) {
+        } catch (e) {
             console.log(e);
-            throw e
+            throw e;
         }
-
     }
 
     async findOne(target: string, value: string): Promise<T | null> {
         try {
             const user = await this.repository.findOneBy({ [target]: value });
             return user;
-        }catch (e) {
+        } catch (e) {
             console.log(e);
-            throw e
+            throw e;
         }
-
     }
-
-
 
     async update(entity: T): Promise<T> {
         throw new Error('this method not implemented');

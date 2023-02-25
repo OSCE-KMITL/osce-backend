@@ -1,6 +1,6 @@
 import { Job } from './Job';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, CreateDateColumn, Entity, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
 import { Student } from './Student';
 
 @Entity()
@@ -31,9 +31,9 @@ export class TranscriptFileUpload {
     updated_at!: Date;
 
     @Field(() => Student)
-    @ManyToOne(() => Student, (student) => student.transcript, { onDelete: 'CASCADE' })
+    @OneToOne(() => Student, (student) => student.transcript)
     @JoinColumn({ name: 'student_id' })
-    student_id: Promise<Student>;
+    student_id: Student;
 
     constructor(original_name: string, current_name: string, url: string) {
         this.original_name = original_name;

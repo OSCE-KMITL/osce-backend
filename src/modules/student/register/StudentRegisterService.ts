@@ -149,22 +149,29 @@ export class StudentRegisterService {
             student_applied.faculty = student_faculty;
             student_applied.curriculum = student_curriculum;
 
+            let student_skills: StudentSkills[] = [];
+            let student_language_abilities: StudentLanguageAbility[] = [];
+
             if (skills) {
-                if (skills.length !== 0 || true) {
-                    skills.forEach((skill) => {
-                        const student_skill = new StudentSkills(skill.skill_name, skill.level, student_applied);
-                        this.skill_repository.save(student_skill);
-                    });
-                }
+                student_skills = skills.map((skill) => {
+                    return new StudentSkills(skill.skill_name, skill.level, student_applied);
+                });
             }
 
             if (language_abilities) {
-                if (language_abilities.length !== 0 || true) {
-                    language_abilities.forEach((lang) => {
-                        const new_lang = new StudentLanguageAbility(lang.name, lang.level, student_applied);
-                        this.lang_repository.save(new_lang);
-                    });
-                }
+                student_language_abilities = language_abilities.map((lang) => {
+                    return new StudentLanguageAbility(lang.name, lang.level, student_applied);
+                });
+            }
+            // saved skill to student
+            student_applied.skills = student_skills;
+            student_applied.language_abilities = student_language_abilities;
+
+            try {
+                await this.skill_repository.deleteMany('students', 'null');
+                await this.lang_repository.deleteMany('student_id', 'null');
+            } catch (error) {
+                console.log(error);
             }
 
             if (transcript_file) {
@@ -177,16 +184,21 @@ export class StudentRegisterService {
                 const url = `http://localhost:${PORT}/files/student_transcript/${current_name}`;
 
                 try {
-                    createReadStream().pipe(createWriteStream(__dirname + `/../../../../public/files/student_transcript/${current_name}`));
-                    const transcirpt_obj = new TranscriptFileUpload(original_name, current_name, url);
-                    const transcirpt_file = await this.transcript_repository.save(transcirpt_obj);
-
-                    student_applied.transcript = transcirpt_file;
+                    let alreadyExistfile = await this.transcript_repository.findOne('student_id', student_applied.student_id);
+                    if (alreadyExistfile) {
+                        const transcirpt_obj = new TranscriptFileUpload(original_name, current_name, url);
+                        alreadyExistfile = transcirpt_obj;
+                        const transcirpt_file = await this.transcript_repository.save(alreadyExistfile);
+                        student_applied.transcript = transcirpt_file;
+                        createReadStream().pipe(createWriteStream(__dirname + `/../../../../public/files/student_transcript/${current_name}`));
+                    } else {
+                        const transcirpt_obj = new TranscriptFileUpload(original_name, current_name, url);
+                        transcirpt_obj.student_id = student_applied;
+                        const transcirpt_file = await this.transcript_repository.save(transcirpt_obj);
+                    }
                 } catch (error) {
                     throw new Error('Error , Can not saved transcritp files');
                 }
-            } else {
-                throw new Error('กรุณาแนบใบแสดงผลการเรียน (Transcript)');
             }
 
             return await this.student_repository.save(student_applied);

@@ -47,7 +47,7 @@ export class StudentRegisterController {
         @Arg('register_coop_input') payload: CoopRegisterArgs,
         @Args() { skills }: SkillsArgs,
         @Args() { language_abilities }: LanguageAbilities,
-        @Arg('transcript_file', () => GraphQLUpload) transcript_file: Upload,
+        @Arg('transcript_file', () => GraphQLUpload, { nullable: true }) transcript_file: Upload,
         @Ctx() { req }: AppContext
     ): Promise<any> {
         try {
