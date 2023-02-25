@@ -47,11 +47,11 @@ export class Student {
     transcript: TranscriptFileUpload;
 
     @Field(() => [StudentLanguageAbility], { nullable: 'items' })
-    @OneToMany(() => StudentLanguageAbility, (skill) => skill.students, { nullable: true, eager: true, cascade: true })
+    @OneToMany(() => StudentLanguageAbility, (skill) => skill.student_id, { nullable: true, eager: true, cascade: true })
     language_abilities: StudentLanguageAbility[];
 
     @Field(() => [StudentSkills], { nullable: 'items' })
-    @OneToMany(() => StudentSkills, (skill) => skill.students, { nullable: true, eager: true, cascade: true })
+    @OneToMany(() => StudentSkills, (skill) => skill.student_id, { nullable: true, eager: true, cascade: true })
     skills: StudentSkills[];
 
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })

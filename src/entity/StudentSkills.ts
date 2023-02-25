@@ -21,11 +21,11 @@ export class StudentSkills {
     //@Field(()=>Student ,{nullable:true})
     @ManyToOne(() => Student, (student) => student.skills)
     @JoinColumn({ name: 'student_id' })
-    students: Student;
+    student_id: Student;
 
     constructor(name: string, level: string, students: Student) {
         this.skill_name = name;
         this.level = level;
-        this.students = students;
+        this.student_id = students;
     }
 }
