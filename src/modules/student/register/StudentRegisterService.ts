@@ -241,10 +241,10 @@ export class StudentRegisterService {
         if (student_id && job.id) {
             const connection = mysql.createConnection({
                 host: 'localhost',
-                port: parseInt(DATABASE_PORT!) || 3306,
-                user: DATABASE_USERNAME || 'devteam',
-                password: DATABASE_PASSWORD || '123456',
-                database: DATABASE_NAME || 'osce',
+                port: parseInt(DATABASE_PORT!),
+                user: DATABASE_USERNAME,
+                password: DATABASE_PASSWORD,
+                database: DATABASE_NAME,
             });
 
             connection.query(`DELETE FROM apply_job WHERE job = ${job.id} AND student = ${student_id}`, (err, results) => {
@@ -259,17 +259,6 @@ export class StudentRegisterService {
                 }
             });
         }
-
-        // const arrayJob = await student.job;
-        // const count: number = arrayJob.length;
-        // if(count === 5) throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน')
-
-        // if (job.students === undefined) {
-        //     job.students = [student];
-        // } else {
-        //     job.students.push(student);
-        // }
-        // await this.job_repository.save(job);
 
         return await this.student_repository.save(student);
     }
