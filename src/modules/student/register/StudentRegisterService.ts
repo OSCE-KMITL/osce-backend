@@ -1,3 +1,6 @@
+import { MySqlDataSource } from './../../../../ormconfig';
+import { JobStatus } from './../../../shared/types/JobStatus';
+import { StudentApplyJob } from './../../../entity/StudentApplyJob';
 import {
     StudentCurriculumRepository,
     StudentDepartmentRepository,
@@ -25,7 +28,7 @@ import { Department } from '../../../entity/Department';
 import { Curriculum } from '../../../entity/Curriculum';
 import { StudentLanguageAbility } from '../../../entity/StudentLanguageAbility';
 import { StudentSkills } from '../../../entity/StudentSkills';
-import { TranscriptUploadRepository } from './StudentRegisterRepository';
+import { TranscriptUploadRepository, StudentApplyJobRepository } from './StudentRegisterRepository';
 import { TranscriptFileUpload } from '../../../entity/TranscriptFileUpload';
 import { Upload } from '../../../shared/types/Upload';
 import path from 'path';
@@ -44,6 +47,7 @@ export class StudentRegisterService {
     private readonly skill_repository = new StudentSkillsRepository(StudentSkills);
     private readonly job_repository = new JobRepository(Job);
     private readonly transcript_repository = new TranscriptUploadRepository(TranscriptFileUpload);
+    private readonly student_apply_job_repository = new StudentApplyJobRepository(StudentApplyJob);
 
     constructor() {}
 
@@ -211,16 +215,33 @@ export class StudentRegisterService {
         const student = await this.student_repository.findOne('student_id', student_id);
         if (!student) throw new Error('ไม่พบนักศึกษา');
 
-        const arrayJob = await student.job;
-        const count: number = arrayJob.length;
-        if (count === 5) throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน');
-
-        if (job.students === undefined) {
-            job.students = [student];
-        } else {
-            job.students.push(student);
+        // check duplicate job applying
+        const job_in_stu: string[] = await student.student_apply_job.map((i) => i.job_id.toString());
+        if (job_in_stu.includes(job_id)) {
+            throw new Error('ไม่สามารถสมัครงานได้ เนื่องจากเคยสมัครงานนี้แล้ว');
         }
-        await this.job_repository.save(job);
+
+        // check job limit apply
+        if (job_in_stu.length === 5) {
+            throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน');
+        }
+
+        const studnet_apply_job = new StudentApplyJob(await student_id, await job_id, JobStatus.STUDENTAPPLIED);
+        // studnet_apply_job.student = await student;
+        const saved_job = await this.student_apply_job_repository.save(studnet_apply_job);
+
+        try {
+            job.student_apply_job.push(saved_job);
+            await this.job_repository.save(job);
+        } catch (error) {
+            console.log(error);
+        }
+
+        try {
+            student.student_apply_job.push(saved_job);
+        } catch (error) {
+            console.log(error);
+        }
 
         return await this.student_repository.save(student);
     }
@@ -238,27 +259,29 @@ export class StudentRegisterService {
         const student = await this.student_repository.findOne('student_id', student_id);
         if (!student) throw new Error('ไม่พบนักศึกษา');
 
-        if (student_id && job.id) {
-            const connection = mysql.createConnection({
-                host: 'localhost',
-                port: parseInt(DATABASE_PORT!),
-                user: DATABASE_USERNAME,
-                password: DATABASE_PASSWORD,
-                database: DATABASE_NAME,
-            });
+        // ลบ table many to many ตรงๆ
 
-            connection.query(`DELETE FROM apply_job WHERE job = ${job.id} AND student = ${student_id}`, (err, results) => {
-                if (err) {
-                    console.error(err);
-                    // Handle error
-                    connection.end();
-                } else {
-                    console.log(`Deleted`);
-                    // Handle success
-                    connection.end();
-                }
-            });
-        }
+        // if (student_id && job.id) {
+        //     const connection = mysql.createConnection({
+        //         host: 'localhost',
+        //         port: parseInt(DATABASE_PORT!),
+        //         user: DATABASE_USERNAME,
+        //         password: DATABASE_PASSWORD,
+        //         database: DATABASE_NAME,
+        //     });
+
+        //     connection.query(`DELETE FROM apply_job WHERE job = ${job.id} AND student = ${student_id}`, (err, results) => {
+        //         if (err) {
+        //             console.error(err);
+        //             // Handle error
+        //             connection.end();
+        //         } else {
+        //             console.log(`Deleted`);
+        //             // Handle success
+        //             connection.end();
+        //         }
+        //     });
+        // }
 
         return await this.student_repository.save(student);
     }

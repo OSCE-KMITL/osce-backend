@@ -1,3 +1,4 @@
+import { StudentApplyJob } from './StudentApplyJob';
 import { Student } from './Student';
 import { FileUpload } from './FileUpload';
 import { Company } from './Company';
@@ -23,11 +24,11 @@ export class Job {
     @Field({ nullable: true })
     project_topic: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null ,length: 1500 })
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null, length: 1500 })
     @Field({ nullable: true })
     nature_of_work: string;
 
-    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null ,length: 1500 })
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci', default: null, length: 1500 })
     @Field({ nullable: true })
     required_skills: string;
 
@@ -100,8 +101,13 @@ export class Job {
     @OneToMany(() => FileUpload, (file_upload) => file_upload.job_id, { cascade: true, eager: true })
     file_upload: FileUpload[];
 
+    @Field(() => [StudentApplyJob], { nullable: 'items' })
+    @OneToMany(() => StudentApplyJob, (student_apply_job) => student_apply_job.job, { cascade: true, onDelete: 'CASCADE', eager: true })
+    @JoinColumn({ name: 'student_apply_job' })
+    student_apply_job: StudentApplyJob[];
+
     @Field(() => [Student], { nullable: 'items' })
-    @ManyToMany(() => Student, (student) => student.job, { cascade: true, eager: true, nullable: true })
+    @ManyToMany(() => Student, (student) => student.job, { cascade: true, eager: true })
     @JoinTable({
         name: 'apply_job',
         joinColumn: {

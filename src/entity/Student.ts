@@ -1,3 +1,4 @@
+import { StudentApplyJob } from './StudentApplyJob';
 import { Field, ID, ObjectType } from 'type-graphql';
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { Job } from './Job';
@@ -140,6 +141,11 @@ export class Student {
     @Field()
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
     updated_at: Date;
+
+    @Field(() => [StudentApplyJob], { nullable: 'items' })
+    @OneToMany(() => StudentApplyJob, (student_apply_job) => student_apply_job.student, { cascade: true, onDelete: 'CASCADE', eager: true })
+    @JoinColumn({ name: 'student_apply_job' })
+    student_apply_job: StudentApplyJob[];
 
     @Field(() => [Job], { nullable: 'items' })
     @ManyToMany(() => Job, (job) => job.students, { nullable: true, lazy: true })
