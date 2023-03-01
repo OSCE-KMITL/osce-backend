@@ -1,6 +1,6 @@
 import { Arg, Args, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { AppContext } from '../../../shared/types/context-types';
-import { StudentApplyJobInput } from '../args/StudentRegisterInput';
+// import { StudentApplyJobInput } from '../args/StudentRegisterInput';
 import { Student } from '../../../entity/Student';
 import { Service } from 'typedi';
 import { StudentRegisterService } from './StudentRegisterService';
@@ -20,19 +20,6 @@ export class StudentRegisterController {
         return await this.service.registerStudent(input);
     }
 
-    // @UseMiddleware(useAuthorization([RoleOption.STUDENT]))
-    @Mutation(() => Student, { nullable: true })
-    async applyJob(@Arg('apply_info') apply_info: StudentApplyJobInput, @Ctx() { req }: AppContext): Promise<Student | null> {
-        const { user_id } = req;
-        return this.service.applyJob(apply_info, user_id!);
-    }
-
-    @Mutation(() => Student, { nullable: true })
-    async cancelApply(@Arg('cancel_apply_info') cancel_apply_info: StudentApplyJobInput, @Ctx() { req }: AppContext): Promise<Student | null> {
-        const { user_id } = req;
-        return this.service.cancelApply(cancel_apply_info, user_id!);
-    }
-    
     @Query(() => [Student], { nullable: 'items' })
     async getStudents(): Promise<Student[] | undefined> {
         return await this.service.getStudents();

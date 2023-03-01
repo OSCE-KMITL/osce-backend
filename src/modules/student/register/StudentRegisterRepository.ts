@@ -1,4 +1,3 @@
-import { StudentApplyJob } from './../../../entity/StudentApplyJob';
 import { BaseRepository } from '../../BaseRepository';
 import { Student } from '../../../entity/Student';
 import { Faculty } from '../../../entity/Faculty';
@@ -15,4 +14,3 @@ export class StudentCurriculumRepository extends BaseRepository<Curriculum> {}
 export class StudentLanguageRepository extends BaseRepository<StudentLanguageAbility> {}
 export class StudentSkillsRepository extends BaseRepository<StudentSkills> {}
 export class TranscriptUploadRepository extends BaseRepository<TranscriptFileUpload> {}
-export class StudentApplyJobRepository extends BaseRepository<StudentApplyJob> {}

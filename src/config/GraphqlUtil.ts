@@ -1,3 +1,4 @@
+import { StuApplyJobController } from './../modules/job/student_apply_job/StuApplyJobController';
 import { FileUploadController } from './../modules/file_upload/FileUploadController';
 import { JobController } from './../modules/job/JobController';
 import { CompanyPersonController } from '../modules/company_person/register/CompanyPersonController';
@@ -23,6 +24,7 @@ export class GraphqlUtil {
                 AuthController,
                 JobController,
                 FileUploadController,
+                StuApplyJobController,
             ],
             emitSchemaFile: true,
             container: Container,
