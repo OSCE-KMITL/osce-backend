@@ -226,8 +226,7 @@ export class StudentRegisterService {
             throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน');
         }
 
-        const studnet_apply_job = new StudentApplyJob(await student_id, await job_id, JobStatus.STUDENTAPPLIED);
-        // studnet_apply_job.student = await student;
+        const studnet_apply_job = new StudentApplyJob(student_id, job_id, JobStatus.STUDENTAPPLIED);
         const saved_job = await this.student_apply_job_repository.save(studnet_apply_job);
 
         try {
@@ -259,41 +258,22 @@ export class StudentRegisterService {
         const student = await this.student_repository.findOne('student_id', student_id);
         if (!student) throw new Error('ไม่พบนักศึกษา');
 
-        // ลบ table many to many ตรงๆ
+        // check student_apply_job index
+        const job_in_stu: string[] = await student.student_apply_job.map((i) => i.job_id.toString());
+        const index_job = job_in_stu.indexOf(job_id);
 
-        // if (student_id && job.id) {
-        //     const connection = mysql.createConnection({
-        //         host: 'localhost',
-        //         port: parseInt(DATABASE_PORT!),
-        //         user: DATABASE_USERNAME,
-        //         password: DATABASE_PASSWORD,
-        //         database: DATABASE_NAME,
-        //     });
+        if (index_job === -1) {
+            throw new Error('ไม่พบงานที่ยกเลิกการสมัคร');
+        }
 
-        //     connection.query(`DELETE FROM apply_job WHERE job = ${job.id} AND student = ${student_id}`, (err, results) => {
-        //         if (err) {
-        //             console.error(err);
-        //             // Handle error
-        //             connection.end();
-        //         } else {
-        //             console.log(`Deleted`);
-        //             // Handle success
-        //             connection.end();
-        //         }
-        //     });
-        // }
+        const apply_job_delete = student.student_apply_job[index_job];
+        const apply_job_repo = MySqlDataSource.getRepository(StudentApplyJob);
 
+        if (apply_job_delete.job_status === JobStatus.STUDENTAPPLIED) {
+            apply_job_repo.remove(apply_job_delete);
+        } else {
+            throw new Error('ไม่สามารถยกเลิกสมัครงานได้ เนื่องจากบริษัทตอบรับงานแล้ว');
+        }
         return await this.student_repository.save(student);
     }
-
-    // const arrayJob = await student.job;
-    // const count: number = arrayJob.length;
-    // if(count === 5) throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน')
-
-    // if (job.students === undefined) {
-    //     job.students = [student];
-    // } else {
-    //     job.students.push(student);
-    // }
-    // await this.job_repository.save(job);
 }

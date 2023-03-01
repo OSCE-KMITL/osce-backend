@@ -102,7 +102,7 @@ export class Job {
     file_upload: FileUpload[];
 
     @Field(() => [StudentApplyJob], { nullable: 'items' })
-    @OneToMany(() => StudentApplyJob, (student_apply_job) => student_apply_job.job, { cascade: true, onDelete: 'CASCADE', eager: true })
+    @OneToMany(() => StudentApplyJob, (student_apply_job) => student_apply_job.job, { cascade: true, eager: true })
     @JoinColumn({ name: 'student_apply_job' })
     student_apply_job: StudentApplyJob[];
 

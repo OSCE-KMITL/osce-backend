@@ -22,13 +22,13 @@ export class StudentApplyJob {
     job_status: JobStatus;
 
     @Field(() => Student, { nullable: true })
-    @ManyToOne(() => Student, (student) => student.student_apply_job)
-    @JoinColumn({ name: 'student_id' })
+    @ManyToOne(() => Student, (student) => student.student_apply_job, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'student_id', referencedColumnName: 'student_id' })
     student: Promise<Student>;
 
     @Field(() => Job, { nullable: true })
-    @ManyToOne(() => Job, (job) => job.student_apply_job)
-    @JoinColumn({ name: 'job_id' })
+    @ManyToOne(() => Job, (job) => job.student_apply_job, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'job_id', referencedColumnName: 'id' })
     job: Promise<Job>;
 
     @Field()

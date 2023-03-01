@@ -143,7 +143,7 @@ export class Student {
     updated_at: Date;
 
     @Field(() => [StudentApplyJob], { nullable: 'items' })
-    @OneToMany(() => StudentApplyJob, (student_apply_job) => student_apply_job.student, { cascade: true, onDelete: 'CASCADE', eager: true })
+    @OneToMany(() => StudentApplyJob, (student_apply_job) => student_apply_job.student, { cascade: true, eager: true })
     @JoinColumn({ name: 'student_apply_job' })
     student_apply_job: StudentApplyJob[];
 
