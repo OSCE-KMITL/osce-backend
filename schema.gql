@@ -185,6 +185,10 @@ type Department {
   students: [Student]!
 }
 
+input EditJobStateInput {
+  student_apply_job_id: String!
+}
+
 type Faculty {
   faculty_id: ID!
   faculty_name_en: String!
@@ -224,6 +228,7 @@ type Job {
   project_topic: String
   required_major: String
   required_skills: String
+  student_apply_job: [StudentApplyJob]!
   students: [Student]!
   supervisor_email: String
   supervisor_job_title: String
@@ -284,7 +289,8 @@ input LanguageAbility {
 
 type Mutation {
   applyJob(apply_info: StudentApplyJobInput!): Student
-  cancelApply(cancel_apply_info: StudentApplyJobInput!): Student
+  cancelApply(cancel_apply_info: StudentApplyJobInput!): StudentApplyJob
+  companyApproveJob(company_approve_info: EditJobStateInput!): StudentApplyJob
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company
   createJobByCommittee(file: Upload!, job_info: JobInputByCommittee!): Job
@@ -301,6 +307,7 @@ type Mutation {
   signIn(email: String!, password: String!): AuthData
   studentRegister(student_register_input: StudentRegisterInput!): Account!
   studentRegisterCoop(language_abilities: [LanguageAbility!], register_coop_input: CoopRegisterArgs!, skills: [Skill!], transcript_file: Upload!): Student
+  undoCompanyApproveJob(undo_company_approve_info: EditJobStateInput!): StudentApplyJob
   updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
   updateAnnouncement(update_input: UpdateAnnouncementInput!): Announcement
   updateCompany(update_input: UpdateCompanyInput!): Company
@@ -371,10 +378,20 @@ type Student {
   phone_number: String
   religion: String
   skills: [StudentSkills]!
+  student_apply_job: [StudentApplyJob]!
   student_id: ID!
   transcript: [TranscriptFileUpload]!
   updated_at: DateTime!
   weight: String
+}
+
+type StudentApplyJob {
+  created_at: DateTime!
+  id: String!
+  job: Job
+  job_status: String
+  student: Student
+  updated_at: DateTime!
 }
 
 input StudentApplyJobInput {

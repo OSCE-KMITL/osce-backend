@@ -25,9 +25,4 @@ export class StudentRegisterInput {
 export class StudentApplyJobInput {
     @Field({ nullable: false })
     job_id: string;
-
-
-
 }
-
-

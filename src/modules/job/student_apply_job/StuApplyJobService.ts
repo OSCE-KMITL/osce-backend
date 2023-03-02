@@ -1,4 +1,3 @@
-import { MySqlDataSource } from './../../../../ormconfig';
 import { JobStatus } from './../../../shared/types/JobStatus';
 import { StudentApplyJob } from './../../../entity/StudentApplyJob';
 import { Job } from './../../../entity/Job';
@@ -11,6 +10,7 @@ import { AccountRepository } from '../../account/AccountRepository';
 import { StudentApplyJobRepository } from './StuApplyJobRepository';
 import { StudentRegisterRepository } from '../../student/register/StudentRegisterRepository';
 import { StudentApplyJobInput } from '../../student/args/StudentRegisterInput';
+import { EditJobStateInput } from './args/StuApplyJobInput';
 
 @Service()
 export class StuApplyJobService {
@@ -84,6 +84,49 @@ export class StuApplyJobService {
             return await this.student_apply_job_repository.delete(already__apply_job);
         } else {
             throw new Error('ไม่สามารถยกเลิกสมัครงานได้ เนื่องจากบริษัทตอบรับงานแล้ว');
+        }
+    }
+
+    async companyApprove(company_approve_info: EditJobStateInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { student_apply_job_id } = company_approve_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMPANY && account.role !== RoleOption.COMMITTEE) throw new Error('บริษัทหรือกรรมการเท่านั้นที่สามารถตอบรับงานได้');
+
+        // check id in table student_apply_job
+        const already__apply_job = await this.student_apply_job_repository.findOne('id', student_apply_job_id);
+
+        if (!already__apply_job) {
+            throw new Error('ไม่พบข้อมูลงานที่จะตอบรับ');
+        }
+
+        if (already__apply_job?.job_status === JobStatus.STUDENTAPPLIED) {
+            already__apply_job.job_status = JobStatus.COMPANYAPPROVE;
+            return await this.student_apply_job_repository.save(already__apply_job);
+        } else {
+            throw new Error('ไม่สามารถตอบรับงานได้');
+        }
+    }
+
+    async undoCompanyApprove(company_approve_info: EditJobStateInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { student_apply_job_id } = company_approve_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMPANY && account.role !== RoleOption.COMMITTEE)
+            throw new Error('บริษัทหรือกรรมการเท่านั้นที่สามารถยกเลิกการตอบรับงานได้');
+
+        // check id in table student_apply_job
+        const already__apply_job = await this.student_apply_job_repository.findOne('id', student_apply_job_id);
+
+        if (!already__apply_job) {
+            throw new Error('ไม่พบข้อมูลงานที่จะยกเลิกการตอบรับ');
+        }
+
+        if (already__apply_job?.job_status === JobStatus.COMPANYAPPROVE) {
+            already__apply_job.job_status = JobStatus.STUDENTAPPLIED;
+            return await this.student_apply_job_repository.save(already__apply_job);
+        } else {
+            throw new Error('ไม่สามารถยกเลิกการตอบรับงานได้');
         }
     }
 }

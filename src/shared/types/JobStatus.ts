@@ -2,7 +2,7 @@ import { registerEnumType } from 'type-graphql';
 
 export enum JobStatus {
     STUDENTAPPLIED = 'รอการตอบรับ',
-    COMPANYAPPROVE = 'รอการอนุมัติ',
+    COMPANYAPPROVE = 'รอการอนุมัติจากกรรมการ',
     COMPANYCANCEL = 'ปฏิเสธการตอบรับ',
     COMMITTEEAPPROVE = 'ได้รับงาน',
     COMMITTEECANCEL = 'ปฏิเสธโดยกรรมการ',
