@@ -76,4 +76,40 @@ export class StuApplyJobController {
             throw e;
         }
     }
+
+    @UseMiddleware(useAuthorization([RoleOption.COMPANY, RoleOption.COMMITTEE]))
+    @Mutation(() => StudentApplyJob, { nullable: true })
+    async companyDisapproveJob(
+        @Arg('company_disapprove_info') company_disapprove_info: EditJobStateInput,
+        @Ctx() { req }: AppContext
+    ): Promise<StudentApplyJob | null> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.service.companyDisapprove(company_disapprove_info, user_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    @UseMiddleware(useAuthorization([RoleOption.COMPANY, RoleOption.COMMITTEE]))
+    @Mutation(() => StudentApplyJob, { nullable: true })
+    async undoCompanyDisapproveJob(
+        @Arg('undo_company_disapprove_info') undo_company_disapprove_info: EditJobStateInput,
+        @Ctx() { req }: AppContext
+    ): Promise<StudentApplyJob | null> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.service.undoCompanyDisapprove(undo_company_disapprove_info, user_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
 }

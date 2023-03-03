@@ -291,6 +291,7 @@ type Mutation {
   applyJob(apply_info: StudentApplyJobInput!): Student
   cancelApply(cancel_apply_info: StudentApplyJobInput!): StudentApplyJob
   companyApproveJob(company_approve_info: EditJobStateInput!): StudentApplyJob
+  companyDisapproveJob(company_disapprove_info: EditJobStateInput!): StudentApplyJob
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company
   createJobByCommittee(file: Upload!, job_info: JobInputByCommittee!): Job
@@ -308,6 +309,7 @@ type Mutation {
   studentRegister(student_register_input: StudentRegisterInput!): Account!
   studentRegisterCoop(language_abilities: [LanguageAbility!], register_coop_input: CoopRegisterArgs!, skills: [Skill!], transcript_file: Upload!): Student
   undoCompanyApproveJob(undo_company_approve_info: EditJobStateInput!): StudentApplyJob
+  undoCompanyDisapproveJob(undo_company_disapprove_info: EditJobStateInput!): StudentApplyJob
   updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
   updateAnnouncement(update_input: UpdateAnnouncementInput!): Announcement
   updateCompany(update_input: UpdateCompanyInput!): Company

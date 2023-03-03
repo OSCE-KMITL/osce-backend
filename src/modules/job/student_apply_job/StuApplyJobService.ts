@@ -100,6 +100,12 @@ export class StuApplyJobService {
             throw new Error('ไม่พบข้อมูลงานที่จะตอบรับ');
         }
 
+        const limit = (await already__apply_job.job).limit;
+        const stu_applied_obj = (await already__apply_job.job).student_apply_job.filter((i) => i.job_status === JobStatus.COMPANYAPPROVE);
+        if (stu_applied_obj.length === parseInt(limit)) {
+            throw new Error('ไม่สามารถตอบรับได้ เนื่องจากตอบรับผู้สมัครครบจำนวนแล้ว');
+        }
+
         if (already__apply_job?.job_status === JobStatus.STUDENTAPPLIED) {
             already__apply_job.job_status = JobStatus.COMPANYAPPROVE;
             return await this.student_apply_job_repository.save(already__apply_job);
@@ -127,6 +133,47 @@ export class StuApplyJobService {
             return await this.student_apply_job_repository.save(already__apply_job);
         } else {
             throw new Error('ไม่สามารถยกเลิกการตอบรับงานได้');
+        }
+    }
+
+    async companyDisapprove(company_disapprove_info: EditJobStateInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { student_apply_job_id } = company_disapprove_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMPANY && account.role !== RoleOption.COMMITTEE) throw new Error('บริษัทหรือกรรมการเท่านั้นที่สามารถดำเนินการได้');
+
+        // check id in table student_apply_job
+        const already__apply_job = await this.student_apply_job_repository.findOne('id', student_apply_job_id);
+        if (!already__apply_job) {
+            throw new Error('ไม่พบข้อมูลงานที่จะปฏิเสธการตอบรับ');
+        }
+
+        if (already__apply_job?.job_status === JobStatus.STUDENTAPPLIED) {
+            already__apply_job.job_status = JobStatus.COMPANYCANCEL;
+            return await this.student_apply_job_repository.save(already__apply_job);
+        } else {
+            throw new Error('ไม่สามารถปฏิเสธการตอบรับงานได้');
+        }
+    }
+
+    async undoCompanyDisapprove(company_approve_info: EditJobStateInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { student_apply_job_id } = company_approve_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMPANY && account.role !== RoleOption.COMMITTEE) throw new Error('บริษัทหรือกรรมการเท่านั้นที่สามารถดำเนินการได้');
+
+        // check id in table student_apply_job
+        const already__apply_job = await this.student_apply_job_repository.findOne('id', student_apply_job_id);
+
+        if (!already__apply_job) {
+            throw new Error('ไม่พบข้อมูลงานที่จะยกเลิกการปฏิเสธ');
+        }
+
+        if (already__apply_job?.job_status === JobStatus.COMPANYCANCEL) {
+            already__apply_job.job_status = JobStatus.STUDENTAPPLIED;
+            return await this.student_apply_job_repository.save(already__apply_job);
+        } else {
+            throw new Error('ไม่สามารถยกเลิกการปฏิเสธได้');
         }
     }
 }
