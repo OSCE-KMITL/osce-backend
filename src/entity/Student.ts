@@ -147,20 +147,10 @@ export class Student {
     @JoinColumn({ name: 'student_apply_job' })
     student_apply_job: StudentApplyJob[];
 
-    @Field(() => [Job], { nullable: 'items' })
-    @ManyToMany(() => Job, (job) => job.students, { nullable: true, lazy: true })
-    @JoinTable({
-        name: 'apply_job',
-        joinColumn: {
-            name: 'student',
-            referencedColumnName: 'student_id',
-        },
-        inverseJoinColumn: {
-            name: 'job',
-            referencedColumnName: 'id',
-        },
-    })
-    job: Job[];
+    @Field(() => Job, { nullable: true })
+    @ManyToOne(() => Job, (job) => job.students, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'applied_job' })
+    job: Promise<Job>;
 
     constructor(student_id: string, name_eng: string, lastname: string) {
         this.student_id = student_id;

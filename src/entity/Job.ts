@@ -107,18 +107,7 @@ export class Job {
     student_apply_job: StudentApplyJob[];
 
     @Field(() => [Student], { nullable: 'items' })
-    @ManyToMany(() => Student, (student) => student.job, { cascade: true, eager: true })
-    @JoinTable({
-        name: 'apply_job',
-        joinColumn: {
-            name: 'job',
-            referencedColumnName: 'id',
-        },
-        inverseJoinColumn: {
-            name: 'student',
-            referencedColumnName: 'student_id',
-        },
-    })
+    @OneToMany(() => Student, (student) => student.job, { cascade: true, eager: true })
     students: Student[];
 
     constructor(

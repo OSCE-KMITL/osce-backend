@@ -290,6 +290,8 @@ input LanguageAbility {
 type Mutation {
   applyJob(apply_info: StudentApplyJobInput!): Student
   cancelApply(cancel_apply_info: StudentApplyJobInput!): StudentApplyJob
+  committeeApproveJob(committee_approve_info: EditJobStateInput!): StudentApplyJob
+  committeeDisapproveJob(committee_disapprove_info: EditJobStateInput!): StudentApplyJob
   companyApproveJob(company_approve_info: EditJobStateInput!): StudentApplyJob
   companyDisapproveJob(company_disapprove_info: EditJobStateInput!): StudentApplyJob
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
@@ -308,6 +310,8 @@ type Mutation {
   signIn(email: String!, password: String!): AuthData
   studentRegister(student_register_input: StudentRegisterInput!): Account!
   studentRegisterCoop(language_abilities: [LanguageAbility!], register_coop_input: CoopRegisterArgs!, skills: [Skill!], transcript_file: Upload!): Student
+  undoCommitteeApproveJob(undo_committee_approve_info: EditJobStateInput!): StudentApplyJob
+  undoCommitteeDisapproveJob(undo_committee_disapprove_info: EditJobStateInput!): StudentApplyJob
   undoCompanyApproveJob(undo_company_approve_info: EditJobStateInput!): StudentApplyJob
   undoCompanyDisapproveJob(undo_company_disapprove_info: EditJobStateInput!): StudentApplyJob
   updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
@@ -325,6 +329,7 @@ type Query {
   getAdvisorAccounts: [Account]!
   getAllCompanies: [Company]!
   getAllJob: [Job]!
+  getAllStudentApplyJob: [StudentApplyJob]!
   getAnnouncement(with_key: GetWithKeyInput!): Announcement
   getAnnouncements: [Announcement]!
   getCompanyById(company_id: String!): Company
@@ -369,7 +374,7 @@ type Student {
   gender: String
   gpa: String
   height: String
-  job: [Job]!
+  job: Job
   language_abilities: [StudentLanguageAbility]!
   lastname_eng: String!
   lastname_th: String

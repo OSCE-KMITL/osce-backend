@@ -20,6 +20,12 @@ export class StuApplyJobService {
     private readonly student_apply_job_repository = new StudentApplyJobRepository(StudentApplyJob);
 
     constructor() {}
+
+    async getAllStudentApplyJob() {
+        const result = await this.student_apply_job_repository.find();
+        return result;
+    }
+
     async applyJob(apply_info: StudentApplyJobInput, account_id: string) {
         const account = await this.account_repository.findOne('id', account_id);
         const { job_id } = apply_info;
@@ -171,6 +177,121 @@ export class StuApplyJobService {
 
         if (already__apply_job?.job_status === JobStatus.COMPANYCANCEL) {
             already__apply_job.job_status = JobStatus.STUDENTAPPLIED;
+            return await this.student_apply_job_repository.save(already__apply_job);
+        } else {
+            throw new Error('ไม่สามารถยกเลิกการปฏิเสธได้');
+        }
+    }
+
+    async committeeApproveJob(committee_approve_info: EditJobStateInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { student_apply_job_id } = committee_approve_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถอนุมัติงานได้');
+
+        // check id in table student_apply_job
+        const already__apply_job = await this.student_apply_job_repository.findOne('id', student_apply_job_id);
+
+        if (!already__apply_job) {
+            throw new Error('ไม่พบข้อมูลงานที่จะอนุมัติ');
+        }
+
+        const job = await this.job_repository.findOne('id', already__apply_job.job_id);
+        if (!job) {
+            throw new Error('ไม่พบข้อมูลงาน');
+        }
+
+        const student = await this.student_repository.findOne('student_id', already__apply_job.student_id);
+        if (!student) {
+            throw new Error('ไม่พบข้อมูลนักศึกษา');
+        }
+
+        const stu_applied_obj = (await already__apply_job.student)?.student_apply_job?.filter((i) => i.job_status === JobStatus.COMMITTEEAPPROVE);
+        if (stu_applied_obj.length >= 1) {
+            throw new Error('ไม่สามารถอนุมัติได้ เนื่องจากนักศึกษาได้รับงานแล้ว');
+        }
+
+        if (already__apply_job?.job_status === JobStatus.COMPANYAPPROVE) {
+            already__apply_job.job_status = JobStatus.COMMITTEEAPPROVE;
+
+            if (!job.students) {
+                job.students = [];
+            }
+
+            job.students.push(student);
+            await this.job_repository.save(job);
+
+            return await this.student_apply_job_repository.save(already__apply_job);
+        } else {
+            throw new Error('ไม่สามารถอนุมัติงานได้');
+        }
+    }
+
+    async undoCommitteeApproveJob(undo_committee_approve_info: EditJobStateInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { student_apply_job_id } = undo_committee_approve_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถดำเนินการได้');
+
+        // check id in table student_apply_job
+        const already__apply_job = await this.student_apply_job_repository.findOne('id', student_apply_job_id);
+
+        if (!already__apply_job) {
+            throw new Error('ไม่พบข้อมูลงานที่จะยกเลิกการอนุมัติ');
+        }
+
+        const job = await this.job_repository.findOne('id', already__apply_job.job_id);
+        if (!job) {
+            throw new Error('ไม่พบข้อมูลงาน');
+        }
+
+        if (already__apply_job?.job_status === JobStatus.COMMITTEEAPPROVE) {
+            already__apply_job.job_status = JobStatus.COMPANYAPPROVE;
+
+            job.students = job.students.filter((i) => i.student_id !== already__apply_job.student_id);
+            await this.job_repository.save(job);
+
+            return await this.student_apply_job_repository.save(already__apply_job);
+        } else {
+            throw new Error('ไม่สามารถยกเลิกการอนุมัติ');
+        }
+    }
+
+    async committeeDisapprove(committee_disapprove_info: EditJobStateInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { student_apply_job_id } = committee_disapprove_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถดำเนินการได้');
+
+        // check id in table student_apply_job
+        const already__apply_job = await this.student_apply_job_repository.findOne('id', student_apply_job_id);
+        if (!already__apply_job) {
+            throw new Error('ไม่พบข้อมูลงานที่จะปฏิเสธการอนุมัติ');
+        }
+
+        if (already__apply_job?.job_status === JobStatus.COMPANYAPPROVE) {
+            already__apply_job.job_status = JobStatus.COMMITTEECANCEL;
+            return await this.student_apply_job_repository.save(already__apply_job);
+        } else {
+            throw new Error('ไม่สามารถปฏิเสธการอนุมัติงานได้');
+        }
+    }
+
+    async undoCommitteeDisapprove(undo_committee_disapprove_info: EditJobStateInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { student_apply_job_id } = undo_committee_disapprove_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถดำเนินการได้');
+
+        // check id in table student_apply_job
+        const already__apply_job = await this.student_apply_job_repository.findOne('id', student_apply_job_id);
+
+        if (!already__apply_job) {
+            throw new Error('ไม่พบข้อมูลงานที่จะยกเลิกการปฏิเสธ');
+        }
+
+        if (already__apply_job?.job_status === JobStatus.COMMITTEECANCEL) {
+            already__apply_job.job_status = JobStatus.COMPANYAPPROVE;
             return await this.student_apply_job_repository.save(already__apply_job);
         } else {
             throw new Error('ไม่สามารถยกเลิกการปฏิเสธได้');
