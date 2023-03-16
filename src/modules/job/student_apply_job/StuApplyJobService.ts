@@ -10,7 +10,7 @@ import { AccountRepository } from '../../account/AccountRepository';
 import { StudentApplyJobRepository } from './StuApplyJobRepository';
 import { StudentRegisterRepository } from '../../student/register/StudentRegisterRepository';
 import { StudentApplyJobInput } from '../../student/args/StudentRegisterInput';
-import { EditJobStateInput } from './args/StuApplyJobInput';
+import { EditJobStateInput, AssignJobInput } from './args/StuApplyJobInput';
 
 @Service()
 export class StuApplyJobService {
@@ -295,6 +295,96 @@ export class StuApplyJobService {
             return await this.student_apply_job_repository.save(already__apply_job);
         } else {
             throw new Error('ไม่สามารถยกเลิกการปฏิเสธได้');
+        }
+    }
+
+    async committeeAssignJob(committee_assign_job_info: AssignJobInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { job_id, student_id } = committee_assign_job_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถอนุมัติงานได้');
+
+        const student = await this.student_repository.findOne('student_id', student_id);
+        if (!student) throw new Error('ไม่พบข้อมูลนักศึกษา');
+
+        const job = await this.job_repository.findOne('id', job_id);
+        if (!job) throw new Error('ไม่พบข้อมูลงานที่เปิดรับ');
+
+        //เช็คว่าเคยได้รับงานอยู่แล้วไหม
+        // clear old job
+        const student_have_job = student.student_apply_job?.filter((i) => i.job_status === JobStatus.COMMITTEEAPPROVE);
+        if (student_have_job.length >= 1) {
+            const repo_stu_apply = await this.student_apply_job_repository.findOne('id', student_have_job[0].id);
+            if (!repo_stu_apply) {
+                throw new Error('ไม่พบข้อมูลการสมัครงาน');
+            }
+            // repo_stu_apply.job_status = JobStatus.COMMITTEECANCEL;
+            // await this.student_apply_job_repository.save(repo_stu_apply);
+            this.undoStatusCommitteeApproveJob({ student_apply_job_id: repo_stu_apply.id }, account_id);
+
+            const job_in_stu = await student?.job;
+            if (job_in_stu) {
+                job.students = job.students.filter((i) => i.student_id.toString() !== student_id.toString());
+                //save job repo
+                await this.job_repository.save(job);
+            }
+        }
+
+        // add new job
+        let new_student_apply_job = undefined;
+        const count_stu_applied = job.student_apply_job.filter((i) => i.job_status === JobStatus.COMMITTEEAPPROVE).length;
+        if (count_stu_applied < parseInt(job.limit)) {
+            const student_is_applied = student.student_apply_job.filter((i) => i.job_id.toString() === job_id.toString());
+            //เช็คว่าเคยสมัครงานนี้หรือยัง
+            if (student_is_applied.length > 0) {
+                //save stu_apply_job repo
+                new_student_apply_job = await this.student_apply_job_repository.findOne('id', student_is_applied[0].id);
+                if (!new_student_apply_job) throw new Error('ไม่พบงานที่นักศึกษาสมัคร');
+                new_student_apply_job.job_status = JobStatus.COMMITTEEAPPROVE;
+            } else {
+                job.students.push(student);
+                await this.job_repository.save(job);
+                return await this.student_apply_job_repository.save(new StudentApplyJob(student_id, job_id, JobStatus.COMMITTEEAPPROVE));
+            }
+            job.students.push(student);
+            //save job repo
+            this.job_repository.save(job);
+        } else if (count_stu_applied === parseInt(job.limit)) {
+            throw new Error('ไม่สามารถกำหนดงานได้ เนื่องจากในงานมีนักศึกษาครบจำนวนที่รับสมัครแล้ว');
+        }
+
+        if (!new_student_apply_job) throw new Error('เกิดข้อผิดพลาด');
+
+        return await this.student_apply_job_repository.save(new_student_apply_job);
+    }
+
+    async undoStatusCommitteeApproveJob(undo_committee_approve_info: EditJobStateInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { student_apply_job_id } = undo_committee_approve_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถดำเนินการได้');
+
+        // check id in table student_apply_job
+        const already__apply_job = await this.student_apply_job_repository.findOne('id', student_apply_job_id);
+
+        if (!already__apply_job) {
+            throw new Error('ไม่พบข้อมูลงานที่จะยกเลิกการอนุมัติ');
+        }
+
+        const job = await this.job_repository.findOne('id', already__apply_job.job_id);
+        if (!job) {
+            throw new Error('ไม่พบข้อมูลงาน');
+        }
+
+        if (already__apply_job?.job_status === JobStatus.COMMITTEEAPPROVE) {
+            already__apply_job.job_status = JobStatus.COMMITTEECANCEL;
+
+            // job.students = job.students.filter((i) => i.student_id !== already__apply_job.student_id);
+            // await this.job_repository.save(job);
+
+            return await this.student_apply_job_repository.save(already__apply_job);
+        } else {
+            throw new Error('ไม่สามารถยกเลิกการอนุมัติ');
         }
     }
 }

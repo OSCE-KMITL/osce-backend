@@ -52,6 +52,11 @@ input AnnouncementInput {
   title: String!
 }
 
+input AssignJobInput {
+  job_id: String!
+  student_id: String!
+}
+
 type AuthData {
   created_at: DateTime!
   email: String!
@@ -291,6 +296,7 @@ type Mutation {
   applyJob(apply_info: StudentApplyJobInput!): Student
   cancelApply(cancel_apply_info: StudentApplyJobInput!): StudentApplyJob
   committeeApproveJob(committee_approve_info: EditJobStateInput!): StudentApplyJob
+  committeeAssignJob(committee_assignjob_info: AssignJobInput!): StudentApplyJob
   committeeDisapproveJob(committee_disapprove_info: EditJobStateInput!): StudentApplyJob
   companyApproveJob(company_approve_info: EditJobStateInput!): StudentApplyJob
   companyDisapproveJob(company_disapprove_info: EditJobStateInput!): StudentApplyJob

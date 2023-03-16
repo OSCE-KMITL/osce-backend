@@ -1,4 +1,4 @@
-import { EditJobStateInput } from './args/StuApplyJobInput';
+import { EditJobStateInput, AssignJobInput } from './args/StuApplyJobInput';
 import { RoleOption } from './../../../shared/types/Roles';
 import { StudentApplyJob } from './../../../entity/StudentApplyJob';
 import { StuApplyJobService } from './StuApplyJobService';
@@ -189,6 +189,24 @@ export class StuApplyJobController {
                 throw new Error('เข้าสู่ระบบก่อนทำรายการ');
             }
             return this.service.undoCommitteeDisapprove(undo_committee_disapprove_info, user_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE]))
+    @Mutation(() => StudentApplyJob, { nullable: true })
+    async committeeAssignJob(
+        @Arg('committee_assignjob_info') committee_assignjob_info: AssignJobInput,
+        @Ctx() { req }: AppContext
+    ): Promise<StudentApplyJob | null> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.service.committeeAssignJob(committee_assignjob_info, user_id);
         } catch (e) {
             console.log(e);
             throw e;
