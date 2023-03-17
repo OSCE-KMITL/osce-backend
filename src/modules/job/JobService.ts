@@ -406,6 +406,8 @@ export class JobService {
 
         const already_job = await this.job_repository.findOne('id', job_id);
         if (!already_job) throw new Error('ไม่พบข้อมูลงานที่จะลบ');
+
+        if(already_job.students.length > 0) throw new Error('ไม่สามารถลบงานได้ เนื่องจากมีนักศึกษาได้รับงานนี้แล้ว')
         return await this.job_repository.delete(already_job);
     }
 

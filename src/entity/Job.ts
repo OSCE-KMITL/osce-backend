@@ -107,7 +107,7 @@ export class Job {
     student_apply_job: StudentApplyJob[];
 
     @Field(() => [Student], { nullable: 'items' })
-    @OneToMany(() => Student, (student) => student.job, { cascade: true, eager: true })
+    @OneToMany(() => Student, (student) => student.job, { cascade: true, eager: true, onDelete:'CASCADE' })
     students: Student[];
 
     constructor(

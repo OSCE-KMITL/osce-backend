@@ -107,7 +107,9 @@ export class StuApplyJobService {
         }
 
         const limit = (await already__apply_job.job).limit;
-        const stu_applied_obj = (await already__apply_job.job).student_apply_job.filter((i) => i.job_status === JobStatus.COMPANYAPPROVE);
+        const stu_applied_obj = (await already__apply_job.job).student_apply_job.filter(
+            (i) => i.job_status === JobStatus.COMPANYAPPROVE || i.job_status === JobStatus.COMMITTEEAPPROVE
+        );
         if (stu_applied_obj.length === parseInt(limit)) {
             throw new Error('ไม่สามารถตอบรับได้ เนื่องจากตอบรับผู้สมัครครบจำนวนแล้ว');
         }
