@@ -39,6 +39,10 @@ export class StuApplyJobService {
         const student = await this.student_repository.findOne('student_id', student_id);
         if (!student) throw new Error('ไม่พบนักศึกษา');
 
+        //เช็คว่าได้รับงานที่กรรมการ approve แล้วหรือยัง
+        const student_job = await student?.job;
+        if (student_job) throw new Error('ไม่สามารถสมัครงานได้ เนื่องจากได้รับงานแล้ว');
+
         // check duplicate job applying
         const job_in_stu: string[] = await student.student_apply_job.map((i) => i.job_id.toString());
         if (job_in_stu.includes(job_id)) {
