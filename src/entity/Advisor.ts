@@ -23,6 +23,10 @@ export class Advisor {
     @Field()
     faculty: string;
 
+    @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    department: string;
+
     @Column({ default: false })
     @Field()
     is_committee: Boolean = false;

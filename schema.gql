@@ -22,6 +22,7 @@ type Advisor {
   advisor_id: String!
   announcements: [Announcement]!
   created_at: DateTime!
+  department: String!
   faculty: String!
   is_committee: Boolean!
   last_name: String!
