@@ -212,4 +212,70 @@ export class StuApplyJobController {
             throw e;
         }
     }
+
+    @UseMiddleware(useAuthorization([RoleOption.STUDENT, RoleOption.COMMITTEE]))
+    @Mutation(() => StudentApplyJob, { nullable: true })
+    async studentAcceptJob(@Arg('student_accept_info') student_accept_info: EditJobStateInput, @Ctx() { req }: AppContext): Promise<StudentApplyJob | null> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.service.studentAcceptJob(student_accept_info, user_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    @UseMiddleware(useAuthorization([RoleOption.STUDENT, RoleOption.COMMITTEE]))
+    @Mutation(() => StudentApplyJob, { nullable: true })
+    async undoStudentAcceptJob(
+        @Arg('undo_student_accept_info') undo_student_accept_info: EditJobStateInput,
+        @Ctx() { req }: AppContext
+    ): Promise<StudentApplyJob | null> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.service.undoStudentAcceptJob(undo_student_accept_info, user_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    @UseMiddleware(useAuthorization([RoleOption.STUDENT, RoleOption.COMMITTEE]))
+    @Mutation(() => StudentApplyJob, { nullable: true })
+    async studentRejectJob(@Arg('student_reject_info') student_reject_info: EditJobStateInput, @Ctx() { req }: AppContext): Promise<StudentApplyJob | null> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.service.studentRejectJob(student_reject_info, user_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    @UseMiddleware(useAuthorization([RoleOption.STUDENT, RoleOption.COMMITTEE]))
+    @Mutation(() => StudentApplyJob, { nullable: true })
+    async undoStudentRejectJob(
+        @Arg('undo_student_reject_info') undo_student_reject_info: EditJobStateInput,
+        @Ctx() { req }: AppContext
+    ): Promise<StudentApplyJob | null> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.service.undoStudentRejectJob(undo_student_reject_info, user_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
 }
