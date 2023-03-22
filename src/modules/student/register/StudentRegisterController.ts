@@ -1,13 +1,15 @@
-import { Arg, Args, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Args, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { AppContext } from '../../../shared/types/context-types';
 // import { StudentApplyJobInput } from '../args/StudentRegisterInput';
 import { Student } from '../../../entity/Student';
 import { Service } from 'typedi';
 import { StudentRegisterService } from './StudentRegisterService';
 import { Account } from '../../../entity/Account';
-import { StudentRegisterInput } from '../args/StudentRegisterInput';
+import { EditScoreInput, StudentRegisterInput } from '../args/StudentRegisterInput';
 import { CoopRegisterArgs, LanguageAbilities, SkillsArgs } from '../interfaces';
 import { Upload } from '../../../shared/types/Upload';
+import { useAuthorization } from '../../../middleware/useAuthorization';
+import { RoleOption } from '../../../shared/types/Roles';
 const GraphQLUpload = require('graphql-upload/public/GraphQLUpload.js');
 
 @Resolver()
@@ -49,6 +51,21 @@ export class StudentRegisterController {
                 throw new Error('เข้าสู่ระบบก่อนทำรายการ');
             }
             return await this.service.registerCoop(payload, user_id, skills, language_abilities, transcript_file);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE]))
+    @Mutation(() => Student, { nullable: true })
+    async setScoreStudent(@Arg('set_score_info') set_score_info: EditScoreInput, @Ctx() { req }: AppContext): Promise<Student | null> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.service.setScoreStudent(set_score_info, user_id);
         } catch (e) {
             console.log(e);
             throw e;

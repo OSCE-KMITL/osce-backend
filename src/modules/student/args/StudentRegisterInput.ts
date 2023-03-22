@@ -26,3 +26,18 @@ export class StudentApplyJobInput {
     @Field({ nullable: false })
     job_id: string;
 }
+
+@InputType()
+export class EditScoreInput {
+    @Field()
+    score_advisor!: number;
+
+    @Field()
+    score_company!: number;
+
+    @Field()
+    score_presentation!: number;
+
+    @Field()
+    student_id!: string;
+}

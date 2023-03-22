@@ -11,7 +11,7 @@ import { Student } from '../../../entity/Student';
 import { Service } from 'typedi';
 import { Account } from '../../../entity/Account';
 import { AccountRepository } from '../../account/AccountRepository';
-import { StudentRegisterInput } from '../args/StudentRegisterInput';
+import { EditScoreInput, StudentRegisterInput } from '../args/StudentRegisterInput';
 import { hashedPassword } from '../../../utils/hash-password';
 import { CoopRegisterArgs, LanguageAbility, Skill } from '../interfaces';
 import { roleValidation } from '../../../utils/common-utils';
@@ -190,5 +190,27 @@ export class StudentRegisterService {
             console.log(e);
             throw e;
         }
+    }
+
+    async setScoreStudent(set_score_info: EditScoreInput, account_id: string) {
+        const account = await this.account_repository.findOne('id', account_id);
+        const { student_id, score_advisor, score_company, score_presentation } = set_score_info;
+        if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
+        if (account.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถดำเนินการได้');
+
+        const student = await this.student_repository.findOne('student_id', student_id);
+        if (!student) {
+            throw new Error('ไม่พบข้อมูลนักศึกษา');
+        }
+
+        if (score_advisor < 0 || score_advisor > 20) throw new Error('คะแนนจากอาจารย์นิเทศจำเป็นต้องอยู่ระหว่าง 0 - 20');
+        if (score_company < 0 || score_company > 40) throw new Error('คะแนนจากบริษัทจำเป็นต้องอยู่ระหว่าง 0 - 40');
+        if (score_presentation < 0 || score_presentation > 40) throw new Error('คะแนนจากการสอบสหกิจเป็นต้องอยู่ระหว่าง 0 - 40');
+
+        student.score_from_advisor = score_advisor;
+        student.score_from_company = score_company;
+        student.score_from_presentation = score_presentation;
+
+        return await this.student_repository.save(student);
     }
 }

@@ -134,6 +134,18 @@ export class Student {
     @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
     birth_date: string;
 
+    @Field({ nullable: true })
+    @Column({ nullable: true, default: 0 })
+    score_from_company: number;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true, default: 0 })
+    score_from_advisor: number;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true, default: 0 })
+    score_from_presentation: number;
+
     @Field()
     @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)' })
     created_at!: Date;

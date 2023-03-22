@@ -195,6 +195,13 @@ input EditJobStateInput {
   student_apply_job_id: String!
 }
 
+input EditScoreInput {
+  score_advisor: Float!
+  score_company: Float!
+  score_presentation: Float!
+  student_id: String!
+}
+
 type Faculty {
   faculty_id: ID!
   faculty_name_en: String!
@@ -314,6 +321,7 @@ type Mutation {
   deleteJob(job_id: String!): Job
   registerAdvisor(advisorAccountInfo: AdvisorAccountInput!): Account!
   registerCompanyPerson(CompanyPersonAccountInfo: CompanyPersonInput!): Account!
+  setScoreStudent(set_score_info: EditScoreInput!): Student
   signIn(email: String!, password: String!): AuthData
   studentAcceptJob(student_accept_info: EditJobStateInput!): StudentApplyJob
   studentRegister(student_register_input: StudentRegisterInput!): Account!
@@ -395,6 +403,9 @@ type Student {
   name_th: String
   phone_number: String
   religion: String
+  score_from_advisor: Float
+  score_from_company: Float
+  score_from_presentation: Float
   skills: [StudentSkills]!
   student_apply_job: [StudentApplyJob]!
   student_id: ID!
