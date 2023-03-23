@@ -16,7 +16,7 @@ import { Account } from '../../../entity/Account';
 import { AccountRepository } from '../../account/AccountRepository';
 import { StudentRegisterInput } from '../args/StudentRegisterInput';
 import { hashedPassword } from '../../../utils/hash-password';
-import { CoopRegisterArgs, LanguageAbility, Skill } from '../interfaces';
+import { CommitteeCoopRegisterArgs, CoopRegisterArgs, LanguageAbility, Skill } from '../interfaces';
 import { roleValidation } from '../../../utils/common-utils';
 import { Faculty } from '../../../entity/Faculty';
 import { Department } from '../../../entity/Department';
@@ -30,6 +30,7 @@ import path from 'path';
 import { generateRandomString } from '../../../utils/random-string';
 import { PORT } from '../../../shared/constants';
 import { createWriteStream } from 'fs';
+import { CoopStatus } from '../../../shared/types/CoopStatus';
 
 @Service()
 export class StudentRegisterService {
@@ -63,6 +64,39 @@ export class StudentRegisterService {
         }
     }
 
+    async deleteStudent(student_id: string): Promise<Student | null | undefined> {
+        try {
+            const already_exist_student = await this.student_repository.findOne('student_id', student_id);
+            if (!already_exist_student) throw new Error('ไม่พบนักศึกษาที่ต้องการจะลบ');
+
+            const already_exist_account = await already_exist_student.account;
+
+            // if already exist in account just delete in account  table
+            if (already_exist_account) {
+                await this.account_repository.delete(already_exist_account);
+                const deleted_student = await this.student_repository.delete(already_exist_student);
+                return deleted_student;
+            } else {
+                // if not already exist in account just delete in student  table
+                const deleted_student = await this.student_repository.delete(already_exist_student);
+                return deleted_student;
+            }
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async getStudentsApply(): Promise<Student[] | undefined> {
+        try {
+            const students = await this.student_repository.find();
+            return students.filter((students) => students.coop_status !== CoopStatus.DEFAULT);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
     async getStudent(student_id: string): Promise<Student | null> {
         try {
             return await this.student_repository.findOne('student_id', student_id);
@@ -87,22 +121,103 @@ export class StudentRegisterService {
         }
     }
 
+    async committeeChangeCoopStatus(student_id: string, status: CoopStatus): Promise<Student | undefined> {
+        try {
+            const student = await this.student_repository.findOne('student_id', student_id);
+
+            if (!student) {
+                throw new Error('ไม่พบนักศึกษาที่ต้องการจะแก้ไข');
+            }
+
+            student.coop_status = status;
+
+            return await this.student_repository.save(student);
+        } catch (error) {
+            throw error;
+            console.log(error);
+        }
+    }
+
+    async committeeAddRegisterStudent(payload: CommitteeCoopRegisterArgs, user_id: string): Promise<Student> {
+        try {
+            const already_exist_student = await this.student_repository.findOne('student_id', payload.student_id.trim().toLocaleLowerCase());
+
+            if (already_exist_student) {
+                throw new Error('มีรหัสนักศึกษานี้อยู่ในระบบแล้ว !');
+            }
+
+            const student = new Student(payload.student_id, '', '');
+            student.name_th = payload.name_th;
+            student.lastname_th = payload.lastname_th;
+            student.coop_status = payload.coop_status;
+            student.name_prefix = payload.name_prefix;
+
+            let student_faculty: Faculty;
+            let student_curriculum: Curriculum;
+            let student_department: Department;
+
+            // search for already exist faculty
+            const existing_faculty = await this.faculty_repository.findOne('faculty_id', payload.faculty_id);
+            if (!existing_faculty) {
+                const faculty = new Faculty(payload.faculty_id, payload.faculty_name_en, payload.faculty_name_th);
+                student_faculty = await this.faculty_repository.save(faculty);
+            } else {
+                student_faculty = existing_faculty;
+            }
+
+            // search for already exist department
+            const existing_department = await this.department_repository.findOne('department_name_en', payload.department_name_en);
+            if (!existing_department) {
+                // if not just create new department
+                const department = new Department(payload.department_id, payload.department_name_en, payload.department_name_th, payload.faculty_id);
+                student_department = await this.department_repository.save(department);
+            } else {
+                student_department = existing_department;
+            }
+
+            const existing_curr = await this.curriculum_repository.findOne('curriculum_name_en', payload.curriculum_name_en);
+            if (!existing_curr) {
+                const curriculum = new Curriculum(
+                    payload.curriculum_id,
+                    payload.faculty_id,
+                    payload.department_id,
+                    payload.curriculum_name_en,
+                    payload.curriculum_name_th,
+                    payload.level_id
+                );
+                student_curriculum = await this.curriculum_repository.save(curriculum);
+            } else {
+                student_curriculum = existing_curr;
+            }
+
+            student.faculty = student_faculty;
+            student.department = student_department;
+            student.curriculum = student_curriculum;
+
+            return await this.student_repository.save(student);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
     async registerCoop(
         payload: CoopRegisterArgs,
         user_id: string,
         skills: Skill[],
         language_abilities: LanguageAbility[],
         transcript_file: Upload
-    ): Promise<any> {
+    ): Promise<Student> {
         try {
             const account = await this.account_repository.findOne('id', user_id);
             if (!account) throw new Error('คุณไม่มีสิทธิเข้าถึง');
 
             // validate this account is student ?
-            roleValidation(account, RoleOption.STUDENT);
+            // roleValidation(account, RoleOption.STUDENT);
+            // roleValidation(account, RoleOption.COMMITTEE);
 
             // get student object
-            const already_student = account.is_student;
+            const already_student = await this.student_repository.findOne('student_id', payload.student_id);
             if (!already_student) throw new Error('ไม่พบข้อมูลการเป็นนักศึกษา');
 
             let student_faculty: Faculty;
@@ -149,6 +264,10 @@ export class StudentRegisterService {
             student_applied.faculty = student_faculty;
             student_applied.curriculum = student_curriculum;
 
+            if (payload.coop_status) {
+                student_applied.coop_status === payload.coop_status;
+            }
+
             let student_skills: StudentSkills[] = [];
             let student_language_abilities: StudentLanguageAbility[] = [];
 
@@ -163,16 +282,14 @@ export class StudentRegisterService {
                     return new StudentLanguageAbility(lang.name, lang.level, student_applied);
                 });
             }
+
             // saved skill to student
             student_applied.skills = student_skills;
             student_applied.language_abilities = student_language_abilities;
 
-            try {
-                await this.skill_repository.deleteMany('students', 'null');
-                await this.lang_repository.deleteMany('student_id', 'null');
-            } catch (error) {
-                console.log(error);
-            }
+            // delete row contrain null as student_id in skill & language databases
+            this.skill_repository.deleteMany('student_id', 'null');
+            this.lang_repository.deleteMany('student_id', 'null');
 
             if (transcript_file) {
                 const { createReadStream, filename, mimetype, encoding } = await transcript_file;
@@ -194,7 +311,8 @@ export class StudentRegisterService {
                     } else {
                         const transcirpt_obj = new TranscriptFileUpload(original_name, current_name, url);
                         transcirpt_obj.student_id = student_applied;
-                        const transcirpt_file = await this.transcript_repository.save(transcirpt_obj);
+                        const transcript_new = await this.transcript_repository.save(transcirpt_obj);
+                        student_applied.transcript = transcript_new;
                     }
                 } catch (error) {
                     throw new Error('Error , Can not saved transcritp files');

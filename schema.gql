@@ -67,6 +67,24 @@ type AuthData {
   updated_at: DateTime!
 }
 
+input CommitteeCoopRegisterArgs {
+  coop_status: String
+  curriculum_id: String
+  curriculum_name_en: String
+  curriculum_name_th: String
+  department_id: String
+  department_name_en: String
+  department_name_th: String
+  faculty_id: String
+  faculty_name_en: String
+  faculty_name_th: String
+  lastname_th: String
+  level_id: String
+  name_prefix: String
+  name_th: String
+  student_id: String!
+}
+
 type Company {
   address: String!
   business_type: String!
@@ -125,6 +143,7 @@ input CoopRegisterArgs {
   address: String
   birth_date: String
   citizen_id: String
+  coop_status: String
   curriculum_id: String
   curriculum_name_en: String
   curriculum_name_th: String
@@ -149,15 +168,17 @@ input CoopRegisterArgs {
   name_th: String
   phone_number: String
   religion: String
+  student_id: String!
   weight: String
 }
 
-"""status of coop applying"""
+"""status of coop """
 enum CoopStatus {
   APPLYING
   DEFAULT
   PASSED
   REJECTED
+  SAVED
 }
 
 type Curriculum {
@@ -284,6 +305,8 @@ input LanguageAbility {
 
 type Mutation {
   applyJob(apply_info: StudentApplyJobInput!): Student
+  committeeAddRegisterStudent(committee_register_coop_input: CommitteeCoopRegisterArgs!): Student
+  committeeChangeCoopStatus(status: String!, student_id: String!): Student!
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company
   createJobByCommittee(file: Upload!, job_info: JobInputByCommittee!): Job
@@ -298,6 +321,7 @@ type Mutation {
   registerAdvisor(advisorAccountInfo: AdvisorAccountInput!): Account!
   registerCompanyPerson(CompanyPersonAccountInfo: CompanyPersonInput!): Account!
   signIn(email: String!, password: String!): AuthData
+  studentDeleteById(student_id: String!): Student
   studentRegister(student_register_input: StudentRegisterInput!): Account!
   studentRegisterCoop(language_abilities: [LanguageAbility!], register_coop_input: CoopRegisterArgs!, skills: [Skill!], transcript_file: Upload): Student
   updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
@@ -325,6 +349,7 @@ type Query {
   getMe: Account
   getStudent(student_id: String!): Student
   getStudents: [Student]!
+  getStudentsApply: [Student]!
   getStudentsByDepartment(department_id: String!): [Student!]
 }
 

@@ -1,4 +1,5 @@
 import { ArgsType, Field, InputType } from 'type-graphql';
+import { CoopStatus } from '../../../shared/types/CoopStatus';
 
 @InputType()
 export class Skill {
@@ -34,6 +35,12 @@ export class SkillsArgs {
 export class CoopRegisterArgs {
     @Field({ nullable: true })
     level_id: string;
+
+    @Field({ nullable: false })
+    student_id: string;
+
+    @Field({ nullable: true })
+    coop_status: CoopStatus;
 
     @Field({ nullable: true })
     curriculum_id: string;
@@ -97,6 +104,54 @@ export class CoopRegisterArgs {
 
     @Field({ nullable: true })
     birth_date: string;
+
+    @Field({ nullable: true })
+    faculty_id: string;
+
+    @Field({ nullable: true })
+    faculty_name_th: string;
+
+    @Field({ nullable: true })
+    faculty_name_en: string;
+
+    @Field({ nullable: true })
+    department_id: string;
+
+    @Field({ nullable: true })
+    department_name_en: string;
+
+    @Field({ nullable: true })
+    department_name_th: string;
+}
+
+@InputType()
+export class CommitteeCoopRegisterArgs {
+    @Field({ nullable: false })
+    student_id: string;
+
+    @Field({ nullable: true })
+    name_th: string;
+
+    @Field({ nullable: true })
+    name_prefix: string;
+
+    @Field({ nullable: true })
+    lastname_th: string;
+
+    @Field({ nullable: true })
+    coop_status: CoopStatus;
+
+    @Field({ nullable: true })
+    curriculum_id: string;
+
+    @Field({ nullable: true })
+    curriculum_name_th: string;
+
+    @Field({ nullable: true })
+    curriculum_name_en: string;
+
+    @Field({ nullable: true })
+    level_id: string;
 
     @Field({ nullable: true })
     faculty_id: string;

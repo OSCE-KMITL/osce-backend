@@ -31,7 +31,7 @@ export class TranscriptFileUpload {
     updated_at!: Date;
 
     @Field(() => Student)
-    @OneToOne(() => Student, (student) => student.transcript)
+    @OneToOne(() => Student, (student) => student.transcript, { onDelete: 'SET NULL' })
     @JoinColumn({ name: 'student_id' })
     student_id: Student;
 

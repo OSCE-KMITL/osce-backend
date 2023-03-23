@@ -1,17 +1,13 @@
 import { Field, ID, ObjectType } from 'type-graphql';
-import {
-    Column,
-    Entity, JoinColumn, ManyToOne,
-     PrimaryGeneratedColumn
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import 'reflect-metadata';
-import {Student} from "./Student";
+import { Student } from './Student';
 
-@Entity({name:"student_language_ability"})
+@Entity({ name: 'student_language_ability' })
 @ObjectType()
-export class StudentLanguageAbility  {
+export class StudentLanguageAbility {
     @Field(() => ID)
-    @PrimaryGeneratedColumn("increment")
+    @PrimaryGeneratedColumn('increment')
     id: string;
 
     @Field()
@@ -23,14 +19,13 @@ export class StudentLanguageAbility  {
     level: string;
 
     //@Field(()=>Student ,{nullable:true})
-    @ManyToOne(()=> Student , student => student.language_abilities )
-    @JoinColumn({name:"student_id"})
-    student_id:Student
+    @ManyToOne(() => Student, (student) => student.language_abilities, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'student_id' })
+    student_id: Student;
 
-    constructor( name: string, level: string, students: Student) {
+    constructor(name: string, level: string, students: Student) {
         this.name = name;
         this.level = level;
         this.student_id = students;
     }
-
 }

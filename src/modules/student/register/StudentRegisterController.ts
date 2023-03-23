@@ -6,8 +6,9 @@ import { Service } from 'typedi';
 import { StudentRegisterService } from './StudentRegisterService';
 import { Account } from '../../../entity/Account';
 import { StudentRegisterInput } from '../args/StudentRegisterInput';
-import { CoopRegisterArgs, LanguageAbilities, SkillsArgs } from '../interfaces';
+import { CommitteeCoopRegisterArgs, CoopRegisterArgs, LanguageAbilities, SkillsArgs } from '../interfaces';
 import { Upload } from '../../../shared/types/Upload';
+import { CoopStatus } from '../../../shared/types/CoopStatus';
 const GraphQLUpload = require('graphql-upload/public/GraphQLUpload.js');
 
 @Resolver()
@@ -27,9 +28,19 @@ export class StudentRegisterController {
         return this.service.applyJob(apply_info, user_id!);
     }
 
+    @Mutation(() => Student, { nullable: true })
+    async studentDeleteById(@Arg('student_id') student_id: string, @Ctx() { req }: AppContext): Promise<Student | null | undefined> {
+        const { user_id } = req;
+        return this.service.deleteStudent(student_id);
+    }
+
     @Query(() => [Student], { nullable: 'items' })
     async getStudents(): Promise<Student[] | undefined> {
         return await this.service.getStudents();
+    }
+    @Query(() => [Student], { nullable: 'items' })
+    async getStudentsApply(): Promise<Student[] | undefined> {
+        return await this.service.getStudentsApply();
     }
 
     @Query(() => [Student], { nullable: true })
@@ -52,10 +63,41 @@ export class StudentRegisterController {
     ): Promise<any> {
         try {
             const { user_id } = req;
+            //console.log(payload);
             if (!user_id) {
                 throw new Error('เข้าสู่ระบบก่อนทำรายการ');
             }
             return await this.service.registerCoop(payload, user_id, skills, language_abilities, transcript_file);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    @Mutation(() => Student)
+    async committeeChangeCoopStatus(
+        @Arg('student_id') student_id: string,
+        @Arg('status') status: CoopStatus,
+        @Ctx() { req }: AppContext
+    ): Promise<Student | undefined> {
+        try {
+            return await this.service.committeeChangeCoopStatus(student_id, status);
+        } catch (error) {
+            console.log(error);
+
+            throw error;
+        }
+    }
+
+    @Mutation(() => Student, { nullable: true })
+    async committeeAddRegisterStudent(@Arg('committee_register_coop_input') payload: CommitteeCoopRegisterArgs, @Ctx() { req }: AppContext): Promise<any> {
+        try {
+            const { user_id } = req;
+
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return await this.service.committeeAddRegisterStudent(payload, user_id);
         } catch (e) {
             console.log(e);
             throw e;

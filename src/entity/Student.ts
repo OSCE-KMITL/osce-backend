@@ -42,7 +42,7 @@ export class Student {
     curriculum: Curriculum;
 
     @Field(() => TranscriptFileUpload, { nullable: true })
-    @OneToOne(() => TranscriptFileUpload, (transcript) => transcript.student_id, { nullable: true, cascade: true, eager: true })
+    @OneToOne(() => TranscriptFileUpload, (transcript) => transcript.student_id, { nullable: true, eager: true, cascade: true })
     @JoinColumn({ name: 'transcript' })
     transcript: TranscriptFileUpload;
 
@@ -67,7 +67,7 @@ export class Student {
     lastname_th: string;
 
     @Field(() => Account)
-    @OneToOne(() => Account, (account) => account.is_student)
+    @OneToOne(() => Account, (account) => account.is_student, { onDelete: 'CASCADE' })
     account: Promise<Account>;
 
     @Field(() => CoopStatus)
@@ -182,6 +182,7 @@ export class Student {
         this.emer_tel = payload.emer_tel;
         this.birth_date = payload.birth_date;
         this.coop_status = CoopStatus.APPLYING;
+        this.name_prefix = payload.name_prefix;
         return this;
     }
 }

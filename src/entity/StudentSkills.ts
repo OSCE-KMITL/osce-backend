@@ -19,7 +19,7 @@ export class StudentSkills {
     level: string;
 
     //@Field(()=>Student ,{nullable:true})
-    @ManyToOne(() => Student, (student) => student.skills)
+    @ManyToOne(() => Student, (student) => student.skills ,{onDelete:"CASCADE"})
     @JoinColumn({ name: 'student_id' })
     student_id: Student;
 
