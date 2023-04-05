@@ -11,6 +11,7 @@ import { Curriculum } from './Curriculum';
 import { StudentLanguageAbility } from './StudentLanguageAbility';
 import { StudentSkills } from './StudentSkills';
 import { TranscriptFileUpload } from './TranscriptFileUpload';
+import { CompanyAssessment } from './CompanyAssessment';
 
 @Entity()
 @ObjectType()
@@ -158,6 +159,11 @@ export class Student {
     @OneToMany(() => StudentApplyJob, (student_apply_job) => student_apply_job.student, { cascade: true, eager: true })
     @JoinColumn({ name: 'student_apply_job' })
     student_apply_job: StudentApplyJob[];
+
+    @Field(() => [CompanyAssessment], { nullable: 'items' })
+    @OneToMany(() => CompanyAssessment, (company_assessment) => company_assessment.student, { cascade: true, eager: true })
+    @JoinColumn({ name: 'company_assessment' })
+    company_assessment: CompanyAssessment[];
 
     @Field(() => Job, { nullable: true })
     @ManyToOne(() => Job, (job) => job.students, { onDelete: 'CASCADE' })

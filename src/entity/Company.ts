@@ -2,7 +2,8 @@ import { Job } from './Job';
 import { CompanyPerson } from './CompanyPerson';
 import { Field, ObjectType } from 'type-graphql';
 import { v4 as uuid } from 'uuid';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
+import { CompanyAssessment } from './CompanyAssessment';
 
 @Entity()
 @ObjectType()
@@ -66,6 +67,11 @@ export class Company {
     @Field(() => [Job], { nullable: 'items' })
     @OneToMany(() => Job, (job) => job.company_id, { cascade: true, eager: true })
     job: Job[];
+
+    @Field(() => [CompanyAssessment], { nullable: 'items' })
+    @OneToMany(() => CompanyAssessment, (company_assessment) => company_assessment.company, { cascade: true, eager: true })
+    @JoinColumn({ name: 'company_assessment' })
+    company_assessment: CompanyAssessment[];
 
     constructor(
         name_th: string,

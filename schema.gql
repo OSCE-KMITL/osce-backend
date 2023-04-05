@@ -76,6 +76,7 @@ type AuthData {
 type Company {
   address: String!
   business_type: String!
+  company_assessment: [CompanyAssessment]!
   company_persons: [CompanyPerson]!
   created_at: DateTime!
   district: String!
@@ -89,6 +90,18 @@ type Company {
   sub_district: String!
   updated_at: DateTime!
   website_url: String!
+}
+
+type CompanyAssessment {
+  assessment_obj: JSONObject!
+  company: Company
+  created_at: DateTime!
+  id: String!
+  improvement: String!
+  score: Float!
+  strength: String!
+  student: Student
+  updated_at: DateTime!
 }
 
 input CompanyInput {
@@ -295,6 +308,11 @@ input JobInputByCompany {
   work_period: String
 }
 
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
 input LanguageAbility {
   level: String!
   name: String!
@@ -380,6 +398,7 @@ type Student {
   address: String
   birth_date: String
   citizen_id: String
+  company_assessment: [CompanyAssessment]!
   coop_status: CoopStatus!
   created_at: DateTime!
   curriculum: Curriculum
