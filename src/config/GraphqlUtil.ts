@@ -1,5 +1,5 @@
-import { FileUploadController } from './../modules/file_upload/FileUploadController';
-import { JobController } from './../modules/job/JobController';
+import { FileUploadController } from '../modules/file_upload/FileUploadController';
+import { JobController } from '../modules/job/JobController';
 import { CompanyPersonController } from '../modules/company_person/register/CompanyPersonController';
 import { CompanyController } from '../modules/company/CompanyController';
 import { buildSchema } from 'type-graphql';
@@ -9,6 +9,7 @@ import { AnnouncementController } from '../modules/annoucement/AnnouncementContr
 import { StudentRegisterController } from '../modules/student/register/StudentRegisterController';
 import { AccountController } from '../modules/account/AccountController';
 import { AuthController } from '../modules/auth/AuthController';
+import {ProgressReportController} from "../modules/student/progress_report/ProgressReportController";
 
 export class GraphqlUtil {
     static async getSchema() {
@@ -23,6 +24,7 @@ export class GraphqlUtil {
                 AuthController,
                 JobController,
                 FileUploadController,
+                ProgressReportController
             ],
             emitSchemaFile: true,
             container: Container,

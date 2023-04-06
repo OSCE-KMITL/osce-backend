@@ -10,6 +10,7 @@ import { Curriculum } from './Curriculum';
 import { StudentLanguageAbility } from './StudentLanguageAbility';
 import { StudentSkills } from './StudentSkills';
 import { TranscriptFileUpload } from './TranscriptFileUpload';
+import { ProgressReport } from './ProgressReport';
 
 @Entity()
 @ObjectType()
@@ -21,6 +22,10 @@ export class Student {
     @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     name_eng: string;
+
+    @Field(() => [ProgressReport], { nullable: 'items' })
+    @OneToMany(() => ProgressReport, (report) => report.student_id, { cascade: true, eager: true })
+    progress_report: ProgressReport[];
 
     @Column({ charset: 'utf8', collation: 'utf8_general_ci', nullable: true })
     @Field({ nullable: true })

@@ -313,11 +313,13 @@ type Mutation {
   createJobByCommitteeNoFile(job_info: JobInputByCommittee!): Job
   createJobByCompany(file: Upload!, job_info: JobInputByCompany!): Job
   createJobByCompanyNoFile(job_info: JobInputByCompany!): Job
+  createProgressReport(progress_report_arg: ProgressReportInput!): ProgressReport
   deleteAdvisorAccount(id: String!): Account
   deleteAnnouncement(announcement_id: String!): Announcement
   deleteCompany(delete_by_id: String!): Company
   deleteCompanyPersonAccount(id: String!): Account
   deleteJob(job_id: String!): Job
+  deleteProgressReport(report_id: String!): ProgressReport
   registerAdvisor(advisorAccountInfo: AdvisorAccountInput!): Account!
   registerCompanyPerson(CompanyPersonAccountInfo: CompanyPersonInput!): Account!
   signIn(email: String!, password: String!): AuthData
@@ -330,6 +332,33 @@ type Mutation {
   updateCompanyPerson(update_input: UpdateCompanyPersonInput!): CompanyPerson
   updateJob(update_input: UpdateJobInput!): Job
   uploadFile(file: Upload!): FileUpload
+}
+
+type ProgressReport {
+  advisement_score: Float!
+  commute_score: Float!
+  createdAt: DateTime!
+  current_res: String!
+  mentor_lastname: String
+  mentor_name: String
+  mentor_position: String
+  other_suggest: String!
+  progress_report_id: String!
+  report_no: Float!
+  student_id: Student!
+  updatedAt: DateTime!
+  work_score: Float!
+}
+
+input ProgressReportInput {
+  advisement_score: Float!
+  commute_score: Float!
+  current_res: String!
+  mentor_lastname: String
+  mentor_name: String
+  mentor_position: String
+  other_suggest: String!
+  work_score: Float!
 }
 
 type Query {
@@ -347,6 +376,8 @@ type Query {
   getCompanyPersonAccounts: [Account]!
   getJobById(job_id: String!): Job
   getMe: Account
+  getProgressReport(id: String!): ProgressReport
+  getProgressReports: [ProgressReport]!
   getStudent(student_id: String!): Student
   getStudents: [Student]!
   getStudentsApply: [Student]!
@@ -393,6 +424,7 @@ type Student {
   name_prefix: String
   name_th: String
   phone_number: String
+  progress_report: [ProgressReport]!
   religion: String
   skills: [StudentSkills]!
   student_id: ID!
