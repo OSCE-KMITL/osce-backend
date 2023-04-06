@@ -21,6 +21,12 @@ export class AdvisorAccountInput {
 
     @Field({ nullable: false })
     is_committee!: Boolean;
+
+    @Field({ nullable: false })
+    name_prefix: string;
+
+    @Field({ nullable: false })
+    department: string;
 }
 
 @InputType()

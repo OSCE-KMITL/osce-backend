@@ -19,10 +19,25 @@ export class LanguageAbility {
     level: string;
 }
 
+@InputType()
+export class StudentList {
+    @Field(() => String)
+    name: string;
+
+    @Field(() => String)
+    level: string;
+}
+
 @ArgsType()
 export class LanguageAbilities {
     @Field(() => [LanguageAbility], { nullable: true })
     language_abilities: LanguageAbility[];
+}
+
+@ArgsType()
+export class StudentIdList {
+    @Field(() => [String], { nullable: 'items' })
+    students_id_list: String[];
 }
 
 @ArgsType()

@@ -6,9 +6,11 @@ import { Service } from 'typedi';
 import { StudentRegisterService } from './StudentRegisterService';
 import { Account } from '../../../entity/Account';
 import { StudentRegisterInput } from '../args/StudentRegisterInput';
-import { CommitteeCoopRegisterArgs, CoopRegisterArgs, LanguageAbilities, SkillsArgs } from '../interfaces';
+import { CommitteeCoopRegisterArgs, CoopRegisterArgs, LanguageAbilities, SkillsArgs, StudentIdList } from '../interfaces';
 import { Upload } from '../../../shared/types/Upload';
 import { CoopStatus } from '../../../shared/types/CoopStatus';
+import { Advisor } from '../../../entity/Advisor';
+import { type } from 'ramda';
 const GraphQLUpload = require('graphql-upload/public/GraphQLUpload.js');
 
 @Resolver()
@@ -98,6 +100,20 @@ export class StudentRegisterController {
                 throw new Error('เข้าสู่ระบบก่อนทำรายการ');
             }
             return await this.service.committeeAddRegisterStudent(payload, user_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    @Mutation(() => Advisor, { nullable: true })
+    async CommitteeAssignStudent(
+        @Arg('student_list', (type) => [String], { nullable: 'items' }) payload: string[],
+        @Arg('advisor_id') advisor_id: string,
+        @Ctx() { req }: AppContext
+    ): Promise<Advisor | null | undefined> {
+        try {
+            return await this.service.committeeAssignStudent(payload, advisor_id);
         } catch (e) {
             console.log(e);
             throw e;

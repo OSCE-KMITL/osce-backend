@@ -12,3 +12,8 @@ registerEnumType(RoleOption, {
     description: 'type of user', // this one is optional
 });
 
+export enum AccountStatus {
+    ACTIVE = 'ACTIVE',
+    BAN = 'BAN',
+    INACTIVE = 'INACTIVE',
+}

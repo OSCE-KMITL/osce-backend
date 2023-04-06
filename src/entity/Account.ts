@@ -3,7 +3,7 @@ import { Field, ObjectType } from 'type-graphql';
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import 'reflect-metadata';
 import { v4 as uuid } from 'uuid';
-import { RoleOption } from '../shared/types/Roles';
+import { RoleOption, AccountStatus } from '../shared/types/Roles';
 import { Advisor } from './Advisor';
 import { Student } from './Student';
 
@@ -44,10 +44,9 @@ export class Account {
     @Column({ default: 0 })
     token_version: number;
 
-    @Column({ default: 'active' })
-    @JoinColumn()
+    @Column({ default: AccountStatus.ACTIVE })
     @Field()
-    status: string = 'active' || 'inactive' || 'banned';
+    status: AccountStatus;
 
     @Column({ nullable: true })
     @Field({ nullable: true })

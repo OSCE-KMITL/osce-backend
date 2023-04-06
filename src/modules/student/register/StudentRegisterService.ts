@@ -16,7 +16,7 @@ import { Account } from '../../../entity/Account';
 import { AccountRepository } from '../../account/AccountRepository';
 import { StudentRegisterInput } from '../args/StudentRegisterInput';
 import { hashedPassword } from '../../../utils/hash-password';
-import { CommitteeCoopRegisterArgs, CoopRegisterArgs, LanguageAbility, Skill } from '../interfaces';
+import { CommitteeCoopRegisterArgs, CoopRegisterArgs, LanguageAbility, Skill, StudentIdList } from '../interfaces';
 import { roleValidation } from '../../../utils/common-utils';
 import { Faculty } from '../../../entity/Faculty';
 import { Department } from '../../../entity/Department';
@@ -31,6 +31,8 @@ import { generateRandomString } from '../../../utils/random-string';
 import { PORT } from '../../../shared/constants';
 import { createWriteStream } from 'fs';
 import { CoopStatus } from '../../../shared/types/CoopStatus';
+import { Advisor } from '../../../entity/Advisor';
+import { AdvisorRepository } from '../../advisor/AdvisorRepository';
 
 @Service()
 export class StudentRegisterService {
@@ -41,6 +43,7 @@ export class StudentRegisterService {
     private readonly curriculum_repository = new StudentCurriculumRepository(Curriculum);
     private readonly lang_repository = new StudentLanguageRepository(StudentLanguageAbility);
     private readonly skill_repository = new StudentSkillsRepository(StudentSkills);
+    private readonly advisor_repository = new AdvisorRepository(Advisor);
     private readonly job_repository = new JobRepository(Job);
     private readonly transcript_repository = new TranscriptUploadRepository(TranscriptFileUpload);
 
@@ -136,6 +139,39 @@ export class StudentRegisterService {
             throw error;
             console.log(error);
         }
+    }
+
+    async committeeAssignStudent(payload: string[], advisor_id: string): Promise<Advisor | null | undefined> {
+        try {
+            const advisor = await this.advisor_repository.findOne('advisor_id', advisor_id);
+            if (!advisor) throw new Error('ไม่พบอาจารย์ที่ปรึกษา');
+
+            // if empty array assign
+            if (payload.length === 0) {
+                return await this.advisor_repository.save(advisor);
+            }
+
+            let student_list: Student[] = [];
+
+            payload.forEach(async (student_id) => {
+                try {
+                    const student_obj = await this.student_repository.findOne('student_id', student_id);
+
+                    if (student_obj) {
+                        student_obj.advisor = advisor;
+                        this.student_repository.save(student_obj);
+                    }
+                } catch (error) {
+                    throw error;
+                }
+            });
+
+            return advisor;
+        } catch (error) {
+            throw error;
+        }
+
+        throw new Error('Method not implemented.');
     }
 
     async committeeAddRegisterStudent(payload: CommitteeCoopRegisterArgs, user_id: string): Promise<Student> {

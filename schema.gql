@@ -22,19 +22,24 @@ type Advisor {
   advisor_id: String!
   announcements: [Announcement]!
   created_at: DateTime!
+  department: String!
   faculty: String!
   is_committee: Boolean!
   last_name: String!
   name: String!
+  name_prefix: String
+  students: [Student]!
   updated_at: DateTime!
 }
 
 input AdvisorAccountInput {
+  department: String!
   email: String!
   faculty: String!
   is_committee: Boolean!
   last_name: String!
   name: String!
+  name_prefix: String!
   password: String!
 }
 
@@ -306,6 +311,7 @@ input LanguageAbility {
 type Mutation {
   applyJob(apply_info: StudentApplyJobInput!): Student
   committeeAddRegisterStudent(committee_register_coop_input: CommitteeCoopRegisterArgs!): Student
+  CommitteeAssignStudent(advisor_id: String!, student_list: [String]!): Advisor
   committeeChangeCoopStatus(status: String!, student_id: String!): Student!
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company
@@ -335,7 +341,7 @@ type Mutation {
 type Query {
   getAccount(account_id: String!): Account
   getAccounts: [Account]!
-  getAdvisorAccount(advisorId: String!): Account
+  getAdvisorAccount(advisor_id: String!): Account
   getAdvisorAccounts: [Account]!
   getAllCompanies: [Company]!
   getAllJob: [Job]!
@@ -369,6 +375,7 @@ input Skill {
 type Student {
   account: Account!
   address: String
+  advisor: Advisor
   birth_date: String
   citizen_id: String
   coop_status: CoopStatus!

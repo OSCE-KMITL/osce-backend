@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryColumn, U
 import { v4 as uuid } from 'uuid';
 import { Account } from './Account';
 import { Announcement } from './Announcement';
+import { Student } from './Student';
 
 @Entity()
 @ObjectType()
@@ -11,17 +12,25 @@ export class Advisor {
     @Field()
     advisor_id: string = uuid();
 
-    @Column()
+    @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     name: string;
 
-    @Column()
+    @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field({ nullable: true })
+    name_prefix: string;
+
+    @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     last_name: string;
 
-    @Column()
+    @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
     @Field()
     faculty: string;
+
+    @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    department: string;
 
     @Column({ default: false })
     @Field()
@@ -35,6 +44,10 @@ export class Advisor {
     @OneToMany(() => Announcement, (announcement) => announcement.advisor_id, { cascade: true, eager: true })
     announcements: Announcement[];
 
+    @Field(() => [Student], { nullable: 'items' })
+    @OneToMany(() => Student, (student) => student.advisor)
+    students: Promise<Student[]>;
+
     @Field()
     @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)' })
     created_at!: Date;
@@ -43,10 +56,12 @@ export class Advisor {
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
     updated_at: Date;
 
-    constructor(name: string, lastname: string, faculty: string, is_committee: Boolean) {
+    constructor(name: string, lastname: string, faculty: string, is_committee: Boolean, name_prefix: string, department: string) {
         this.faculty = faculty;
         this.name = name;
         this.last_name = lastname;
         this.is_committee = is_committee;
+        this.name_prefix = name_prefix;
+        this.department = department;
     }
 }

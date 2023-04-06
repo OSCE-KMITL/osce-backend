@@ -30,12 +30,12 @@ export class AccountController {
     }
 
     @Query(() => [Account], { nullable: 'items' })
-    async getAdvisorAccounts(): Promise<Account[] | null> {
+    async getAdvisorAccounts(): Promise<Account[] | null | undefined> {
         return await this.advisor_account_service.getAdvisorAccounts();
     }
 
     @Query(() => Account, { nullable: true })
-    async getAdvisorAccount(@Arg('advisorId') id: string): Promise<Account | null> {
+    async getAdvisorAccount(@Arg('advisor_id') id: string): Promise<Account | null> {
         return await this.advisor_account_service.getAdvisorAccount(id);
     }
     @Mutation(() => Advisor, { nullable: false })

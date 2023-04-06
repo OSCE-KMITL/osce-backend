@@ -10,6 +10,7 @@ import { Curriculum } from './Curriculum';
 import { StudentLanguageAbility } from './StudentLanguageAbility';
 import { StudentSkills } from './StudentSkills';
 import { TranscriptFileUpload } from './TranscriptFileUpload';
+import { Advisor } from './Advisor';
 
 @Entity()
 @ObjectType()
@@ -156,6 +157,11 @@ export class Student {
         },
     })
     job: Job[];
+
+    @Field(() => Advisor, { nullable: true })
+    @ManyToOne(() => Advisor, (advisor) => advisor.advisor_id, { nullable: true, onUpdate: 'CASCADE', eager: true })
+    @JoinColumn({ name: 'advisor_id' })
+    advisor: Advisor;
 
     constructor(student_id: string, name_eng: string, lastname: string) {
         this.student_id = student_id;
