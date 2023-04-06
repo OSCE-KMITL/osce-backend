@@ -97,9 +97,9 @@ type CompanyAssessment {
   company: Company
   created_at: DateTime!
   id: String!
-  improvement: String!
+  improvement: String
   score: Float!
-  strength: String!
+  strength: String
   student: Student
   updated_at: DateTime!
 }
@@ -177,6 +177,15 @@ enum CoopStatus {
   DEFAULT
   PASSED
   REJECTED
+}
+
+input CreateCompanyAssessmentInput {
+  assessment_obj: JSONObject!
+  company_id: String!
+  improvement: String
+  score: Float!
+  strength: String
+  student_id: String!
 }
 
 type Curriculum {
@@ -328,6 +337,7 @@ type Mutation {
   companyDisapproveJob(company_disapprove_info: EditJobStateInput!): StudentApplyJob
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company
+  createCompanyAssessment(company_assessment_info: CreateCompanyAssessmentInput!): Student
   createJobByCommittee(file: Upload!, job_info: JobInputByCommittee!): Job
   createJobByCommitteeNoFile(job_info: JobInputByCommittee!): Job
   createJobByCompany(file: Upload!, job_info: JobInputByCompany!): Job
@@ -365,6 +375,7 @@ type Query {
   getAdvisorAccount(advisorId: String!): Account
   getAdvisorAccounts: [Account]!
   getAllCompanies: [Company]!
+  getAllCompanyAssessment: [CompanyAssessment]!
   getAllJob: [Job]!
   getAllStudentApplyJob: [StudentApplyJob]!
   getAnnouncement(with_key: GetWithKeyInput!): Announcement
@@ -398,7 +409,7 @@ type Student {
   address: String
   birth_date: String
   citizen_id: String
-  company_assessment: [CompanyAssessment]!
+  company_assessment: CompanyAssessment
   coop_status: CoopStatus!
   created_at: DateTime!
   curriculum: Curriculum

@@ -160,10 +160,10 @@ export class Student {
     @JoinColumn({ name: 'student_apply_job' })
     student_apply_job: StudentApplyJob[];
 
-    @Field(() => [CompanyAssessment], { nullable: 'items' })
-    @OneToMany(() => CompanyAssessment, (company_assessment) => company_assessment.student, { cascade: true, eager: true })
+    @Field(() => CompanyAssessment, { nullable: true })
+    @ManyToOne(() => CompanyAssessment, (company_assessment) => company_assessment.student, { cascade: true, eager: true })
     @JoinColumn({ name: 'company_assessment' })
-    company_assessment: CompanyAssessment[];
+    company_assessment: CompanyAssessment;
 
     @Field(() => Job, { nullable: true })
     @ManyToOne(() => Job, (job) => job.students, { onDelete: 'CASCADE' })

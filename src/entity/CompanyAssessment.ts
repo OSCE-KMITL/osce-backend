@@ -1,5 +1,5 @@
 import { ObjectType, Field } from 'type-graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Student } from './Student';
 import { Company } from './Company';
 import { GraphQLJSONObject } from 'graphql-type-json';
@@ -28,19 +28,19 @@ export class CompanyAssessment {
     company: Promise<Company>;
 
     @Field(() => GraphQLJSONObject)
-    @Column({ type: 'json', default: null })
+    @Column({ type: 'json', default: null, charset: 'utf8', collation: 'utf8_general_ci' })
     assessment_obj: object;
 
     @Field()
     @Column({ default: null })
     score: number;
 
-    @Field()
-    @Column({ default: null })
+    @Field({ nullable: true })
+    @Column({ default: null, charset: 'utf8', collation: 'utf8_general_ci', length: 1600 })
     strength: string;
 
-    @Field()
-    @Column({ default: null })
+    @Field({ nullable: true })
+    @Column({ default: null, charset: 'utf8', collation: 'utf8_general_ci', length: 1600 })
     improvement: string;
 
     @Field()
@@ -51,9 +51,9 @@ export class CompanyAssessment {
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
     updated_at: Date;
 
-    constructor(student_id: string, job_id: string, assessment_obj: object, score: number) {
+    constructor(student_id: string, company_id: string, assessment_obj: object, score: number) {
         this.student_id = student_id;
-        this.company_id = job_id;
+        this.company_id = company_id;
         this.assessment_obj = assessment_obj;
         this.score = score;
     }
