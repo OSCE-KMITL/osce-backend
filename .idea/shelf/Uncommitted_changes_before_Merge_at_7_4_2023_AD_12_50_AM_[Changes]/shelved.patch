@@ -1,0 +1,20 @@
+Index: src/modules/advisor/advisment/advismentController.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/modules/advisor/advisment/advismentController.ts b/src/modules/advisor/advisment/AdvisementController.ts
+rename from src/modules/advisor/advisment/advismentController.ts
+rename to src/modules/advisor/advisment/AdvisementController.ts
+--- a/src/modules/advisor/advisment/advismentController.ts	(revision 351f9a437f71f420fdcfec66d5532471a57876b9)
++++ b/src/modules/advisor/advisment/AdvisementController.ts	(date 1680803452580)
+@@ -1,0 +1,8 @@
++import { Service } from 'typedi';
++import { Resolver } from 'type-graphql';
++
++@Resolver()
++@Service()
++export class AdvisementController {
++
++}
+\ No newline at end of file
