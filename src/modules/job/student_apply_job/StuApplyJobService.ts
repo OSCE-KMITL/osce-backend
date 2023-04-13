@@ -355,6 +355,34 @@ export class StuApplyJobService {
             job.students.push(student);
             //save job repo
             this.job_repository.save(job);
+
+            await this.student_apply_job_repository.save(new_student_apply_job);
+
+            const new_student = await this.student_repository.findOne('student_id', student_id);
+            if (!new_student) throw new Error('ไม่พบข้อมูลงานที่นักศึกษาสมัคร');
+            let job_student_apply = new_student?.student_apply_job?.filter((i) => i.job_status === JobStatus.STUDENTAPPLIED);
+            let job_company_approve = new_student?.student_apply_job?.filter((i) => i.job_status === JobStatus.COMPANYAPPROVE);
+            if (job_student_apply?.length >= 1) {
+                //ยกเลิกงานที่สมัคร
+                for (const key in job_student_apply) {
+                    try {
+                        await this.student_apply_job_repository.delete(job_student_apply[parseInt(key)]);
+                    } catch (error) {
+                        throw new Error('พบข้อผิดพลาดในการยกเลิกงานที่นักศึกษาสมัครแบบอัตโนมัติ');
+                    }
+                }
+            }
+            if (job_company_approve?.length >= 1) {
+                //ปฏิเสธงานที่บริษัทตอบรับ
+                for (const key in job_company_approve) {
+                    try {
+                        job_company_approve[parseInt(key)].job_status = JobStatus.STUDENTREJECT;
+                        await this.student_apply_job_repository.save(job_company_approve[parseInt(key)]);
+                    } catch (error) {
+                        throw new Error('พบข้อผิดพลาดในการปฏิเสธงานที่บริษัทตอบรับแบบอัตโนมัติ');
+                    }
+                }
+            }
         } else if (count_stu_applied === parseInt(job.limit)) {
             throw new Error('ไม่สามารถกำหนดงานได้ เนื่องจากในงานมีนักศึกษาครบจำนวนที่รับสมัครแล้ว');
         }
@@ -417,6 +445,38 @@ export class StuApplyJobService {
         } else {
             if (already__apply_job.job_status === JobStatus.COMPANYAPPROVE) {
                 already__apply_job.job_status = JobStatus.STUDENTACCEPT;
+                await this.student_apply_job_repository.save(already__apply_job);
+
+                const new_student = await this.student_repository.findOne('student_id', already__apply_job?.student_id);
+                if (!new_student) throw new Error('ไม่พบข้อมูลงานที่นักศึกษาสมัคร');
+                let job_student_apply = new_student?.student_apply_job?.filter((i) => i.job_status === JobStatus.STUDENTAPPLIED);
+                let job_company_approve = new_student?.student_apply_job?.filter((i) => i.job_status === JobStatus.COMPANYAPPROVE);
+                if (job_student_apply?.length >= 1) {
+                    //ยกเลิกงานที่สมัคร
+                    for (const key in job_student_apply) {
+                        try {
+                            await this.student_apply_job_repository.delete(job_student_apply[parseInt(key)]);
+                        } catch (error) {
+                            throw new Error('พบข้อผิดพลาดในการยกเลิกงานที่นักศึกษาสมัครแบบอัตโนมัติ');
+                        }
+                    }
+                }
+                if (job_company_approve?.length >= 1) {
+                    //ปฏิเสธงานที่บริษัทตอบรับ
+                    for (const key in job_company_approve) {
+                        try {
+                            job_company_approve[parseInt(key)].job_status = JobStatus.STUDENTREJECT;
+                            await this.student_apply_job_repository.save(job_company_approve[parseInt(key)]);
+                        } catch (error) {
+                            throw new Error('พบข้อผิดพลาดในการปฏิเสธงานที่บริษัทตอบรับแบบอัตโนมัติ');
+                        }
+                    }
+                }
+                // await this.student_apply_job_repository.save(repo_student_apply_job);
+                // console.log('job_student_apply', job_student_apply);
+                // console.log('job_company_approve', job_company_approve);
+                // console.log('new_student', new_student);
+
                 return await this.student_apply_job_repository.save(already__apply_job);
             } else {
                 throw new Error('ไม่สามารถตอบรับงานได้');
