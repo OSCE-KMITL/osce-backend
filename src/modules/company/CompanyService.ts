@@ -69,14 +69,14 @@ export class CompanyService {
         if (!update_company) throw new Error('ไม่พบบริษัทที่จะแก้ไข');
         if (name_th.length > 100) throw new Error('ชื่อต้องมีตัวอักษรไม่เกิน 100 ตัวอักษร');
         if (name_eng.length > 100) throw new Error('ชื่อต้องมีตัวอักษรไม่เกิน 100 ตัวอักษร');
-        if (address.length > 1000) throw new Error('ที่อยู่ต้องมีตัวอักษรไม่เกิน 1000 ตัวอักษร');
-        if (phone_number.length > 20) throw new Error('เบอร์ต้องมีตัวอักษรไม่เกิน 20 ตัวอักษร');
-        if (website_url.length > 500) throw new Error('เบอร์ต้องมีตัวอักษรไม่เกิน 20 ตัวอักษร');
-        if (business_type.length > 200) throw new Error('ประเภทธุรกิจต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
-        if (sub_district.length > 200) throw new Error('ตำบล/แขวงต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
-        if (district.length > 200) throw new Error('อำเภอ/เขตต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
-        if (province.length > 200) throw new Error('จังหวัดต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
-        if (postal_code.length > 200) throw new Error('รหัสไปรษณีย์ต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+        if (address.length > 200) throw new Error('ที่อยู่ต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+        if (phone_number.length > 10) throw new Error('เบอร์ต้องมีตัวอักษรไม่เกิน 10 ตัวอักษร');
+        if (website_url.length > 200) throw new Error('เบอร์ต้องมีตัวอักษรไม่เกิน 200 ตัวอักษร');
+        if (business_type.length > 100) throw new Error('ประเภทธุรกิจต้องมีตัวอักษรไม่เกิน 100 ตัวอักษร');
+        if (sub_district.length > 100) throw new Error('ตำบล/แขวงต้องมีตัวอักษรไม่เกิน 100 ตัวอักษร');
+        if (district.length > 100) throw new Error('อำเภอ/เขตต้องมีตัวอักษรไม่เกิน 100 ตัวอักษร');
+        if (province.length > 100) throw new Error('จังหวัดต้องมีตัวอักษรไม่เกิน 100 ตัวอักษร');
+        if (postal_code.length > 20) throw new Error('รหัสไปรษณีย์ต้องมีตัวอักษรไม่เกิน 20 ตัวอักษร');
 
         update_company.name_th = !!name_th ? name_th.trim().toLowerCase() : update_company.name_th;
         update_company.name_eng = !!name_eng ? name_eng.trim().toLowerCase() : update_company.name_eng;
