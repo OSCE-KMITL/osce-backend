@@ -3,10 +3,8 @@ import { AccountService } from './AccountService';
 import { Service } from 'typedi';
 import { Account } from '../../entity/Account';
 import { AdvisorAccountService } from '../advisor/register-advisor/AdvisorAccountService';
-import { Advisor } from '../../entity/Advisor';
-import { UpdateAdvisorInput } from '../advisor/register-advisor/input/AdvisorAccountInput';
+import { UpdateAdvisorArgs } from '../advisor/register-advisor/input/AdvisorAccountInput';
 import { CompanyPersonService } from '../company_person/register/CompanyPersonService';
-import { isAuthenticated } from '../../middleware/isAuthenticated';
 import { useAuthorization } from '../../middleware/useAuthorization';
 import { RoleOption } from '../../shared/types/Roles';
 
@@ -38,9 +36,15 @@ export class AccountController {
     async getAdvisorAccount(@Arg('advisor_id') id: string): Promise<Account | null> {
         return await this.advisor_account_service.getAdvisorAccount(id);
     }
-    @Mutation(() => Advisor, { nullable: false })
-    updateAccount(@Arg('updateInfo') updateInfo: UpdateAdvisorInput): Promise<Advisor> {
-        throw new Error('this method not implemented');
+
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE,RoleOption.ADVISOR]))
+    @Mutation(() => Account, { nullable: false })
+    updateAdvisorAccount(@Arg('updateInfo') payload: UpdateAdvisorArgs): Promise<Account | null | undefined> {
+        try {
+            return this.advisor_account_service.updateAdvisorAccount(payload)
+        }catch (e) {
+          throw e
+        }
     }
 
     @Mutation(() => Account, { nullable: true })

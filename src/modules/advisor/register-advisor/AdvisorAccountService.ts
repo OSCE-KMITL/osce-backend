@@ -1,17 +1,21 @@
 import { Advisor } from '../../../entity/Advisor';
-import { AdvisorAccountInput } from './input/AdvisorAccountInput';
+import { AdvisorAccountInput, UpdateAdvisorArgs, UpdateAdvisorInput } from './input/AdvisorAccountInput';
 import { AdvisorRepository } from '../AdvisorRepository';
 import { Service } from 'typedi';
 import { Account } from '../../../entity/Account';
-import { RoleOption } from '../../../shared/types/Roles';
+import { AccountStatus, RoleOption } from '../../../shared/types/Roles';
 import { AccountRepository } from '../../account/AccountRepository';
 import { hashedPassword } from '../../../utils/hash-password';
+import Base64 from 'crypto-js/enc-base64';
+
 
 @Service()
 export class AdvisorAccountService {
     private readonly repository = new AdvisorRepository(Advisor);
     private readonly account_repository = new AccountRepository(Account);
-    constructor() {}
+
+    constructor() {
+    }
 
     async registerAdvisorAccount(input: AdvisorAccountInput): Promise<Account> {
         const { email, password, faculty, is_committee, name, last_name, department, name_prefix } = input;
@@ -20,6 +24,23 @@ export class AdvisorAccountService {
         const advisor_account = new Account(email, hashed_password, is_committee ? RoleOption.COMMITTEE : RoleOption.ADVISOR);
         advisor_account.is_advisor = advisor_profile;
         return await this.account_repository.save(advisor_account);
+    }
+
+    async updateAdvisorAccount(payload: UpdateAdvisorArgs): Promise<Account | null | undefined> {
+        const { advisor_status,  id,  is_committee}: UpdateAdvisorArgs = payload;
+        try {
+            const account = await this.account_repository.findOne('id',id);
+            if(!account) throw new Error('ไม่พบบัญชีผู้ใช้นี้')
+
+            account.is_advisor.is_committee = is_committee
+            account.role =  is_committee ? RoleOption.COMMITTEE : RoleOption.ADVISOR
+            account.status = advisor_status
+
+            return await this.account_repository.save(account)
+
+        } catch (e) {
+            throw e;
+        }
     }
 
     async getAdvisorAccounts(): Promise<Account[] | undefined> {

@@ -45,8 +45,8 @@ export class Advisor {
     announcements: Announcement[];
 
     @Field(() => [Student], { nullable: 'items' })
-    @OneToMany(() => Student, (student) => student.advisor)
-    students: Promise<Student[]>;
+    @OneToMany(() => Student, (student) => student.advisor,{ lazy:true})
+    students:Student[];
 
     @Field()
     @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)' })

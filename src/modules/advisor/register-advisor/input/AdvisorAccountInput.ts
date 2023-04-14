@@ -1,5 +1,6 @@
 import { Field, InputType } from 'type-graphql';
 import { IsEmail } from 'class-validator';
+import { AccountStatus } from '../../../../shared/types/Roles';
 
 @InputType()
 export class AdvisorAccountInput {
@@ -27,6 +28,16 @@ export class AdvisorAccountInput {
 
     @Field({ nullable: false })
     department: string;
+}
+
+@InputType()
+export class UpdateAdvisorArgs {
+    @Field({ nullable: false })
+    id: string;
+    @Field({ nullable: false })
+    advisor_status: AccountStatus;
+    @Field({ nullable: false })
+    is_committee: Boolean;
 }
 
 @InputType()

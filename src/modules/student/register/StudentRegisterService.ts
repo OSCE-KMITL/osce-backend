@@ -33,6 +33,7 @@ import { createWriteStream } from 'fs';
 import { CoopStatus } from '../../../shared/types/CoopStatus';
 import { Advisor } from '../../../entity/Advisor';
 import { AdvisorRepository } from '../../advisor/AdvisorRepository';
+import * as fs from 'fs';
 
 @Service()
 export class StudentRegisterService {
@@ -47,7 +48,8 @@ export class StudentRegisterService {
     private readonly job_repository = new JobRepository(Job);
     private readonly transcript_repository = new TranscriptUploadRepository(TranscriptFileUpload);
 
-    constructor() {}
+    constructor() {
+    }
 
     async registerStudent(input: StudentRegisterInput): Promise<Account> {
         const { student_id, name_eng, password, role, lastname_eng, email } = input;
@@ -137,7 +139,6 @@ export class StudentRegisterService {
             return await this.student_repository.save(student);
         } catch (error) {
             throw error;
-            console.log(error);
         }
     }
 
@@ -146,17 +147,14 @@ export class StudentRegisterService {
             const advisor = await this.advisor_repository.findOne('advisor_id', advisor_id);
             if (!advisor) throw new Error('ไม่พบอาจารย์ที่ปรึกษา');
 
-            // if empty array assign
-            if (payload.length === 0) {
-                return await this.advisor_repository.save(advisor);
-            }
+            // reset all already student
+            advisor.students = []
+            await this.advisor_repository.save(advisor);
 
-            let student_list: Student[] = [];
 
-            payload.forEach(async (student_id) => {
+             payload.forEach(async (student_id)  => {
                 try {
                     const student_obj = await this.student_repository.findOne('student_id', student_id);
-
                     if (student_obj) {
                         student_obj.advisor = advisor;
                         this.student_repository.save(student_obj);
@@ -171,7 +169,7 @@ export class StudentRegisterService {
             throw error;
         }
 
-        throw new Error('Method not implemented.');
+
     }
 
     async committeeAddRegisterStudent(payload: CommitteeCoopRegisterArgs, user_id: string): Promise<Student> {
@@ -219,7 +217,7 @@ export class StudentRegisterService {
                     payload.department_id,
                     payload.curriculum_name_en,
                     payload.curriculum_name_th,
-                    payload.level_id
+                    payload.level_id,
                 );
                 student_curriculum = await this.curriculum_repository.save(curriculum);
             } else {
@@ -242,7 +240,7 @@ export class StudentRegisterService {
         user_id: string,
         skills: Skill[],
         language_abilities: LanguageAbility[],
-        transcript_file: Upload
+        transcript_file: Upload,
     ): Promise<Student> {
         try {
             const account = await this.account_repository.findOne('id', user_id);
@@ -287,7 +285,7 @@ export class StudentRegisterService {
                     payload.department_id,
                     payload.curriculum_name_en,
                     payload.curriculum_name_th,
-                    payload.level_id
+                    payload.level_id,
                 );
                 student_curriculum = await this.curriculum_repository.save(curriculum);
             } else {
@@ -335,8 +333,24 @@ export class StudentRegisterService {
                 const original_name = filename;
                 const current_name = year_now + '_' + 'transcript' + '_' + student_applied.student_id + '_' + random_name;
                 const url = `http://localhost:${PORT}/files/student_transcript/${current_name}`;
+                const directoryPath = './public/files/student_transcript';
+
+                // check if the directory already exists
+                try {
+                    if (!fs.existsSync(directoryPath)) {
+                        // create the directory recursively if it doesn't exist
+                        fs.mkdirSync(directoryPath, { recursive: true });
+                        console.log(`Directory created: ${directoryPath}`);
+                    } else {
+                        console.log(`Directory already exists: ${directoryPath}`);
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+
 
                 try {
+
                     let alreadyExistfile = await this.transcript_repository.findOne('student_id', student_applied.student_id);
                     if (alreadyExistfile) {
                         const transcirpt_obj = new TranscriptFileUpload(original_name, current_name, url);
