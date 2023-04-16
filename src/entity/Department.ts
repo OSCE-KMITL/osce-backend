@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import 'reflect-metadata';
 import {Student} from "./Student";
+import { Advisor } from './Advisor';
 
 @Entity()
 @ObjectType()
@@ -36,6 +37,10 @@ export class Department {
     @Field(()=>[Student] ,{nullable:"items"})
     @OneToMany(()=> Student , student => student.department ,{nullable:true})
     students:Promise<Student[]>
+
+    @Field(() => [Advisor], { nullable: 'items' })
+    @OneToMany(() => Advisor, advisor => advisor.department, { cascade: true })
+    advisors: Promise<Advisor[]>;
 
     constructor(department_id: string, department_name_en: string, department_name_th: string,faculty_id:string) {
         this.department_id = department_id;

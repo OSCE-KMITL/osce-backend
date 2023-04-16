@@ -18,9 +18,9 @@ export class AdvisorAccountService {
     }
 
     async registerAdvisorAccount(input: AdvisorAccountInput): Promise<Account> {
-        const { email, password, faculty, is_committee, name, last_name, department, name_prefix } = input;
+        const { email, password, faculty, is_committee, name, last_name, name_prefix } = input;
         const hashed_password = await hashedPassword(password);
-        const advisor_profile = new Advisor(name, last_name, faculty, is_committee, name_prefix, department);
+        const advisor_profile = new Advisor(name, last_name, is_committee, name_prefix);
         const advisor_account = new Account(email, hashed_password, is_committee ? RoleOption.COMMITTEE : RoleOption.ADVISOR);
         advisor_account.is_advisor = advisor_profile;
         return await this.account_repository.save(advisor_account);

@@ -10,13 +10,13 @@ import 'reflect-metadata';
 import { Student } from './Student';
 import { StudentFacultyRepository } from '../modules/student/register/StudentRegisterRepository';
 import { Service } from 'typedi';
+import { Advisor } from './Advisor';
 
 @Service()
 @Entity()
 @ObjectType()
 export class Faculty {
 
-    static  readonly faculty_repository = new StudentFacultyRepository(Faculty);
 
     @Field(() => ID)
     @PrimaryColumn()
@@ -33,6 +33,10 @@ export class Faculty {
     @Field(() => [Student], { nullable: 'items' })
     @OneToMany(() => Student, student => student.faculty, { cascade: true })
     students: Promise<Student[]>;
+
+    @Field(() => [Advisor], { nullable: 'items' })
+    @OneToMany(() => Advisor, advisor => advisor.faculty, { cascade: true })
+    advisors: Promise<Advisor[]>;
 
 
     constructor(faculty_id: string, faculty_name_en: string, faculty_name_th: string) {
