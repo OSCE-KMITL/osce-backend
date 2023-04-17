@@ -11,6 +11,7 @@ import { StudentRegisterController } from '../modules/student/register/StudentRe
 import { AccountController } from '../modules/account/AccountController';
 import { AuthController } from '../modules/auth/AuthController';
 import { CompanyAssessmentController } from '../modules/student/company_assessment/CompanyAssessmentController';
+import { AdvisorAssessmentController } from '../modules/student/advisor_assessment/AdvisorAssessmentController';
 
 export class GraphqlUtil {
     static async getSchema() {
@@ -27,6 +28,7 @@ export class GraphqlUtil {
                 FileUploadController,
                 StuApplyJobController,
                 CompanyAssessmentController,
+                AdvisorAssessmentController,
             ],
             emitSchemaFile: true,
             container: Container,

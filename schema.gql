@@ -19,6 +19,7 @@ type Account {
 
 type Advisor {
   account: Account!
+  advisor_assessment: [AdvisorAssessment]!
   advisor_id: String!
   announcements: [Announcement]!
   created_at: DateTime!
@@ -37,6 +38,16 @@ input AdvisorAccountInput {
   last_name: String!
   name: String!
   password: String!
+}
+
+type AdvisorAssessment {
+  advisor: Advisor
+  assessment_obj: JSONObject!
+  created_at: DateTime!
+  id: String!
+  score: Float!
+  student: Student
+  updated_at: DateTime!
 }
 
 type Announcement {
@@ -177,6 +188,13 @@ enum CoopStatus {
   DEFAULT
   PASSED
   REJECTED
+}
+
+input CreateAdvisorAssessmentInput {
+  advisor_id: String!
+  assessment_obj: JSONObject!
+  score: Float!
+  student_id: String!
 }
 
 input CreateCompanyAssessmentInput {
@@ -335,6 +353,7 @@ type Mutation {
   committeeDisapproveJob(committee_disapprove_info: EditJobStateInput!): StudentApplyJob
   companyApproveJob(company_approve_info: EditJobStateInput!): StudentApplyJob
   companyDisapproveJob(company_disapprove_info: EditJobStateInput!): StudentApplyJob
+  createAdvisorAssessment(advisor_assessment_info: CreateAdvisorAssessmentInput!): Student
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company
   createCompanyAssessment(company_assessment_info: CreateCompanyAssessmentInput!): Student
@@ -374,6 +393,7 @@ type Query {
   getAccounts: [Account]!
   getAdvisorAccount(advisorId: String!): Account
   getAdvisorAccounts: [Account]!
+  getAllAdvisorAssessment: [AdvisorAssessment]!
   getAllCompanies: [Company]!
   getAllCompanyAssessment: [CompanyAssessment]!
   getAllJob: [Job]!
@@ -407,6 +427,7 @@ input Skill {
 type Student {
   account: Account!
   address: String
+  advisor_assessment: AdvisorAssessment
   birth_date: String
   citizen_id: String
   company_assessment: CompanyAssessment
