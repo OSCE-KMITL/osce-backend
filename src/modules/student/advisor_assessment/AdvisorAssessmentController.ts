@@ -22,7 +22,7 @@ export class AdvisorAssessmentController {
             throw error;
         }
     }
-    @UseMiddleware(useAuthorization([RoleOption.ADVISOR]))
+    @UseMiddleware(useAuthorization([RoleOption.ADVISOR, RoleOption.COMMITTEE]))
     @Mutation(() => Student, { nullable: true })
     async createAdvisorAssessment(
         @Arg('advisor_assessment_info') advisor_assessment_info: CreateAdvisorAssessmentInput,
@@ -39,5 +39,4 @@ export class AdvisorAssessmentController {
             throw e;
         }
     }
-
 }

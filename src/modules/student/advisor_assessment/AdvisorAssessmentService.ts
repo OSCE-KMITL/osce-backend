@@ -32,10 +32,10 @@ export class AdvisorAssessmentService {
         const { assessment_obj, advisor_id, score, student_id } = advisor_assessment_info;
 
         if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
-        if (account.role !== RoleOption.COMPANY) throw new Error('บริษัทเท่านั้นที่สามารถดำเนินการได้');
+        if (account.role !== RoleOption.ADVISOR && account.role !== RoleOption.COMMITTEE) throw new Error('อาจารย์นิเทศเท่านั้นที่สามารถดำเนินการได้');
 
-        const advisor = await this.advisor_repository.findOne('id', advisor_id);
-        if (!advisor) throw new Error('ไม่พบบริษัท');
+        const advisor = await this.advisor_repository.findOne('advisor_id', advisor_id);
+        if (!advisor) throw new Error('ไม่พบอาจารย์นิเทศ');
 
         const student = await this.student_repository.findOne('student_id', student_id);
         if (!student) throw new Error('ไม่พบนักศึกษา');
