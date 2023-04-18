@@ -54,6 +54,11 @@ export class StuApplyJobService {
             throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน');
         }
 
+        const student_wait_approve = student.student_apply_job.filter((i) => i.job_status === JobStatus.STUDENTACCEPT);
+        if (student_wait_approve.length >= 1) {
+            throw new Error('ไม่สามารถสมัครงานได้ เนื่องจากตอบรับงานแล้ว');
+        }
+
         const studnet_apply_job = new StudentApplyJob(student_id, job_id, JobStatus.STUDENTAPPLIED);
         const saved_job = await this.student_apply_job_repository.save(studnet_apply_job);
 

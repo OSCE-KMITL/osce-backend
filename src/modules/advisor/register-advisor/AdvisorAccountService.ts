@@ -9,28 +9,34 @@ import { hashedPassword } from '../../../utils/hash-password';
 import { StudentDepartmentRepository } from '../../student/register/StudentRegisterRepository';
 import { Department } from '../../../entity/Department';
 
-
 @Service()
 export class AdvisorAccountService {
     private readonly repository = new AdvisorRepository(Advisor);
     private readonly account_repository = new AccountRepository(Account);
     private readonly department_repository = new StudentDepartmentRepository(Department);
 
-    constructor() {
-    }
+    constructor() {}
 
     async registerAdvisorAccount(input: AdvisorAccountInput, user_id: string): Promise<Account> {
-
         const { email, is_committee, name, last_name, name_prefix } = input;
 
         const user = await this.account_repository.findOne('id', user_id);
         if (!user) throw new Error('Your not Authorized');
 
-        if(user.role === RoleOption.SUPER_ADMIN){
-            const advisor_profile = new Advisor(name.trim().toLowerCase(), last_name.trim().toLowerCase(), is_committee === RoleOption.COMMITTEE, name_prefix.trim().toLowerCase());
+        if (user.role === RoleOption.SUPER_ADMIN) {
+            const advisor_profile = new Advisor(
+                name.trim().toLowerCase(),
+                last_name.trim().toLowerCase(),
+                is_committee === RoleOption.COMMITTEE,
+                name_prefix.trim().toLowerCase()
+            );
             const mock_pass = '123456';
             const hashed_password = await hashedPassword(mock_pass);
-            const advisor_account = new Account(email.trim().toLowerCase(), hashed_password, is_committee ? RoleOption.COMMITTEE : RoleOption.ADVISOR);
+            const advisor_account = new Account(
+                email.trim().toLowerCase(),
+                hashed_password,
+                is_committee === RoleOption.COMMITTEE ? RoleOption.COMMITTEE : RoleOption.ADVISOR
+            );
             advisor_account.is_advisor = advisor_profile;
             return await this.account_repository.save(advisor_account);
         }
@@ -42,10 +48,15 @@ export class AdvisorAccountService {
         // const mock_pass =  Date.now() + process.env.CRYPTO_KEY!
         const mock_pass = '123456';
         const hashed_password = await hashedPassword(mock_pass);
-        const advisor_profile = new Advisor(name.trim().toLowerCase(), last_name.trim().toLowerCase(), is_committee === RoleOption.COMMITTEE, name_prefix.trim().toLowerCase());
+        const advisor_profile = new Advisor(
+            name.trim().toLowerCase(),
+            last_name.trim().toLowerCase(),
+            is_committee === RoleOption.COMMITTEE,
+            name_prefix.trim().toLowerCase()
+        );
 
-        advisor_profile.department = user.is_advisor.department
-        advisor_profile.faculty = user.is_advisor.faculty
+        advisor_profile.department = user.is_advisor.department;
+        advisor_profile.faculty = user.is_advisor.faculty;
 
         const advisor_account = new Account(email.trim().toLowerCase(), hashed_password, is_committee ? RoleOption.COMMITTEE : RoleOption.ADVISOR);
 
@@ -65,7 +76,6 @@ export class AdvisorAccountService {
             account.status = advisor_status;
 
             return await this.account_repository.save(account);
-
         } catch (e) {
             throw e;
         }
@@ -82,21 +92,22 @@ export class AdvisorAccountService {
             if (user.role === RoleOption.SUPER_ADMIN) {
                 return advisor_accounts;
             } else if (user.role === RoleOption.ADVISOR || user.role === RoleOption.COMMITTEE) {
-                return advisor_accounts.filter(account =>
-                    account.is_advisor.department.department_name_en.trim().toLocaleLowerCase() ===
-                    user.is_advisor.department.department_name_en.trim().toLocaleLowerCase()).sort((a, b) => {
-                    if (a.created_at > b.created_at) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-
-                });
+                return advisor_accounts
+                    .filter(
+                        (account) =>
+                            account.is_advisor.department.department_name_en.trim().toLocaleLowerCase() ===
+                            user.is_advisor.department.department_name_en.trim().toLocaleLowerCase()
+                    )
+                    .sort((a, b) => {
+                        if (a.created_at > b.created_at) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    });
             } else {
                 throw new Error('Your not Authorized');
             }
-
-
         } catch (error) {
             throw error;
         }

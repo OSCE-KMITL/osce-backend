@@ -19,32 +19,43 @@ type Account {
 
 type Advisor {
   account: Account!
+  advisor_assessment: [AdvisorAssessment]!
   advisor_id: String!
   announcements: [Announcement]!
   created_at: DateTime!
-  department: String!
-  faculty: String!
+  curriculum: Curriculum
+  department: Department
+  faculty: Faculty
   is_committee: Boolean!
   last_name: String!
+  last_name_en: String!
   name: String!
+  name_en: String!
   name_prefix: String
   students: [Student]!
   updated_at: DateTime!
 }
 
 input AdvisorAccountInput {
-  department: String!
   email: String!
-  faculty: String!
-  is_committee: Boolean!
+  is_committee: String!
   last_name: String!
   name: String!
   name_prefix: String!
-  password: String!
+}
+
+type AdvisorAssessment {
+  advisor: Advisor
+  assessment_obj: JSONObject!
+  created_at: DateTime!
+  id: String!
+  score: Float!
+  student: Student
+  updated_at: DateTime!
 }
 
 type Announcement {
-  advisor_id: Advisor!
+  advisor_id: Advisor
   createdAt: DateTime!
   description: String!
   id: String!
@@ -55,6 +66,11 @@ type Announcement {
 input AnnouncementInput {
   desc: String!
   title: String!
+}
+
+input AssignJobInput {
+  job_id: String!
+  student_id: String!
 }
 
 type AuthData {
@@ -93,6 +109,7 @@ input CommitteeCoopRegisterArgs {
 type Company {
   address: String!
   business_type: String!
+  company_assessment: [CompanyAssessment]!
   company_persons: [CompanyPerson]!
   created_at: DateTime!
   district: String!
@@ -106,6 +123,18 @@ type Company {
   sub_district: String!
   updated_at: DateTime!
   website_url: String!
+}
+
+type CompanyAssessment {
+  assessment_obj: JSONObject!
+  company: Company
+  created_at: DateTime!
+  id: String!
+  improvement: String
+  score: Float!
+  strength: String
+  student: Student
+  updated_at: DateTime!
 }
 
 input CompanyInput {
@@ -186,7 +215,24 @@ enum CoopStatus {
   SAVED
 }
 
+input CreateAdvisorAssessmentInput {
+  advisor_id: String!
+  assessment_obj: JSONObject!
+  score: Float!
+  student_id: String!
+}
+
+input CreateCompanyAssessmentInput {
+  assessment_obj: JSONObject!
+  company_id: String!
+  improvement: String
+  score: Float!
+  strength: String
+  student_id: String!
+}
+
 type Curriculum {
+  advisors: [Advisor]!
   curriculum_id: String!
   curriculum_name_en: String!
   curriculum_name_th: String!
@@ -203,6 +249,7 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 scalar DateTime
 
 type Department {
+  advisors: [Advisor]!
   department_id: String!
   department_name_en: String!
   department_name_th: String!
@@ -211,7 +258,19 @@ type Department {
   students: [Student]!
 }
 
+input EditJobStateInput {
+  student_apply_job_id: String!
+}
+
+input EditScoreInput {
+  score_advisor: Float!
+  score_company: Float!
+  score_presentation: Float!
+  student_id: String!
+}
+
 type Faculty {
+  advisors: [Advisor]!
   faculty_id: ID!
   faculty_name_en: String!
   faculty_name_th: String!
@@ -250,6 +309,7 @@ type Job {
   project_topic: String
   required_major: String
   required_skills: String
+  student_apply_job: [StudentApplyJob]!
   students: [Student]!
   supervisor_email: String
   supervisor_job_title: String
@@ -303,6 +363,11 @@ input JobInputByCompany {
   work_period: String
 }
 
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
 input LanguageAbility {
   level: String!
   name: String!
@@ -310,11 +375,19 @@ input LanguageAbility {
 
 type Mutation {
   applyJob(apply_info: StudentApplyJobInput!): Student
+  cancelApply(cancel_apply_info: StudentApplyJobInput!): StudentApplyJob
   committeeAddRegisterStudent(committee_register_coop_input: CommitteeCoopRegisterArgs!): Student
+  committeeApproveJob(committee_approve_info: EditJobStateInput!): StudentApplyJob
+  committeeAssignJob(committee_assignjob_info: AssignJobInput!): StudentApplyJob
   CommitteeAssignStudent(advisor_id: String!, student_list: [String]!): Advisor
   committeeChangeCoopStatus(status: String!, student_id: String!): Student!
+  committeeDisapproveJob(committee_disapprove_info: EditJobStateInput!): StudentApplyJob
+  companyApproveJob(company_approve_info: EditJobStateInput!): StudentApplyJob
+  companyDisapproveJob(company_disapprove_info: EditJobStateInput!): StudentApplyJob
+  createAdvisorAssessment(advisor_assessment_info: CreateAdvisorAssessmentInput!): Student
   createAnnouncement(announcement_info: AnnouncementInput!): Announcement
   createCompany(company_info: CompanyInput!): Company
+  createCompanyAssessment(company_assessment_info: CreateCompanyAssessmentInput!): Student
   createJobByCommittee(file: Upload!, job_info: JobInputByCommittee!): Job
   createJobByCommitteeNoFile(job_info: JobInputByCommittee!): Job
   createJobByCompany(file: Upload!, job_info: JobInputByCompany!): Job
@@ -328,11 +401,20 @@ type Mutation {
   deleteProgressReport(report_id: String!): ProgressReport
   registerAdvisor(advisorAccountInfo: AdvisorAccountInput!): Account!
   registerCompanyPerson(CompanyPersonAccountInfo: CompanyPersonInput!): Account!
+  setScoreStudent(set_score_info: EditScoreInput!): Student
   signIn(email: String!, password: String!): AuthData
+  studentAcceptJob(student_accept_info: EditJobStateInput!): StudentApplyJob
   studentDeleteById(student_id: String!): Student
   studentRegister(student_register_input: StudentRegisterInput!): Account!
   studentRegisterCoop(language_abilities: [LanguageAbility!], register_coop_input: CoopRegisterArgs!, skills: [Skill!], transcript_file: Upload): Student
-  updateAccount(updateInfo: UpdateAdvisorInput!): Advisor!
+  studentRejectJob(student_reject_info: EditJobStateInput!): StudentApplyJob
+  undoCommitteeApproveJob(undo_committee_approve_info: EditJobStateInput!): StudentApplyJob
+  undoCommitteeDisapproveJob(undo_committee_disapprove_info: EditJobStateInput!): StudentApplyJob
+  undoCompanyApproveJob(undo_company_approve_info: EditJobStateInput!): StudentApplyJob
+  undoCompanyDisapproveJob(undo_company_disapprove_info: EditJobStateInput!): StudentApplyJob
+  undoStudentAcceptJob(undo_student_accept_info: EditJobStateInput!): StudentApplyJob
+  undoStudentRejectJob(undo_student_reject_info: EditJobStateInput!): StudentApplyJob
+  updateAdvisorAccount(updateInfo: UpdateAdvisorArgs!): Account!
   updateAnnouncement(update_input: UpdateAnnouncementInput!): Announcement
   updateCompany(update_input: UpdateCompanyInput!): Company
   updateCompanyPerson(update_input: UpdateCompanyPersonInput!): CompanyPerson
@@ -372,8 +454,11 @@ type Query {
   getAccounts: [Account]!
   getAdvisorAccount(advisor_id: String!): Account
   getAdvisorAccounts: [Account]!
+  getAllAdvisorAssessment: [AdvisorAssessment]!
   getAllCompanies: [Company]!
+  getAllCompanyAssessment: [CompanyAssessment]!
   getAllJob: [Job]!
+  getAllStudentApplyJob: [StudentApplyJob]!
   getAnnouncement(with_key: GetWithKeyInput!): Announcement
   getAnnouncements: [Announcement]!
   getCompanyById(company_id: String!): Company
@@ -396,6 +481,7 @@ enum Role {
   COMMITTEE
   COMPANY
   STUDENT
+  SUPER_ADMIN
 }
 
 input Skill {
@@ -407,8 +493,10 @@ type Student {
   account: Account!
   address: String
   advisor: Advisor
+  advisor_assessment: AdvisorAssessment
   birth_date: String
   citizen_id: String
+  company_assessment: CompanyAssessment
   coop_status: CoopStatus!
   created_at: DateTime!
   curriculum: Curriculum
@@ -422,7 +510,7 @@ type Student {
   gender: String
   gpa: String
   height: String
-  job: [Job]!
+  job: Job
   language_abilities: [StudentLanguageAbility]!
   lastname_eng: String!
   lastname_th: String
@@ -433,11 +521,24 @@ type Student {
   phone_number: String
   progress_report: [ProgressReport]!
   religion: String
+  score_from_advisor: Float
+  score_from_company: Float
+  score_from_presentation: Float
   skills: [StudentSkills]!
+  student_apply_job: [StudentApplyJob]!
   student_id: ID!
   transcript: TranscriptFileUpload
   updated_at: DateTime!
   weight: String
+}
+
+type StudentApplyJob {
+  created_at: DateTime!
+  id: String!
+  job: Job
+  job_status: String
+  student: Student
+  updated_at: DateTime!
 }
 
 input StudentApplyJobInput {
@@ -474,12 +575,10 @@ type TranscriptFileUpload {
   url: String
 }
 
-input UpdateAdvisorInput {
-  faculty: String!
-  id: String
+input UpdateAdvisorArgs {
+  account_id: String!
+  advisor_status: String!
   is_committee: Boolean!
-  last_name: String!
-  name: String!
 }
 
 input UpdateAnnouncementInput {
