@@ -44,6 +44,8 @@ export class AdvisorAccountService {
         const hashed_password = await hashedPassword(mock_pass);
         const advisor_profile = new Advisor(name.trim().toLowerCase(), last_name.trim().toLowerCase(), is_committee === RoleOption.COMMITTEE, name_prefix.trim().toLowerCase());
 
+        advisor_profile.department = user.is_advisor.department
+        advisor_profile.faculty = user.is_advisor.faculty
 
         const advisor_account = new Account(email.trim().toLowerCase(), hashed_password, is_committee ? RoleOption.COMMITTEE : RoleOption.ADVISOR);
 
