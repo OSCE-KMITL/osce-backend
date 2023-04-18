@@ -1,8 +1,9 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn,ManyToOne, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Account } from './Account';
 import { Announcement } from './Announcement';
+import { AdvisorAssessment } from './AdvisorAssessment';
 import { Curriculum } from './Curriculum';
 import { Department } from './Department';
 import { Faculty } from './Faculty';
@@ -66,6 +67,11 @@ export class Advisor {
     @Field(() => [Student], { nullable: 'items' })
     @OneToMany(() => Student, (student) => student.advisor,{ lazy:true ,onDelete:"SET NULL",onUpdate:"DEFAULT" ,cascade:true})
     students:Student[];
+
+    @Field(() => [AdvisorAssessment], { nullable: 'items' })
+    @OneToMany(() => AdvisorAssessment, (advisor_assessment) => advisor_assessment.advisor, { cascade: true, eager: true })
+    @JoinColumn({ name: 'advisor_assessment' })
+    advisor_assessment: AdvisorAssessment[];
 
     @Field()
     @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)' })

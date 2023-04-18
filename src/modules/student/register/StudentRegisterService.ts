@@ -335,7 +335,6 @@ export class StudentRegisterService {
                 const url = `http://localhost:${PORT}/files/student_transcript/${current_name}`;
                 const directoryPath = './public/files/student_transcript';
 
-                // check if the directory already exists
                 try {
                     if (!fs.existsSync(directoryPath)) {
                         // create the directory recursively if it doesn't exist
@@ -376,29 +375,24 @@ export class StudentRegisterService {
         }
     }
 
-    async applyJob(apply_info: StudentApplyJobInput, account_id: string) {
+    async setScoreStudent(set_score_info: EditScoreInput, account_id: string) {
         const account = await this.account_repository.findOne('id', account_id);
-        const { job_id } = apply_info;
+        const { student_id, score_advisor, score_company, score_presentation } = set_score_info;
         if (!account) throw new Error('ไม่มีสิทธิ์เข้าถึง');
-        if (account.role !== RoleOption.STUDENT) throw new Error('นักศึกษาเท่านั้นที่สามารถสมัครงานได้');
+        if (account.role !== RoleOption.COMMITTEE) throw new Error('กรรมการเท่านั้นที่สามารถดำเนินการได้');
 
-        const job = await this.job_repository.findOne('id', job_id);
-        if (!job) throw new Error('ไม่พบงานที่เปิดรับ');
-
-        const student_id = account.is_student.student_id;
         const student = await this.student_repository.findOne('student_id', student_id);
-        if (!student) throw new Error('ไม่พบนักศึกษา');
-
-        const arrayJob = await student.job;
-        const count: number = arrayJob.length;
-        if (count === 5) throw new Error('ไม่สามารถสมัครพร้อมกันเกิน 5 งาน');
-
-        if (job.students === undefined) {
-            job.students = [student];
-        } else {
-            job.students.push(student);
+        if (!student) {
+            throw new Error('ไม่พบข้อมูลนักศึกษา');
         }
-        await this.job_repository.save(job);
+
+        if (score_advisor < 0 || score_advisor > 20) throw new Error('คะแนนจากอาจารย์นิเทศจำเป็นต้องอยู่ระหว่าง 0 - 20');
+        if (score_company < 0 || score_company > 40) throw new Error('คะแนนจากบริษัทจำเป็นต้องอยู่ระหว่าง 0 - 40');
+        if (score_presentation < 0 || score_presentation > 40) throw new Error('คะแนนจากการสอบสหกิจเป็นต้องอยู่ระหว่าง 0 - 40');
+
+        student.score_from_advisor = score_advisor;
+        student.score_from_company = score_company;
+        student.score_from_presentation = score_presentation;
 
         return await this.student_repository.save(student);
     }

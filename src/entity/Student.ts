@@ -12,6 +12,8 @@ import { StudentSkills } from './StudentSkills';
 import { TranscriptFileUpload } from './TranscriptFileUpload';
 import { Advisor } from './Advisor';
 import { ProgressReport } from './ProgressReport';
+import { CompanyAssessment } from './CompanyAssessment';
+import { AdvisorAssessment } from './AdvisorAssessment';
 
 @Entity()
 @ObjectType()
@@ -140,6 +142,18 @@ export class Student {
     @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
     birth_date: string;
 
+    @Field({ nullable: true })
+    @Column({ nullable: true, default: 0 })
+    score_from_company: number;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true, default: 0 })
+    score_from_advisor: number;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true, default: 0 })
+    score_from_presentation: number;
+
     @Field()
     @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)' })
     created_at!: Date;
@@ -148,20 +162,25 @@ export class Student {
     @UpdateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', onUpdate: 'CURRENT_TIMESTAMP(6)' })
     updated_at: Date;
 
-    @Field(() => [Job], { nullable: 'items' })
-    @ManyToMany(() => Job, (job) => job.students, { nullable: true, lazy: true })
-    @JoinTable({
-        name: 'apply_job',
-        joinColumn: {
-            name: 'student',
-            referencedColumnName: 'student_id',
-        },
-        inverseJoinColumn: {
-            name: 'job',
-            referencedColumnName: 'id',
-        },
-    })
-    job: Job[];
+    @Field(() => [StudentApplyJob], { nullable: 'items' })
+    @OneToMany(() => StudentApplyJob, (student_apply_job) => student_apply_job.student, { cascade: true, eager: true })
+    @JoinColumn({ name: 'student_apply_job' })
+    student_apply_job: StudentApplyJob[];
+
+    @Field(() => CompanyAssessment, { nullable: true })
+    @ManyToOne(() => CompanyAssessment, (company_assessment) => company_assessment.student, { cascade: true, eager: true })
+    @JoinColumn({ name: 'company_assessment' })
+    company_assessment: CompanyAssessment;
+
+    @Field(() => AdvisorAssessment, { nullable: true })
+    @ManyToOne(() => AdvisorAssessment, (advisor_assessment) => advisor_assessment.student, { cascade: true, eager: true })
+    @JoinColumn({ name: 'advisor_assessment' })
+    advisor_assessment: AdvisorAssessment;
+
+    @Field(() => Job, { nullable: true })
+    @ManyToOne(() => Job, (job) => job.students, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'applied_job' })
+    job: Promise<Job>;
 
     @Field(() => Advisor, { nullable: true })
     @ManyToOne(() => Advisor, (advisor) => advisor.advisor_id, { nullable: true,onDelete:"SET NULL", eager: true })

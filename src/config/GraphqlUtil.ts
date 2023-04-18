@@ -1,3 +1,6 @@
+import { StuApplyJobController } from './../modules/job/student_apply_job/StuApplyJobController';
+import { FileUploadController } from './../modules/file_upload/FileUploadController';
+import { JobController } from './../modules/job/JobController';
 import { FileUploadController } from '../modules/file_upload/FileUploadController';
 import { JobController } from '../modules/job/JobController';
 import { CompanyPersonController } from '../modules/company_person/register/CompanyPersonController';
@@ -10,6 +13,8 @@ import { StudentRegisterController } from '../modules/student/register/StudentRe
 import { AccountController } from '../modules/account/AccountController';
 import { AuthController } from '../modules/auth/AuthController';
 import {ProgressReportController} from "../modules/student/progress_report/ProgressReportController";
+import { CompanyAssessmentController } from '../modules/student/company_assessment/CompanyAssessmentController';
+import { AdvisorAssessmentController } from '../modules/student/advisor_assessment/AdvisorAssessmentController';
 
 export class GraphqlUtil {
     static async getSchema() {
@@ -25,6 +30,9 @@ export class GraphqlUtil {
                 JobController,
                 FileUploadController,
                 ProgressReportController
+                StuApplyJobController,
+                CompanyAssessmentController,
+                AdvisorAssessmentController,
             ],
             emitSchemaFile: true,
             container: Container,

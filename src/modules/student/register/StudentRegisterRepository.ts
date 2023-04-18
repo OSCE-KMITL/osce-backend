@@ -1,10 +1,10 @@
 import { BaseRepository } from '../../BaseRepository';
 import { Student } from '../../../entity/Student';
-import {Faculty} from "../../../entity/Faculty";
-import {Department} from "../../../entity/Department";
-import {Curriculum} from "../../../entity/Curriculum";
-import {StudentLanguageAbility} from "../../../entity/StudentLanguageAbility";
-import {StudentSkills} from "../../../entity/StudentSkills";
+import { Faculty } from '../../../entity/Faculty';
+import { Department } from '../../../entity/Department';
+import { Curriculum } from '../../../entity/Curriculum';
+import { StudentLanguageAbility } from '../../../entity/StudentLanguageAbility';
+import { StudentSkills } from '../../../entity/StudentSkills';
 import { TranscriptFileUpload } from '../../../entity/TranscriptFileUpload';
 
 export class StudentRegisterRepository extends BaseRepository<Student> {}

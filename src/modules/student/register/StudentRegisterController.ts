@@ -1,13 +1,17 @@
-import { Arg, Args, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Args, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { AppContext } from '../../../shared/types/context-types';
-import { StudentApplyJobInput } from '../args/StudentRegisterInput';
+// import { StudentApplyJobInput } from '../args/StudentRegisterInput';
 import { Student } from '../../../entity/Student';
 import { Service } from 'typedi';
 import { StudentRegisterService } from './StudentRegisterService';
 import { Account } from '../../../entity/Account';
+import { EditScoreInput, StudentRegisterInput } from '../args/StudentRegisterInput';
+import { CoopRegisterArgs, LanguageAbilities, SkillsArgs } from '../interfaces';
 import { StudentRegisterInput } from '../args/StudentRegisterInput';
 import { CommitteeCoopRegisterArgs, CoopRegisterArgs, LanguageAbilities, SkillsArgs, StudentIdList } from '../interfaces';
 import { Upload } from '../../../shared/types/Upload';
+import { useAuthorization } from '../../../middleware/useAuthorization';
+import { RoleOption } from '../../../shared/types/Roles';
 import { CoopStatus } from '../../../shared/types/CoopStatus';
 import { Advisor } from '../../../entity/Advisor';
 import { type } from 'ramda';
@@ -65,7 +69,6 @@ export class StudentRegisterController {
     ): Promise<any> {
         try {
             const { user_id } = req;
-            //console.log(payload);
             if (!user_id) {
                 throw new Error('เข้าสู่ระบบก่อนทำรายการ');
             }
@@ -114,6 +117,21 @@ export class StudentRegisterController {
     ): Promise<Advisor | null | undefined> {
         try {
             return await this.service.committeeAssignStudent(payload, advisor_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE]))
+    @Mutation(() => Student, { nullable: true })
+    async setScoreStudent(@Arg('set_score_info') set_score_info: EditScoreInput, @Ctx() { req }: AppContext): Promise<Student | null> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.service.setScoreStudent(set_score_info, user_id);
         } catch (e) {
             console.log(e);
             throw e;
