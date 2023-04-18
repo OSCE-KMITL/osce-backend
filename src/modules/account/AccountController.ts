@@ -8,6 +8,7 @@ import { CompanyPersonService } from '../company_person/register/CompanyPersonSe
 import { useAuthorization } from '../../middleware/useAuthorization';
 import { RoleOption } from '../../shared/types/Roles';
 import { AppContext } from '../../shared/types/context-types';
+import { Advisor } from '../../entity/Advisor';
 
 @Resolver()
 @Service()
@@ -15,9 +16,8 @@ export class AccountController {
     constructor(
         private readonly account_service: AccountService,
         private readonly advisor_account_service: AdvisorAccountService,
-        private readonly company_person_account_service: CompanyPersonService,
-    ) {
-    }
+        private readonly company_person_account_service: CompanyPersonService
+    ) {}
 
     @Query(() => [Account], { nullable: 'items' })
     async getAccounts(): Promise<Account[] | null> {
@@ -32,7 +32,7 @@ export class AccountController {
     @Query(() => [Account], { nullable: 'items' })
     async getAdvisorAccounts(@Ctx() { req }: AppContext): Promise<Account[] | null | undefined> {
         const { user_id } = req;
-        if (!user_id) throw new Error("Not Authoriezd")
+        if (!user_id) throw new Error('Not Authoriezd');
         return await this.advisor_account_service.getAdvisorAccounts(user_id);
     }
 
@@ -70,5 +70,11 @@ export class AccountController {
     @Query(() => Account, { nullable: true })
     async getCompanyPersonAccount(@Arg('account_id') id: string): Promise<Account | null> {
         return await this.company_person_account_service.getCompanyPersonAccount(id);
+    }
+
+    @Query(() => Advisor, { nullable: true })
+    //  id จะไม่ return ค่า ถ้าลบไปแล้ว , ระวังตอนไปใช้ใน client-side
+    async getAdvisor(@Arg('id') id: string): Promise<Advisor | null | undefined> {
+        return await this.advisor_account_service.getAdvisor(id);
     }
 }

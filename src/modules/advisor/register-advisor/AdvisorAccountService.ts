@@ -131,4 +131,12 @@ export class AdvisorAccountService {
 
         return await this.account_repository.delete(already_account);
     }
+
+    async getAdvisor(id: string): Promise<Advisor | null | undefined> {
+        try {
+            return await this.repository.findOne('advisor_id', id);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }

@@ -452,6 +452,7 @@ input ProgressReportInput {
 type Query {
   getAccount(account_id: String!): Account
   getAccounts: [Account]!
+  getAdvisor(id: String!): Advisor
   getAdvisorAccount(advisor_id: String!): Account
   getAdvisorAccounts: [Account]!
   getAllAdvisorAssessment: [AdvisorAssessment]!
