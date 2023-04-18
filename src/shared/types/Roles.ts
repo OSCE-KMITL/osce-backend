@@ -5,6 +5,7 @@ export enum RoleOption {
     STUDENT = 'STUDENT',
     COMPANY = 'COMPANY',
     COMMITTEE = 'COMMITTEE',
+    SUPER_ADMIN = 'SUPER_ADMIN',
 }
 
 registerEnumType(RoleOption, {

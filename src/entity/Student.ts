@@ -164,7 +164,7 @@ export class Student {
     job: Job[];
 
     @Field(() => Advisor, { nullable: true })
-    @ManyToOne(() => Advisor, (advisor) => advisor.advisor_id, { nullable: true, onUpdate: 'CASCADE', eager: true })
+    @ManyToOne(() => Advisor, (advisor) => advisor.advisor_id, { nullable: true,onDelete:"SET NULL", eager: true })
     @JoinColumn({ name: 'advisor_id' })
     advisor: Advisor;
 

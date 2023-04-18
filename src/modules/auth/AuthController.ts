@@ -22,7 +22,8 @@ export class AuthData extends Account {
 export class AuthController {
     constructor(private readonly account_repository = new AccountRepository(Account)) {}
     @Mutation(() => AuthData, { nullable: true })
-    async signIn(@Arg('email') email: string, @Arg('password') password: string, @Ctx() { res }: AppContext): Promise<AuthData | null> {
+    async signIn(@Arg('email') email: string, @Arg('password') password: string,
+                 @Ctx() { res }: AppContext): Promise<AuthData | null> {
         try {
             if (!email) throw new Error('Email is required.');
             if (!password) throw new Error('Password is required.');

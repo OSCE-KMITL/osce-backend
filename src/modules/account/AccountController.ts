@@ -1,4 +1,4 @@
-import { Arg, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
+import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { AccountService } from './AccountService';
 import { Service } from 'typedi';
 import { Account } from '../../entity/Account';
@@ -7,6 +7,7 @@ import { UpdateAdvisorArgs } from '../advisor/register-advisor/input/AdvisorAcco
 import { CompanyPersonService } from '../company_person/register/CompanyPersonService';
 import { useAuthorization } from '../../middleware/useAuthorization';
 import { RoleOption } from '../../shared/types/Roles';
+import { AppContext } from '../../shared/types/context-types';
 
 @Resolver()
 @Service()
@@ -14,8 +15,9 @@ export class AccountController {
     constructor(
         private readonly account_service: AccountService,
         private readonly advisor_account_service: AdvisorAccountService,
-        private readonly company_person_account_service: CompanyPersonService
-    ) {}
+        private readonly company_person_account_service: CompanyPersonService,
+    ) {
+    }
 
     @Query(() => [Account], { nullable: 'items' })
     async getAccounts(): Promise<Account[] | null> {
@@ -28,8 +30,10 @@ export class AccountController {
     }
 
     @Query(() => [Account], { nullable: 'items' })
-    async getAdvisorAccounts(): Promise<Account[] | null | undefined> {
-        return await this.advisor_account_service.getAdvisorAccounts();
+    async getAdvisorAccounts(@Ctx() { req }: AppContext): Promise<Account[] | null | undefined> {
+        const { user_id } = req;
+        if (!user_id) throw new Error("Not Authoriezd")
+        return await this.advisor_account_service.getAdvisorAccounts(user_id);
     }
 
     @Query(() => Account, { nullable: true })
@@ -37,13 +41,13 @@ export class AccountController {
         return await this.advisor_account_service.getAdvisorAccount(id);
     }
 
-    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE,RoleOption.ADVISOR]))
+    @UseMiddleware(useAuthorization([RoleOption.COMMITTEE, RoleOption.ADVISOR]))
     @Mutation(() => Account, { nullable: false })
     updateAdvisorAccount(@Arg('updateInfo') payload: UpdateAdvisorArgs): Promise<Account | null | undefined> {
         try {
-            return this.advisor_account_service.updateAdvisorAccount(payload)
-        }catch (e) {
-          throw e
+            return this.advisor_account_service.updateAdvisorAccount(payload);
+        } catch (e) {
+            throw e;
         }
     }
 

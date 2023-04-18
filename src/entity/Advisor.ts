@@ -20,6 +20,14 @@ export class Advisor {
     name: string;
 
     @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    name_en: string;
+
+    @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
+    @Field()
+    last_name_en: string;
+
+    @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
     @Field({ nullable: true })
     name_prefix: string;
 
@@ -52,11 +60,11 @@ export class Advisor {
     account: Account;
 
     @Field(() => [Announcement], { nullable: 'items' })
-    @OneToMany(() => Announcement, (announcement) => announcement.advisor_id, { cascade: true, eager: true })
+    @OneToMany(() => Announcement, (announcement) => announcement.advisor_id, { cascade: true, eager: true ,onDelete:"SET NULL" })
     announcements: Announcement[];
 
     @Field(() => [Student], { nullable: 'items' })
-    @OneToMany(() => Student, (student) => student.advisor,{ lazy:true})
+    @OneToMany(() => Student, (student) => student.advisor,{ lazy:true ,onDelete:"SET NULL",onUpdate:"DEFAULT" ,cascade:true})
     students:Student[];
 
     @Field()
