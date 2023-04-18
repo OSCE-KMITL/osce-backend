@@ -14,6 +14,7 @@ import { Advisor } from './Advisor';
 import { ProgressReport } from './ProgressReport';
 import { CompanyAssessment } from './CompanyAssessment';
 import { AdvisorAssessment } from './AdvisorAssessment';
+import { StudentApplyJob } from './StudentApplyJob';
 
 @Entity()
 @ObjectType()

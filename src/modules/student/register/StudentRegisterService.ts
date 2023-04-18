@@ -6,10 +6,10 @@ import {
     StudentRegisterRepository,
     StudentSkillsRepository,
 } from './StudentRegisterRepository';
-import { Job } from './../../../entity/Job';
-import { JobRepository } from './../../job/JobRepository';
-import { RoleOption } from './../../../shared/types/Roles';
-import { StudentApplyJobInput } from './../args/StudentRegisterInput';
+import { Job } from '../../../entity/Job';
+import { JobRepository } from '../../job/JobRepository';
+import { RoleOption } from '../../../shared/types/Roles';
+import { EditScoreInput, StudentApplyJobInput } from '../args/StudentRegisterInput';
 import { Student } from '../../../entity/Student';
 import { Service } from 'typedi';
 import { Account } from '../../../entity/Account';

@@ -5,9 +5,7 @@ import { Student } from '../../../entity/Student';
 import { Service } from 'typedi';
 import { StudentRegisterService } from './StudentRegisterService';
 import { Account } from '../../../entity/Account';
-import { EditScoreInput, StudentRegisterInput } from '../args/StudentRegisterInput';
-import { CoopRegisterArgs, LanguageAbilities, SkillsArgs } from '../interfaces';
-import { StudentRegisterInput } from '../args/StudentRegisterInput';
+import { EditScoreInput, StudentApplyJobInput, StudentRegisterInput } from '../args/StudentRegisterInput';
 import { CommitteeCoopRegisterArgs, CoopRegisterArgs, LanguageAbilities, SkillsArgs, StudentIdList } from '../interfaces';
 import { Upload } from '../../../shared/types/Upload';
 import { useAuthorization } from '../../../middleware/useAuthorization';
@@ -27,12 +25,6 @@ export class StudentRegisterController {
         return await this.service.registerStudent(input);
     }
 
-    // @UseMiddleware(useAuthorization([RoleOption.STUDENT]))
-    @Mutation(() => Student, { nullable: true })
-    async applyJob(@Arg('apply_info') apply_info: StudentApplyJobInput, @Ctx() { req }: AppContext): Promise<Student | null> {
-        const { user_id } = req;
-        return this.service.applyJob(apply_info, user_id!);
-    }
 
     @Mutation(() => Student, { nullable: true })
     async studentDeleteById(@Arg('student_id') student_id: string, @Ctx() { req }: AppContext): Promise<Student | null | undefined> {

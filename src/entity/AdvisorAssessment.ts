@@ -28,7 +28,7 @@ export class AdvisorAssessment {
     advisor: Promise<Advisor>;
 
     @Field(() => GraphQLJSONObject)
-    @Column({ type: 'json', default: null, charset: 'utf8', collation: 'utf8_general_ci' })
+    @Column({ type: 'json', default: null,})
     assessment_obj: object;
 
     @Field()
