@@ -4,6 +4,7 @@ import { ProgressReportRepository } from './ProgressReportRepository';
 import { ProgressReport } from '../../../entity/ProgressReport';
 import { Service } from 'typedi';
 import { ProgressReportInput } from './args';
+import { ProgressReportBuilder } from './ProgressReportBuilder/ProgressReportBuilder';
 
 @Service()
 export class ProgressReportService {
@@ -11,7 +12,7 @@ export class ProgressReportService {
     private readonly progress_report_repository = new ProgressReportRepository(ProgressReport);
 
     async createProgressReport(payload: ProgressReportInput, student_id: string): Promise<ProgressReport> {
-        const { current_res, commute_score, work_score, advisement_score, mentor_position, mentor_name, mentor_lastname, other_suggest } = payload;
+        const { current_res, commute_score, work_score, advisement_score, mentor_position, mentor_name,  other_suggest , mentor_tel ,mentor_email} = payload;
         if (!student_id) throw new Error('คุณไม่มีสิทธิเข้าถึง ');
 
         try {
@@ -20,17 +21,19 @@ export class ProgressReportService {
 
             const report_no = (student.progress_report.length += 1);
 
-            const report = new ProgressReport(
-                report_no,
-                commute_score,
-                advisement_score,
-                work_score,
-                current_res,
-                mentor_name,
-                mentor_lastname,
-                mentor_position,
-                other_suggest
-            );
+            const report = new ProgressReportBuilder()
+                .setReportNo(report_no)
+                .setWorkScore(work_score)
+                .setCommuteScore(commute_score)
+                .setAdvisementScore(advisement_score)
+                .setCurrentRes(current_res)
+                .setOtherSuggest(other_suggest)
+                .setMentorTel(mentor_tel)
+                .setMentorName(mentor_name)
+                .setMentorPosition(mentor_position)
+                .setMentorEmail(mentor_email)
+                .build()
+
 
             const saved_report = await this.progress_report_repository.save(report);
 

@@ -9,8 +9,6 @@ import { AppContext } from '../../../shared/types/context-types';
 @Resolver()
 export class RegisterAdvisorAccount {
     constructor(private readonly advisor_account_service: AdvisorAccountService) {}
-
-
     @Mutation(() => Account, { nullable: false })
     async registerAdvisor(@Arg('advisorAccountInfo') input: AdvisorAccountInput ,@Ctx(){req}:AppContext ): Promise<Account> {
         const {user_id} = req
