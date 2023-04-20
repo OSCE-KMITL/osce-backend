@@ -17,7 +17,10 @@ export class ProgressReportInput {
     mentor_name: string;
 
     @Field({nullable:true})
-    mentor_lastname: string;
+    mentor_tel: string;
+
+    @Field({nullable:true})
+    mentor_email: string;
 
     @Field({nullable:true})
     mentor_position: string;

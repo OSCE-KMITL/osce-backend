@@ -32,11 +32,11 @@ export class CompanyPerson {
     is_coordinator: Boolean = false;
 
     @Field(() => Account)
-    @OneToOne(() => Account, (account) => account.is_company, { onDelete: 'CASCADE' })
+    @OneToOne(() => Account, (account) => account.is_company, { onDelete: 'CASCADE' ,lazy:true })
     account: Account;
 
     @Field(() => Company, { nullable: true })
-    @ManyToOne(() => Company, (company) => company.company_persons, { onDelete: 'CASCADE' })
+    @ManyToOne(() => Company, (company) => company.company_persons, { onDelete: 'CASCADE' ,cascade:true})
     @JoinColumn({ name: 'company_id' })
     company_id: Promise<Company>;
 

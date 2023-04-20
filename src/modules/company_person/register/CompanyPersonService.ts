@@ -1,5 +1,9 @@
 import { AccountRepository } from '../../account/AccountRepository';
-import { CompanyPersonInput, UpdateCompanyPersonInput } from '../args/CompanyPersonInput';
+import {
+    CompanyPersonInput,
+    CompanyPersonWithCompanyNameInput,
+    UpdateCompanyPersonInput,
+} from '../args/CompanyPersonInput';
 import { CompanyPerson } from '../../../entity/CompanyPerson';
 import { CompanyPersonRepository } from './CompanyPersonRepository';
 import { Service } from 'typedi';
@@ -8,6 +12,8 @@ import { RoleOption } from '../../../shared/types/Roles';
 import { CompanyRepository } from '../../company/CompanyRepository';
 import { Company } from '../../../entity/Company';
 import { hashedPassword } from '../../../utils/hash-password';
+import { sendEmail } from '../../email-service/EmailService';
+import * as crypto from 'crypto';
 
 // input = full_name: string, job_title: string, is_coordinator: boolean
 @Service()
@@ -32,7 +38,7 @@ export class CompanyPersonService {
             job_title.trim().toLowerCase(),
             is_coordinator,
             email.trim().toLowerCase(),
-            phone_number.trim()
+            phone_number.trim(),
         );
 
         const hashed_password = await hashedPassword(password);
@@ -47,6 +53,47 @@ export class CompanyPersonService {
         await this.company_repository.save(company);
 
         return await this.account_repository.save(company_person_account);
+    }
+
+    async registerCompanyPersonAccountByCommittee(input: CompanyPersonWithCompanyNameInput): Promise<Account> {
+        const { email, full_name, job_title, is_coordinator, company_name, phone_number } = input;
+
+        const already_exist_email = await this.account_repository.findOne('email', email.trim().toLocaleLowerCase());
+
+        if (already_exist_email) throw new Error('อีเมลนี้มีผู้ใช้งานแล้ว');
+
+        const company = await this.company_repository.findOne('name_eng', company_name.trim().toLowerCase());
+        let new_company: Company;
+
+        if (!company) {
+            new_company = new Company('-', company_name.trim().toLocaleLowerCase(), '-', '', '', '-', '', '-', '-', '-');
+        } else {
+            new_company = company;
+        }
+
+        const saved_company_person = new CompanyPerson(
+            full_name.trim().toLowerCase(),
+            job_title.trim().toLowerCase(),
+            is_coordinator,
+            email.trim().toLowerCase(),
+            phone_number.trim(),
+        );
+        const rand_pass = crypto.randomBytes(6).toString('base64')
+        const hashed_password = await hashedPassword(rand_pass);
+
+        const company_person_account = new Account(email.trim().toLowerCase(), hashed_password, RoleOption.COMPANY);
+        company_person_account.is_company = saved_company_person;
+
+        if (!new_company.company_persons) {
+            new_company.company_persons = [];
+        }
+
+
+        new_company.company_persons.push(await this.company_person_repository.save(saved_company_person));
+        await this.company_repository.save(new_company);
+        await sendEmail(email.trim().toLowerCase() , rand_pass ,full_name.trim().toLocaleLowerCase())
+        return  await this.account_repository.save(company_person_account);
+
     }
 
     async getCompanyPersonAccounts(): Promise<Account[]> {

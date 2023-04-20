@@ -30,7 +30,7 @@ export class AdvisorAccountService {
             const advisor_profile = new Advisor(name.trim().toLowerCase(), last_name.trim().toLowerCase(), is_committee === RoleOption.COMMITTEE, name_prefix.trim().toLowerCase());
             const mock_pass = '123456';
             const hashed_password = await hashedPassword(mock_pass);
-            const advisor_account = new Account(email.trim().toLowerCase(), hashed_password, is_committee ? RoleOption.COMMITTEE : RoleOption.ADVISOR);
+            const advisor_account = new Account(email.trim().toLowerCase(), hashed_password, is_committee === RoleOption.COMMITTEE  ? RoleOption.COMMITTEE : RoleOption.ADVISOR);
             advisor_account.is_advisor = advisor_profile;
             return await this.account_repository.save(advisor_account);
         }

@@ -61,7 +61,7 @@ export class Company {
     updated_at: Date;
 
     @Field(() => [CompanyPerson], { nullable: 'items' })
-    @OneToMany(() => CompanyPerson, (company_person) => company_person.company_id, { cascade: true, onDelete: 'CASCADE', eager: true })
+    @OneToMany(() => CompanyPerson, (company_person) => company_person.company_id, { onDelete: 'CASCADE', eager: true })
     company_persons: CompanyPerson[];
 
     @Field(() => [Job], { nullable: 'items' })
@@ -84,7 +84,7 @@ export class Company {
         phone_number: string,
         website_url: string,
         business_type: string
-    ) {
+        ) {
         this.name_th = name_th;
         this.name_eng = name_eng;
         this.address = address;
@@ -95,6 +95,6 @@ export class Company {
         this.phone_number = phone_number;
         this.website_url = website_url;
         this.business_type = business_type;
-        
     }
+
 }
