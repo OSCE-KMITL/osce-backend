@@ -17,15 +17,15 @@ export class Advisor {
     advisor_id: string = uuid();
 
     @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Field({ nullable: true })
     name: string;
 
     @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Field({nullable:true})
     name_en: string;
 
     @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Field({ nullable: true })
     last_name_en: string;
 
     @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
@@ -33,7 +33,7 @@ export class Advisor {
     name_prefix: string;
 
     @Column({ nullable: true, charset: 'utf8', collation: 'utf8_general_ci' })
-    @Field()
+    @Field({ nullable: true })
     last_name: string;
 
 
