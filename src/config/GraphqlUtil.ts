@@ -32,7 +32,7 @@ export class GraphqlUtil {
                 CompanyAssessmentController,
                 AdvisorAssessmentController,
             ],
-            emitSchemaFile: true,
+            emitSchemaFile: false,
             container: Container,
         });
     }
