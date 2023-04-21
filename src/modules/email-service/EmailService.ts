@@ -9,8 +9,8 @@ export async function sendEmail(email: string, password: string ,name:string) {
         port: 587,
         secure: false, // true for 465, false for other ports
         auth: {
-            user: 'aphisit.thu@gmail.com', // generated ethereal user
-            pass: 'tqbwrjnlxcixycez', // generated ethereal password
+            user: process.env.HOSTEMAIL!,
+            pass: process.env.HOSTSECRET! 
         },
     });
 
