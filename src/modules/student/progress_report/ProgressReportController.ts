@@ -1,8 +1,9 @@
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { Service } from 'typedi';
 import { ProgressReportService } from './ProgressReportService';
 import { ProgressReport } from '../../../entity/ProgressReport';
 import { ProgressReportInput } from './args';
+import { AppContext } from '../../../shared/types/context-types';
 
 @Resolver()
 @Service()
@@ -28,14 +29,30 @@ export class ProgressReportController {
     }
 
     @Mutation(() => ProgressReport, { nullable: true })
-    async createProgressReport(@Arg('progress_report_arg') payload: ProgressReportInput): Promise<ProgressReport> {
-        const student_id = '63015208';
-        return this.progress_report_service.createProgressReport(payload, student_id);
+    async createProgressReport(@Arg('progress_report_arg') payload: ProgressReportInput, @Ctx() { req }: AppContext): Promise<ProgressReport> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.progress_report_service.createProgressReport(payload, user_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
     }
 
     @Mutation(() => ProgressReport, { nullable: true })
-    async deleteProgressReport(@Arg('report_id') report_id: string): Promise<ProgressReport | null> {
-        const student_id = '63015208';
-        return this.progress_report_service.deleteProgressReport(report_id,student_id)
+    async deleteProgressReport(@Arg('report_id') report_id: string, @Ctx() { req }: AppContext): Promise<ProgressReport | null> {
+        try {
+            const { user_id } = req;
+            if (!user_id) {
+                throw new Error('เข้าสู่ระบบก่อนทำรายการ');
+            }
+            return this.progress_report_service.deleteProgressReport(report_id, user_id);
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
     }
 }

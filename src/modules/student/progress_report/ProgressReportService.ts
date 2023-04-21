@@ -5,15 +5,24 @@ import { ProgressReport } from '../../../entity/ProgressReport';
 import { Service } from 'typedi';
 import { ProgressReportInput } from './args';
 import { ProgressReportBuilder } from './ProgressReportBuilder/ProgressReportBuilder';
+import { AccountRepository } from '../../account/AccountRepository';
+import { Account } from '../../../entity/Account';
 
 @Service()
 export class ProgressReportService {
     private readonly student_repository = new StudentRegisterRepository(Student);
     private readonly progress_report_repository = new ProgressReportRepository(ProgressReport);
+    private readonly account_repository = new AccountRepository(Account);
 
-    async createProgressReport(payload: ProgressReportInput, student_id: string): Promise<ProgressReport> {
-        const { current_res, commute_score, work_score, advisement_score, mentor_position, mentor_name,  other_suggest , mentor_tel ,mentor_email} = payload;
-        if (!student_id) throw new Error('คุณไม่มีสิทธิเข้าถึง ');
+    async createProgressReport(payload: ProgressReportInput, user_id: string): Promise<ProgressReport> {
+        const { current_res, commute_score, work_score, advisement_score, mentor_position, mentor_name, other_suggest, mentor_tel, mentor_email } = payload;
+        if (!user_id) throw new Error('คุณไม่มีสิทธิเข้าถึง ');
+
+        const account = await this.account_repository.findOne('id', user_id);
+        if (!account) throw new Error('คุณไม่มีสิทธิเข้าถึง');
+
+        const student_id = account?.is_student?.student_id;
+        if (!student_id) throw new Error('ไม่พบนักศึกษา');
 
         try {
             const student = await this.student_repository.findOne('student_id', student_id);
@@ -32,8 +41,7 @@ export class ProgressReportService {
                 .setMentorName(mentor_name)
                 .setMentorPosition(mentor_position)
                 .setMentorEmail(mentor_email)
-                .build()
-
+                .build();
 
             const saved_report = await this.progress_report_repository.save(report);
 
@@ -67,7 +75,15 @@ export class ProgressReportService {
         }
     }
 
-    async deleteProgressReport(report_id: string, student_id: string) {
+    async deleteProgressReport(report_id: string, user_id: string) {
+        if (!user_id) throw new Error('คุณไม่มีสิทธิเข้าถึง ');
+
+        const account = await this.account_repository.findOne('id', user_id);
+        if (!account) throw new Error('คุณไม่มีสิทธิเข้าถึง');
+
+        const student_id = account?.is_student?.student_id;
+        if (!student_id) throw new Error('ไม่พบนักศึกษา');
+
         try {
             const report = await this.progress_report_repository.findOne('progress_report_id', report_id);
             if (!report) throw new Error('ไม่พบรายงานที่ต้องการจะลบ');
