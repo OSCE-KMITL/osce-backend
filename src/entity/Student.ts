@@ -179,7 +179,7 @@ export class Student {
     advisor_assessment: AdvisorAssessment;
 
     @Field(() => Job, { nullable: true })
-    @ManyToOne(() => Job, (job) => job.students, { onDelete: 'CASCADE' })
+    @ManyToOne(() => Job, (job) => job.students, { onDelete: 'SET NULL' })
     @JoinColumn({ name: 'applied_job' })
     job: Promise<Job>;
 

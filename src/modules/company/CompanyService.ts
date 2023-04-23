@@ -45,7 +45,17 @@ export class CompanyService {
     }
 
     async getAllCompany() {
-        return await this.company_repository.find();
+        const companies = await this.company_repository.find()
+        const sorted = companies.sort((a,b) => {
+            if(a >b){
+                return -1
+            }else if(a<b ){
+                return 1
+            }else {
+                return 0
+            }
+        })
+        return sorted;
     }
 
     async getById(id: string) {

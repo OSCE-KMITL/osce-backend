@@ -16,10 +16,10 @@ export async function sendEmail(email: string, password: string ,name:string) {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: 'Sender Name <sender-email@example.com>', // sender address
+        from: 'ระบบออนไลน์สำหรับสหกิจศึกษา สจล. <sender-email@example.com>', // sender address
         to: email, // list of receivers
-        subject: 'Hello ✔', // Subject line
-        text: 'Hello world?', // plain text body
+        subject: 'แจ้งเรื่องการเพิ่มบัญชีผู้ใช้ของท่านเข้าสู่ระบบ', // Subject line
+        text: 'แจ้งเรื่องการเพิ่มบัญชีผู้ใช้ในระบบ', // plain text body
         html: `<!DOCTYPE html>
                 <html>
                   <head>
@@ -27,11 +27,12 @@ export async function sendEmail(email: string, password: string ,name:string) {
                     <title>Email Verification</title>
                   </head>
                   <body>
-                    <h1>Email Verification</h1>
+                    <h5>Email Verification</h5>
                     <p>Dear ${name},</p>
                     <p>Thank you for signing up with our service. To complete your registration, please click on the following link:</p>
-                    <h2>You can use this password ${password} for signin our website</h2>     
-                    <p><a href=${FRONTEND_URI}>Verify Your Email Address</a></p>
+                    <p>You can use this password below password for signin our website</p>
+                    <h5> ${password} <h5>
+                    <p><a href=${FRONTEND_URI}>Verify Your Email Addre Here</a></p>
                     <p>If you did not sign up for our service, please ignore this email.</p>
                     
                   </body>

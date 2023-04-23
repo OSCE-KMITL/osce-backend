@@ -31,9 +31,9 @@ export class CompanyPerson {
     @Field()
     is_coordinator: Boolean = false;
 
-    @Field(() => Account)
+    @Field(() => Account,{nullable:true})
     @OneToOne(() => Account, (account) => account.is_company, { onDelete: 'CASCADE' ,lazy:true })
-    account: Account;
+    account: Promise<Account>;
 
     @Field(() => Company, { nullable: true })
     @ManyToOne(() => Company, (company) => company.company_persons, { onDelete: 'CASCADE' ,cascade:true})

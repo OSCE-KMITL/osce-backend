@@ -93,7 +93,7 @@ export class Job {
     updated_at!: Date;
 
     @Field(() => Company, { nullable: true })
-    @ManyToOne(() => Company, (company) => company.id)
+    @ManyToOne(() => Company, (company) => company.id, {onDelete:"CASCADE"})
     @JoinColumn({ name: 'company_id' })
     company_id: Promise<Company>;
 
@@ -107,7 +107,7 @@ export class Job {
     student_apply_job: StudentApplyJob[];
 
     @Field(() => [Student], { nullable: 'items' })
-    @OneToMany(() => Student, (student) => student.job, { cascade: true, eager: true, onDelete:'CASCADE' })
+    @OneToMany(() => Student, (student) => student.job, { cascade: true, eager: true })
     students: Student[];
 
     constructor(
