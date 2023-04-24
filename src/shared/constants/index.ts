@@ -12,3 +12,4 @@ export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 export const BACKEND_URI = process.env.BACKEND_URI;
 export const GOOGLE_CALLBACK_ROUTE = process.env.GOOGLE_CALLBACK_ROUTE;
+export const GOOGLE_LOGIN_CALLBACK_ROUTE = process.env.GOOGLE_LOGIN_CALLBACK_ROUTE;
