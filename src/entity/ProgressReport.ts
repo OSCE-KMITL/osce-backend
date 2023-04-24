@@ -59,7 +59,7 @@ export class ProgressReport {
     other_suggest: string;
 
     @Field(() => Student)
-    @ManyToOne(() => Student, (Student) => Student.student_id, { lazy: true })
+    @ManyToOne(() => Student, (Student) => Student.student_id, { lazy: true ,onDelete:"CASCADE"})
     @JoinColumn({ name: 'student_id' })
     student_id: Student;
 

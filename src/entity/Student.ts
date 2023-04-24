@@ -169,12 +169,12 @@ export class Student {
     student_apply_job: StudentApplyJob[];
 
     @Field(() => CompanyAssessment, { nullable: true })
-    @ManyToOne(() => CompanyAssessment, (company_assessment) => company_assessment.student, { cascade: true, eager: true })
+    @ManyToOne(() => CompanyAssessment, (company_assessment) => company_assessment.student, { cascade: true, eager: true ,onDelete:"CASCADE" })
     @JoinColumn({ name: 'company_assessment' })
     company_assessment: CompanyAssessment;
 
     @Field(() => AdvisorAssessment, { nullable: true })
-    @ManyToOne(() => AdvisorAssessment, (advisor_assessment) => advisor_assessment.student, { cascade: true, eager: true })
+    @ManyToOne(() => AdvisorAssessment, (advisor_assessment) => advisor_assessment.student, { cascade: true, eager: true ,onDelete:"CASCADE" })
     @JoinColumn({ name: 'advisor_assessment' })
     advisor_assessment: AdvisorAssessment;
 
