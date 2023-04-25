@@ -10,7 +10,6 @@ export class ServerConfig {
             schema,
             context: ({ res, req }: AppContext) => {
                 const token = req.headers.authorization;
-
                 if (token) {
                     try {
                         // ดึง info ที่ได้รัยมาจาก headers

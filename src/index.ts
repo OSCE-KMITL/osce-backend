@@ -95,6 +95,7 @@ export const bootstrap = async () => {
             }
             const { id, name, photos, emails, provider } = req.google_profile;
 
+
             // format input data
             const profile_email = emails![0].value.trim().toLocaleLowerCase();  
 
@@ -124,9 +125,10 @@ export const bootstrap = async () => {
                         existed_account.is_advisor.last_name_en = fmt_last_name!;
                     }
 
-                    await account_repository.save(existed_account);
+                    existed_account.token_version = 0
+                    const saved_account = await account_repository.save(existed_account);
 
-                    const token = TokenHandler.createToken(existed_account.id, existed_account.token_version);
+                    const token = TokenHandler.createToken(saved_account.id, saved_account.token_version);
                     await TokenHandler.sendTokenToCookie(res, token);
                     await res.redirect(FRONTEND_URI! + '/');
                 }
